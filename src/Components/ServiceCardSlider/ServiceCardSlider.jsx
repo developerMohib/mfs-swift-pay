@@ -52,7 +52,7 @@ const ServiceCardSlider = () => {
               </p>
               <div className="flex justify-center">
                 <a
-                  href
+                  href="/"
                   target="_blank"
                   rel="noopener"
                   className="bg-yellow-400 rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-yellow-500 transition-all duration-150 ease-in-out"
@@ -83,7 +83,7 @@ const ServiceCardSlider = () => {
               </p>
               <div className="flex justify-center">
                 <a
-                  href
+                  href="/"
                   target="_blank"
                   rel="noopener"
                   className="bg-yellow-400 rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-yellow-500 transition-all duration-150 ease-in-out"
@@ -115,7 +115,7 @@ const ServiceCardSlider = () => {
               </p>
               <div className="flex justify-center">
                 <a
-                  href
+                  href="/"
                   target="_blank"
                   rel="noopener"
                   className="bg-yellow-400 rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-yellow-500 transition-all duration-150 ease-in-out"
@@ -147,7 +147,7 @@ const ServiceCardSlider = () => {
               </p>
               <div className="flex justify-center">
                 <a
-                  href
+                  href="/"
                   target="_blank"
                   rel="noopener"
                   className="bg-yellow-400 rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-yellow-500 transition-all duration-150 ease-in-out"
