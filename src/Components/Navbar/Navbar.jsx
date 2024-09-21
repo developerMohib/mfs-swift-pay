@@ -11,13 +11,13 @@ const Navbar = () => {
     </>
   );
   return (
-    <header className="p-4 text-gray-800">
+    <header className="px-4 py-2 text-gray-800 shadow">
       <div className="container flex justify-between items-center mx-auto">
         <Link
           rel="noopener noreferrer"
           to="/"
           aria-label="Back to homepage"
-          className="flex items-center font-bold text-2xl p-2"
+          className="flex items-center font-bold md:text-5xl text-3xl p-2"
         >
           <span className="text-primary" >swift</span>
           <span className="text-secondary" >Pay</span>

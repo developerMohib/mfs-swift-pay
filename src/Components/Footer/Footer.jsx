@@ -13,7 +13,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 to="/"
                 aria-label="Back to homepage"
-                className="flex items-center font-bold text-2xl p-2"
+                className="flex items-center font-bold md:text-5xl text-3xl p-2"
               >
                 <span className="text-primary">swift</span>
                 <span className="text-secondary">Pay</span>

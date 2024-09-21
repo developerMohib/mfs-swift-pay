@@ -39,7 +39,7 @@ const Register = () => {
               <p>
                 Already have an account ?{" "}
                 <Link className="text-primary font-medium hover:border-b border-tarnary " to={"/sign-in"}>
-                  Login{" "}
+                  Log in{" "}
                 </Link>
               </p>
             </div>
@@ -48,7 +48,7 @@ const Register = () => {
           {/* Form Here, For Data Collection */}
           <div className="w-full max-w-xl ">
             <div>
-                <p className="md:text-4xl text-2xl md:my-0 mt-6" >Drop Your Necessary Info</p>
+                <p className="md:text-4xl text-2xl md:my-0 mt-8 font-semibold" >Drop Your Necessary Info</p>
             </div>
             <form
               onSubmit={handleRegister}
