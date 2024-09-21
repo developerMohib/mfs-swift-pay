@@ -15,9 +15,10 @@ const About = () => {
             About <span className="text-indigo-600">Our Company</span>
           </h2>
           <p className="text-gray-700">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid,
-            commodi doloremque, fugiat illum magni minus nisi nulla numquam
-            obcaecati placeat quia, repellat tempore voluptatum.
+            we believe in empowering individuals and businesses to securely send
+            and receive money across the globe. Whether you are supporting loved
+            ones or conducting international business, our platform ensures
+            seamless, fast, and affordable transfers.
           </p>
         </div>
       </div>

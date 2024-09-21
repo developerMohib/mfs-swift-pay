@@ -1,13 +1,47 @@
+import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import "./navbar.css"
+import { FcMenu } from "react-icons/fc";
+import { IoCloseOutline } from "react-icons/io5";
+import { ImSpinner2 } from "react-icons/im";
+import { Transition } from "@headlessui/react";
+
+import "./navbar.css";
 
 const Navbar = () => {
+  const [open, setOpen] = useState(false);
+  const [rotating, setRotating] = useState(false);
+  const handleMenu = () => {
+    setRotating(true);
+
+    setTimeout(() => {
+      setOpen(!open);
+      setRotating(false);
+    }, 100);
+  };
+
   const nav = (
     <>
-      <NavLink className={({isActive}) => isActive ? "active" : "navlink" } to="/"> Home </NavLink>
-      <NavLink className={({isActive}) => isActive ? "active" : "navlink" } to="/about"> About </NavLink>
-      <NavLink className={({isActive}) => isActive ? "active" : "navlink" } to="/services"> Services </NavLink>
-      <NavLink className={({isActive}) => isActive ? "active" : "navlink" } to="/sign-in"> Log in </NavLink>
+      <NavLink
+        className={({ isActive }) => (isActive ? "active" : "navlink")}
+        to="/"
+      >
+        {" "}
+        Home{" "}
+      </NavLink>
+      <NavLink
+        className={({ isActive }) => (isActive ? "active" : "navlink")}
+        to="/about"
+      >
+        {" "}
+        About{" "}
+      </NavLink>
+      <NavLink
+        className={({ isActive }) => (isActive ? "active" : "navlink")}
+        to="/services"
+      >
+        {" "}
+        Services{" "}
+      </NavLink>
     </>
   );
   return (
@@ -19,27 +53,42 @@ const Navbar = () => {
           aria-label="Back to homepage"
           className="flex items-center font-bold md:text-5xl text-3xl p-2"
         >
-          <span className="text-primary" >swift</span>
-          <span className="text-secondary" >Pay</span>
+          <span className="text-primary">swift</span>
+          <span className="text-secondary">Pay</span>
         </Link>
         <ul className="items-stretch hidden space-x-3 md:flex">{nav}</ul>
-        <button className="flex justify-end p-4 md:hidden">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            ></path>
-          </svg>
+        <button onClick={handleMenu} className="flex justify-end p-4 md:hidden">
+          {/* Loading Spinner */}
+          {rotating ? (
+            <ImSpinner2 className="text-2xl animate-spin" />
+          ) : open ? (
+            /* Close Icon with animation */
+            <IoCloseOutline className="text-2xl transition-transform transform rotate-0 hover:rotate-180 duration-300" />
+          ) : (
+            /* Menu Icon with animation */
+            <FcMenu className="text-2xl transition-transform transform rotate-0 hover:rotate-180 duration-300" />
+          )}
         </button>
       </div>
+
+      <Transition
+        show={open}
+        enter="transition-transform duration-300 ease-out"
+        enterFrom="-translate-y-full"
+        enterTo="translate-y-0"
+        leave="transition-transform duration-200 ease-in"
+        leaveFrom="translate-y-0"
+        leaveTo="-translate-y-full"
+      >
+        <div
+          className="md:hidden bg-tarnary absolute text-center w-full z-50 left-0 "
+          id="mobile-menu"
+        >
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <ul className="flex flex-col text-white gap-4"> {nav} </ul>
+          </div>
+        </div>
+      </Transition>
     </header>
   );
 };
