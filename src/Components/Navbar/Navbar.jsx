@@ -42,16 +42,45 @@ const Navbar = () => {
         {" "}
         Services{" "}
       </NavLink>
+      <NavLink
+        className={({ isActive }) => (isActive ? "active" : "navlink")}
+        to="/cash-in"
+      >
+        {" "}
+        Cash in{" "}
+      </NavLink>
+      <NavLink
+        className={({ isActive }) => (isActive ? "active" : "navlink")}
+        to="/cash-out"
+      >
+        {" "}
+        Cash Out{" "}
+      </NavLink>
+      <NavLink
+        className={({ isActive }) => (isActive ? "active" : "navlink")}
+        to="/send-money"
+      >
+        {" "}
+        Send Money{" "}
+      </NavLink>
+      <NavLink
+        className={({ isActive }) => (isActive ? "active" : "navlink")}
+        to="/user-transection"
+      >
+        {" "}
+        User Transection{" "}
+      </NavLink>
     </>
   );
   return (
-    <header className="px-4 py-2 text-gray-800 shadow">
+    <header className="px-4 py-1 text-gray-800 shadow">
+      <div className="flex items-center md:gap-x-4 ">
       <div className="flex justify-between items-center container mx-auto ">
         <Link
           rel="noopener noreferrer"
           to="/"
           aria-label="Back to homepage"
-          className="flex items-center font-bold md:text-5xl text-3xl p-2"
+          className="flex items-center font-bold md:text-4xl text-3xl p-2"
         >
           <span className="text-primary">swift</span>
           <span className="text-secondary">Pay</span>
@@ -70,7 +99,11 @@ const Navbar = () => {
           )}
         </button>
       </div>
+     
+      <button className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-white font-medium transition-all duration-200" > <Link to="/sign-in" >Login</Link> </button>
+      </div>
 
+      {/* Navbar for mobile device, make it headless ui */}
       <Transition
         show={open}
         enter="transition-transform duration-300 ease-out"

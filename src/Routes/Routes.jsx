@@ -7,6 +7,10 @@ import ErrorPage from "../Components/ErrorPage/ErrorPage";
 import Login from "../Pages/Login/Login";
 import Register from "../Pages/Register/Register";
 import Profile from "../Pages/Profile/Profile";
+import CashInto from "../Pages/Dashboard/User/CashInto/CashInto";
+import CashOut from "../Pages/Dashboard/User/CashOut/CashOut";
+import SendMoney from "../Pages/Dashboard/User/SendMoney/SendMoney";
+import Transections from "../Pages/Dashboard/User/Transections/Transections";
 
 export const router = createBrowserRouter([
     {
@@ -37,6 +41,22 @@ export const router = createBrowserRouter([
             {
                 path: '/profile',
                 element: <Profile />
+            },
+            {
+                path: '/cash-in',
+                element: <CashInto />
+            },
+            {
+                path: '/cash-out',
+                element: <CashOut />
+            },
+            {
+                path: '/send-money',
+                element: <SendMoney />
+            },
+            {
+                path: '/user-transection',
+                element: <Transections />
             },
         ]
     }

@@ -1,4 +1,4 @@
-const CashOut = () => {
+const CashInto = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -6,9 +6,10 @@ const CashOut = () => {
     const receiver = form.receiver.value;
     const amount = Number(form.amount.value);
     const password = form.password.value;
-    // const transactionType = transactionTypes.CASH_OUT
+    // const transactionType = transactionTypes.CASH_IN
 
     const data = { receiver, amount, password };
+
     console.log(data);
   };
   return (
@@ -18,7 +19,7 @@ const CashOut = () => {
         className="w-1/2 bg-purple-50 px-20 py-8 rounded-lg"
       >
         <h3 className="text-3xl text-center ">
-          User <span className="text-primary">Cash Out </span>
+          User<span className="text-primary"> Cash In </span>{" "}
         </h3>
         <div className="form-control mt-5">
           <label className="label">
@@ -60,7 +61,7 @@ const CashOut = () => {
           <input
             type="submit"
             className="w-fit cursor-pointer focus:outline-none px-4 py-3 bg-secondary hover:bg-primary text-white rounded-lg"
-            value={"Cash out Request"}
+            value={"Cash in Request"}
           />
         </div>
       </form>
@@ -68,4 +69,4 @@ const CashOut = () => {
   );
 };
 
-export default CashOut;
+export default CashInto;
