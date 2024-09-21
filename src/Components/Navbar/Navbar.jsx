@@ -12,7 +12,7 @@ const Navbar = () => {
   );
   return (
     <header className="px-4 py-2 text-gray-800 shadow">
-      <div className="container flex justify-between items-center mx-auto">
+      <div className="flex justify-between items-center container mx-auto ">
         <Link
           rel="noopener noreferrer"
           to="/"
