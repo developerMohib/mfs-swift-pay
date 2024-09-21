@@ -1,12 +1,14 @@
 .active {
     border-bottom: 2px solid #94a3b8;
     padding-bottom: 10px;
+    font-weight: 500;
 }
 
 .navlink {
     position: relative;
     display: inline-block;
     padding-bottom: 10px;
+    font-weight: 500;
 }
 
 .navlink::after {
