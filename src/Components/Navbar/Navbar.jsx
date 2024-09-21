@@ -8,6 +8,13 @@ import { Transition } from "@headlessui/react";
 import "./navbar.css";
 
 const Navbar = () => {
+  const role = null;
+  // const role = "user";
+  // const role = "admin";
+  // const role = "agent";
+
+  const isAuthenticated = role !== null; // If role is null, the user is not authenticated
+
   const [open, setOpen] = useState(false);
   const [rotating, setRotating] = useState(false);
   const handleMenu = () => {
@@ -21,107 +28,152 @@ const Navbar = () => {
 
   const nav = (
     <>
-      <NavLink
-        className={({ isActive }) => (isActive ? "active" : "navlink")}
-        to="/"
-      >
-        {" "}
-        Home{" "}
-      </NavLink>
-      <NavLink
-        className={({ isActive }) => (isActive ? "active" : "navlink")}
-        to="/about"
-      >
-        {" "}
-        About{" "}
-      </NavLink>
-      <NavLink
-        className={({ isActive }) => (isActive ? "active" : "navlink")}
-        to="/services"
-      >
-        {" "}
-        Services{" "}
-      </NavLink>
-      <NavLink
-        className={({ isActive }) => (isActive ? "active" : "navlink")}
-        to="/cash-in"
-      >
-        {" "}
-        Cash in{" "}
-      </NavLink>
-      <NavLink
-        className={({ isActive }) => (isActive ? "active" : "navlink")}
-        to="/cash-out"
-      >
-        {" "}
-        Cash Out{" "}
-      </NavLink>
-      <NavLink
-        className={({ isActive }) => (isActive ? "active" : "navlink")}
-        to="/send-money"
-      >
-        {" "}
-        Send Money{" "}
-      </NavLink>
-      <NavLink
-        className={({ isActive }) => (isActive ? "active" : "navlink")}
-        to="/user-transection"
-      >
-        {" "}
-        User Transection{" "}
-      </NavLink>
-      <NavLink
-        className={({ isActive }) => (isActive ? "active" : "navlink")}
-        to="/all-transection"
-      >
-        {" "}
-        All Transection{" "}
-      </NavLink>
-      <NavLink
-        className={({ isActive }) => (isActive ? "active" : "navlink")}
-        to="/manage-agents"
-      >
-        {" "}
-        Manage Agents{" "}
-      </NavLink>
-      <NavLink
-        className={({ isActive }) => (isActive ? "active" : "navlink")}
-        to="/manage-users"
-      >
-        {" "}
-        Manage Users{" "}
-      </NavLink>
+      {isAuthenticated ? (
+        role === "user" ? (
+          <>
+            <NavLink
+              className={({ isActive }) => (isActive ? "active" : "navlink")}
+              to="user/profile"
+            >
+              Profile
+            </NavLink>
+
+            <NavLink
+              className={({ isActive }) => (isActive ? "active" : "navlink")}
+              to="user/cash-in"
+            >
+              Cash in
+            </NavLink>
+
+            <NavLink
+              className={({ isActive }) => (isActive ? "active" : "navlink")}
+              to="user/cash-out"
+            >
+              Cash Out
+            </NavLink>
+
+            <NavLink
+              className={({ isActive }) => (isActive ? "active" : "navlink")}
+              to="user/send-money"
+            >
+              Send Money
+            </NavLink>
+
+            <NavLink
+              className={({ isActive }) => (isActive ? "active" : "navlink")}
+              to="user/transection"
+            >
+              User Transaction
+            </NavLink>
+          </>
+        ) : role === "admin" ? (
+          <>
+            <NavLink
+              className={({ isActive }) => (isActive ? "active" : "navlink")}
+              to="admin/transection"
+            >
+              Admin All Transactions
+            </NavLink>
+
+            <NavLink
+              className={({ isActive }) => (isActive ? "active" : "navlink")}
+              to="admin/manage-agents"
+            >
+              Manage Agents
+            </NavLink>
+
+            <NavLink
+              className={({ isActive }) => (isActive ? "active" : "navlink")}
+              to="admin/manage-users"
+            >
+              Manage Users
+            </NavLink>
+          </>
+        ) : role === "agent" ? (
+          <>
+            <NavLink
+              className={({ isActive }) => (isActive ? "active" : "navlink")}
+              to="agent/transection"
+            >
+              Agent All Transactions
+            </NavLink>
+
+            <NavLink
+              className={({ isActive }) => (isActive ? "active" : "navlink")}
+              to="agent/cashin"
+            >
+              Agent Cashin Management
+            </NavLink>
+
+            <NavLink
+              className={({ isActive }) => (isActive ? "active" : "navlink")}
+              to="agent/cashout"
+            >
+              Agent Cashout Management
+            </NavLink>
+          </>
+        ) : null
+      ) : (
+        <>
+          <NavLink
+            className={({ isActive }) => (isActive ? "active" : "navlink")}
+            to="/"
+          >
+            Home
+          </NavLink>
+
+          <NavLink
+            className={({ isActive }) => (isActive ? "active" : "navlink")}
+            to="/about"
+          >
+            About
+          </NavLink>
+
+          <NavLink
+            className={({ isActive }) => (isActive ? "active" : "navlink")}
+            to="/services"
+          >
+            Services
+          </NavLink>
+        </>
+      )}
     </>
   );
   return (
     <header className="px-4 py-1 text-gray-800 shadow">
       <div className="flex items-center md:gap-x-4 ">
-      <div className="flex justify-between items-center container mx-auto ">
-        <Link
-          rel="noopener noreferrer"
-          to="/"
-          aria-label="Back to homepage"
-          className="flex items-center font-bold md:text-4xl text-3xl p-2"
-        >
-          <span className="text-primary">swift</span>
-          <span className="text-secondary">Pay</span>
-        </Link>
-        <ul className="items-stretch hidden space-x-3 md:flex">{nav}</ul>
-        <button onClick={handleMenu} className="flex justify-end p-4 md:hidden">
-          {/* Loading Spinner */}
-          {rotating ? (
-            <ImSpinner2 className="text-2xl animate-spin" />
-          ) : open ? (
-            /* Close Icon with animation */
-            <IoCloseOutline className="text-2xl transition-transform transform rotate-0 hover:rotate-180 duration-300" />
-          ) : (
-            /* Menu Icon with animation */
-            <FcMenu className="text-2xl transition-transform transform rotate-0 hover:rotate-180 duration-300" />
-          )}
+        <div className="flex justify-between items-center container mx-auto ">
+          <Link
+            rel="noopener noreferrer"
+            to="/"
+            aria-label="Back to homepage"
+            className="flex items-center font-bold md:text-4xl text-3xl p-2"
+          >
+            <span className="text-primary">swift</span>
+            <span className="text-secondary">Pay</span>
+          </Link>
+          <ul className="items-stretch hidden space-x-3 md:flex">{nav}</ul>
+          <button
+            onClick={handleMenu}
+            className="flex justify-end p-4 md:hidden"
+          >
+            {/* Loading Spinner */}
+            {rotating ? (
+              <ImSpinner2 className="text-2xl animate-spin" />
+            ) : open ? (
+              /* Close Icon with animation */
+              <IoCloseOutline className="text-2xl transition-transform transform rotate-0 hover:rotate-180 duration-300" />
+            ) : (
+              /* Menu Icon with animation */
+              <FcMenu className="text-2xl transition-transform transform rotate-0 hover:rotate-180 duration-300" />
+            )}
+          </button>
+        </div>
+
+        <button className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-white font-medium transition-all duration-200">
+          {" "}
+          <Link to="/sign-in">Login</Link>{" "}
         </button>
-      </div>
-     
-      <button className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-white font-medium transition-all duration-200" > <Link to="/sign-in" >Login</Link> </button>
       </div>
 
       {/* Navbar for mobile device, make it headless ui */}
