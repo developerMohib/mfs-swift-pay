@@ -1,15 +1,17 @@
+import { Outlet } from "react-router-dom";
+import Navbar from "./Components/Navbar/Navbar";
+import Footer from "./Components/Footer/Footer";
 
 function App() {
-
-
   return (
     <>
-      <p className="">
-        Click on the Vite and React logos to learn more
-      </p>
-      <p>is it working?</p>
+      <Navbar />
+      <div className="max-w-screen-xl m-auto px-4" >
+        <Outlet />
+      </div>
+      <Footer />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
