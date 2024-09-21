@@ -70,6 +70,27 @@ const Navbar = () => {
         {" "}
         User Transection{" "}
       </NavLink>
+      <NavLink
+        className={({ isActive }) => (isActive ? "active" : "navlink")}
+        to="/all-transection"
+      >
+        {" "}
+        All Transection{" "}
+      </NavLink>
+      <NavLink
+        className={({ isActive }) => (isActive ? "active" : "navlink")}
+        to="/manage-agents"
+      >
+        {" "}
+        Manage Agents{" "}
+      </NavLink>
+      <NavLink
+        className={({ isActive }) => (isActive ? "active" : "navlink")}
+        to="/manage-users"
+      >
+        {" "}
+        Manage Users{" "}
+      </NavLink>
     </>
   );
   return (

@@ -11,6 +11,9 @@ import CashInto from "../Pages/Dashboard/User/CashInto/CashInto";
 import CashOut from "../Pages/Dashboard/User/CashOut/CashOut";
 import SendMoney from "../Pages/Dashboard/User/SendMoney/SendMoney";
 import Transections from "../Pages/Dashboard/User/Transections/Transections";
+import AllTransition from "../Pages/Dashboard/Admin/AllTransition/AllTransition";
+import AgentManage from "../Pages/Dashboard/Admin/AgentManage/AgentManage";
+import UserManage from "../Pages/Dashboard/Admin/UserManage/UserManage";
 
 export const router = createBrowserRouter([
     {
@@ -57,6 +60,18 @@ export const router = createBrowserRouter([
             {
                 path: '/user-transection',
                 element: <Transections />
+            },
+            {
+                path: '/all-transection',
+                element: <AllTransition />
+            },
+            {
+                path: '/manage-agents',
+                element: <AgentManage />
+            },
+            {
+                path: '/manage-users',
+                element: <UserManage />
             },
         ]
     }
