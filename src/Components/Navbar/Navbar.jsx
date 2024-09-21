@@ -19,8 +19,8 @@ const Navbar = () => {
           aria-label="Back to homepage"
           className="flex items-center font-bold text-2xl p-2"
         >
-          <span className="text-secondary" >swift</span>
-          <span className="text-orange-500" >Pay</span>
+          <span className="text-primary" >swift</span>
+          <span className="text-secondary" >Pay</span>
         </Link>
         <ul className="items-stretch hidden space-x-3 md:flex">{nav}</ul>
         <button className="flex justify-end p-4 md:hidden">
