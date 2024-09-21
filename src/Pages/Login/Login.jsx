@@ -52,12 +52,12 @@ const Login = () => {
             <form className="" onSubmit={handleLogin}>
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Phone Number</span>
+                  <span className="label-text">Phone Number / Email </span>
                 </label>
                 <input
                   name="phoneNumber"
                   type="text"
-                  placeholder="phone number"
+                  placeholder="phone number or email"
                   className="input input-bordered"
                   required
                 />

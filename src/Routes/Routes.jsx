@@ -6,6 +6,7 @@ import Services from "../Pages/Services/Services";
 import ErrorPage from "../Components/ErrorPage/ErrorPage";
 import Login from "../Pages/Login/Login";
 import Register from "../Pages/Register/Register";
+import Profile from "../Pages/Profile/Profile";
 
 export const router = createBrowserRouter([
     {
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
             {
                 path: '/sign-up',
                 element: <Register />
+            },
+            {
+                path: '/profile',
+                element: <Profile />
             },
         ]
     }
