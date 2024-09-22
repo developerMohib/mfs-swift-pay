@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 const Register = () => {
+  const status = "pending"
   const handleRegister = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -12,7 +13,7 @@ const Register = () => {
     const role = form.accountType.value;
     const password = form.password.value;
 
-    console.log({ fullName, phoneNumber, email, nid, role, password });
+    console.log({ fullName, phoneNumber, email, nid, role, password, status });
   };
 
   return (
