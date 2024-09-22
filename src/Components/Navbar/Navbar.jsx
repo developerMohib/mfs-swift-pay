@@ -8,11 +8,11 @@ import { Transition } from "@headlessui/react";
 import "./navbar.css";
 
 const Navbar = () => {
-  const role = null;
+  // const role = null;
   const menuRef = useRef(null);
 
   // const role = "user";
-  // const role = "admin";
+  const role = "admin";
   // const role = "agent";
 
   const isAuthenticated = role !== null; // If role is null, the user is not authenticated
@@ -37,16 +37,15 @@ const Navbar = () => {
   };
 
   // user some moving ther call site
-  useEffect(()=>{
+  useEffect(() => {
     // add event listener to detect click
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
 
-    return () =>{
+    return () => {
       // remove menu or off menu
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-
-  },[])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const nav = (
     <>
@@ -175,7 +174,8 @@ const Navbar = () => {
             <span className="text-secondary">Pay</span>
           </Link>
           <ul className="items-stretch hidden space-x-3 md:flex">{nav}</ul>
-          <button ref={menuRef}
+          <button
+            ref={menuRef}
             onClick={handleMenu}
             className="flex justify-end p-4 md:hidden"
           >

@@ -16,7 +16,7 @@ const CashInto = () => {
     <div className="w-full flex justify-center items-center mt-10">
       <form
         onSubmit={handleSubmit}
-        className="w-1/2 bg-purple-50 px-20 py-8 rounded-lg"
+        className="md:w-1/2 bg-purple-50 px-20 py-8 rounded-lg"
       >
         <h3 className="text-3xl text-center ">
           User<span className="text-primary"> Cash In </span>{" "}
