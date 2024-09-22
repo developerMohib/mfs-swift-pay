@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { FcMenu } from "react-icons/fc";
 import { IoCloseOutline } from "react-icons/io5";
@@ -9,6 +9,8 @@ import "./navbar.css";
 
 const Navbar = () => {
   const role = null;
+  const menuRef = useRef(null);
+
   // const role = "user";
   // const role = "admin";
   // const role = "agent";
@@ -17,6 +19,7 @@ const Navbar = () => {
 
   const [open, setOpen] = useState(false);
   const [rotating, setRotating] = useState(false);
+
   const handleMenu = () => {
     setRotating(true);
 
@@ -25,6 +28,25 @@ const Navbar = () => {
       setRotating(false);
     }, 100);
   };
+
+  // Click out side off menu
+  const handleClickOutside = (e) => {
+    if (menuRef.current && !menuRef.current.contains(e.target)) {
+      setOpen(false);
+    }
+  };
+
+  // user some moving ther call site
+  useEffect(()=>{
+    // add event listener to detect click
+    document.addEventListener('mousedown', handleClickOutside)
+
+    return () =>{
+      // remove menu or off menu
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+
+  },[])
 
   const nav = (
     <>
@@ -153,7 +175,7 @@ const Navbar = () => {
             <span className="text-secondary">Pay</span>
           </Link>
           <ul className="items-stretch hidden space-x-3 md:flex">{nav}</ul>
-          <button
+          <button ref={menuRef}
             onClick={handleMenu}
             className="flex justify-end p-4 md:hidden"
           >
