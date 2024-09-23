@@ -5,11 +5,13 @@ const cors = require("cors"); // Import CORS middleware for cross-origin request
 require("dotenv").config(); // Load environment variables from .env file
 
 // bcryptjs function here
+const User = require('./models/userSchema')
 const { hashPassword, comparePassword } = require("./authHelper/authHelpler");
 
 // Set up port from environment variables or default to 8000
 const port = process.env.PORT || 8000;
 
+// ---------------------------- create here an express app ------------------------
 // Create an Express app
 const app = express();
 
@@ -40,13 +42,37 @@ mongoose.connect(process.env.MongoDB_url)
 
 // ---------------------------------- Route Here --------------------------------
 
+// POST route to create a new user
+app.post('/users', async (req, res) => {
+  try {
+    const { userName, userEmail, password,userPhone,userNID,userRole,status } = req.body;
+    const userData = { userName, userEmail, password,userPhone,userNID,userRole,status };
+
+    // Check if the email already exists in the database
+    const existingUser = await User.findOne({ userEmail });
+
+    if (existingUser) {
+      // If email already exists, send an error response
+      return res.status(400).send({ error: 'Email already in use. Please use a different email.' });
+    }
+
+    // Create a new user
+    const newUser = new User(userData);
+
+    // Save the user to the database
+    await newUser.save();
+    res.status(201).send({ message: 'User created successfully', user: newUser });
+
+  } catch (error) {
+    console.error(error);
+    res.status(400).send({ error: 'Failed to create user', details: error.message });
+  }
+});
 
 // Route handler for the root URL (for testing server)
 app.get("/", (req, res) => {
   res.status(500).send("swiftPay server is created");
 });
-
-
 
 // --------------------------------- Error handling ---------------------------------
 // --------------------------------- Error handling ---------------------------------
@@ -63,7 +89,6 @@ app.use((err, req, res, next) => {
     });
   }
 });
-
 
 // --------------------------------- Port Listen ---------------------------------
 // --------------------------------- Port Listen ---------------------------------
