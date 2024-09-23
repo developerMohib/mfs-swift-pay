@@ -51,14 +51,7 @@ const ServiceCardSlider = () => {
                 Join us online on May 10, 2023
               </p>
               <div className="flex justify-center">
-                <a
-                  href="/"
-                  target="_blank"
-                  rel="noopener"
-                  className="bg-yellow-400 rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-yellow-500 transition-all duration-150 ease-in-out"
-                >
-                  Register now
-                </a>
+                <span className="bg-secondary rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-yellow-500 transition-all duration-150 ease-in-out cursor-pointer " >Cash In</span>
               </div>
               <p className="text-base md:text-lg font-normal leading-normal text-tarnary mt-6">
                 Hi Young,
@@ -82,14 +75,7 @@ const ServiceCardSlider = () => {
                 Join us online on May 10, 2023
               </p>
               <div className="flex justify-center">
-                <a
-                  href="/"
-                  target="_blank"
-                  rel="noopener"
-                  className="bg-yellow-400 rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-yellow-500 transition-all duration-150 ease-in-out"
-                >
-                  Register now
-                </a>
+              <span className="bg-secondary rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-yellow-500 transition-all duration-150 ease-in-out cursor-pointer " >Cash Out </span>
               </div>
               <p className="text-base md:text-lg font-normal leading-normal text-tarnary mt-6">
                 Hi Young,
@@ -114,14 +100,7 @@ const ServiceCardSlider = () => {
                 Join us online on May 10, 2023
               </p>
               <div className="flex justify-center">
-                <a
-                  href="/"
-                  target="_blank"
-                  rel="noopener"
-                  className="bg-yellow-400 rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-yellow-500 transition-all duration-150 ease-in-out"
-                >
-                  Register now
-                </a>
+              <span className="bg-secondary rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-yellow-500 transition-all duration-150 ease-in-out cursor-pointer" >Send Monry</span>
               </div>
               <p className="text-base md:text-lg font-normal leading-normal text-tarnary mt-6">
                 Hi Young,
@@ -135,37 +114,6 @@ const ServiceCardSlider = () => {
           </div>
         </div>
 
-        {/* slider four */}
-        <div>
-          <div className="bg-white w-full mx-4 md:mx-auto mt-16">
-            <div className="px-8 py-6 mx-3 md:p-10 border-2 border-tarnary">
-              <h1 className="text-4xl md:text-5xl font-medium leading-tight text-tarnary mb-6">
-                Lets go, its Google I/O
-              </h1>
-              <p className="text-base md:text-lg font-normal leading-normal text-tarnary mb-6">
-                Join us online on May 10, 2023
-              </p>
-              <div className="flex justify-center">
-                <a
-                  href="/"
-                  target="_blank"
-                  rel="noopener"
-                  className="bg-yellow-400 rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-yellow-500 transition-all duration-150 ease-in-out"
-                >
-                  Register now
-                </a>
-              </div>
-              <p className="text-base md:text-lg font-normal leading-normal text-tarnary mt-6">
-                Hi Young,
-              </p>
-              <p className="text-sm md:text-base font-normal leading-normal text-tarnary mt-2">
-                Google I/O 2023 is around the corner! Tune in to watch the
-                livestreamed keynotes at 10am PT, then dive into 100+ technical
-                sessions, codelabs, and more, on demand. Learn about...
-              </p>
-            </div>
-          </div>
-        </div>
       </Slider>
     </div>
   );

@@ -1,5 +1,7 @@
 // Import necessary modules
 const express = require("express");
+const mongoose = require("mongoose");
+
 require("dotenv").config(); // Load environment variables from .env file
 const cors = require("cors"); // Import CORS middleware for cross-origin requests
 
@@ -10,6 +12,8 @@ const port = process.env.PORT || 8000;
 
 // Create an Express app
 const app = express();
+
+// mongodb+srv://<db_username>:<db_password>@cluster0.ylmjbhk.mongodb.net/
 
 // CORS options to allow requests only from specific origins
 const corsOptions = {
@@ -22,6 +26,17 @@ const corsOptions = {
 // Middleware
 app.use(express.json());
 app.use(cors(corsOptions));
+
+
+// connect here mongodb with layer (mongoose)
+mongoose.connect(process.env.VITE_MongoDB_url)
+.then(()=>{
+  console.log('mongoDb connection successfully')
+})
+.catch(err =>{
+  console.log(err)
+})
+
 
 // Route handler for the root URL (for testing server)
 app.get("/", (req, res) => {

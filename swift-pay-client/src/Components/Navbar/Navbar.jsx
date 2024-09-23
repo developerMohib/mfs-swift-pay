@@ -8,11 +8,11 @@ import { Transition } from "@headlessui/react";
 import "./navbar.css";
 
 const Navbar = () => {
-  // const role = null;
+  const role = null;
   const menuRef = useRef(null);
 
   // const role = "user";
-  const role = "admin";
+  // const role = "admin";
   // const role = "agent";
 
   const isAuthenticated = role !== null; // If role is null, the user is not authenticated
@@ -52,6 +52,13 @@ const Navbar = () => {
       {isAuthenticated ? (
         role === "user" ? (
           <>
+          <NavLink
+            className={({ isActive }) => (isActive ? "active" : "navlink")}
+            to="/"
+          >
+            Home
+          </NavLink>
+
             <NavLink
               className={({ isActive }) => (isActive ? "active" : "navlink")}
               to="user/profile"
@@ -84,16 +91,23 @@ const Navbar = () => {
               className={({ isActive }) => (isActive ? "active" : "navlink")}
               to="user/transection"
             >
-              User Transaction
+              Users Transaction
             </NavLink>
           </>
         ) : role === "admin" ? (
           <>
+          <NavLink
+            className={({ isActive }) => (isActive ? "active" : "navlink")}
+            to="/"
+          >
+            Home
+          </NavLink>
+
             <NavLink
               className={({ isActive }) => (isActive ? "active" : "navlink")}
               to="admin/transection"
             >
-              Admin All Transactions
+             All Transactions
             </NavLink>
 
             <NavLink
@@ -112,25 +126,32 @@ const Navbar = () => {
           </>
         ) : role === "agent" ? (
           <>
+          <NavLink
+            className={({ isActive }) => (isActive ? "active" : "navlink")}
+            to="/"
+          >
+            Home
+          </NavLink>
+
             <NavLink
               className={({ isActive }) => (isActive ? "active" : "navlink")}
               to="agent/transection"
             >
-              Agent All Transactions
+              All Transactions
             </NavLink>
 
             <NavLink
               className={({ isActive }) => (isActive ? "active" : "navlink")}
               to="agent/cashin"
             >
-              Agent Cashin Management
+              Cash In
             </NavLink>
 
             <NavLink
               className={({ isActive }) => (isActive ? "active" : "navlink")}
               to="agent/cashout"
             >
-              Agent Cashout Management
+              Cash Out
             </NavLink>
           </>
         ) : null
@@ -155,6 +176,13 @@ const Navbar = () => {
             to="/services"
           >
             Services
+          </NavLink>
+
+          <NavLink
+            className={({ isActive }) => (isActive ? "active" : "navlink")}
+            to={`/dashboard/${role}`}
+          >
+            Dashboard
           </NavLink>
         </>
       )}
