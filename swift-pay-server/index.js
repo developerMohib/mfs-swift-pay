@@ -1,10 +1,10 @@
 // Import necessary modules
 const express = require("express");
 const mongoose = require("mongoose");
-
-require("dotenv").config(); // Load environment variables from .env file
 const cors = require("cors"); // Import CORS middleware for cross-origin requests
+require("dotenv").config(); // Load environment variables from .env file
 
+// bcryptjs function here
 const { hashPassword, comparePassword } = require("./authHelper/authHelpler");
 
 // Set up port from environment variables or default to 8000
@@ -13,29 +13,32 @@ const port = process.env.PORT || 8000;
 // Create an Express app
 const app = express();
 
-// mongodb+srv://<db_username>:<db_password>@cluster0.ylmjbhk.mongodb.net/
-
+// ---------------------------------- CORS OPTION ----------------------------------
+// ---------------------------------- CORS OPTION ----------------------------------
 // CORS options to allow requests only from specific origins
 const corsOptions = {
-  origin: ["http://localhost:5173", "http://localhost:5174"], // Allowed origins
-
+  origin: ["http://localhost:5173", "http://localhost:8000"], // Allowed origins
   credentials: true, // Enable credentials (cookies, authorization headers, etc.)
   optionsSuccessStatus: 200,
 };
 
-// Middleware
+// ---------------------------------- Middleware ----------------------------------
+// ---------------------------------- Middleware ----------------------------------
 app.use(express.json());
 app.use(cors(corsOptions));
 
 
-// connect here mongodb with layer (mongoose)
-mongoose.connect(process.env.VITE_MongoDB_url)
+// ---------------------------------- mongodb ----------------------------------
+// ---------------------------------- mongoose ---------------------------------
+mongoose.connect(process.env.MongoDB_url)
 .then(()=>{
-  console.log('mongoDb connection successfully')
+  console.log('mongoDB connection successfully')
 })
 .catch(err =>{
   console.log(err)
 })
+
+// ---------------------------------- Route Here --------------------------------
 
 
 // Route handler for the root URL (for testing server)
@@ -43,7 +46,10 @@ app.get("/", (req, res) => {
   res.status(500).send("swiftPay server is created");
 });
 
-// Error handling
+
+
+// --------------------------------- Error handling ---------------------------------
+// --------------------------------- Error handling ---------------------------------
 app.use((err, req, res, next) => {
   if (err) {
     res.status(500).json({
@@ -58,6 +64,9 @@ app.use((err, req, res, next) => {
   }
 });
 
+
+// --------------------------------- Port Listen ---------------------------------
+// --------------------------------- Port Listen ---------------------------------
 // Start the server and listen on the specified port
 app.listen(port, () => {
   console.log(`swiftPay server is listening on port ${port}`);
