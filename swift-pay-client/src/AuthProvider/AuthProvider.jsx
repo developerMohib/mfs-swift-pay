@@ -5,6 +5,7 @@ export const UserContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -26,7 +27,7 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
   };
 
-  const userInfo = { user, login, logout };
+  const userInfo = { user, setUser, login, logout, loading, setLoading };
   return (
     <UserContext.Provider value={userInfo}>{children}</UserContext.Provider>
   );
