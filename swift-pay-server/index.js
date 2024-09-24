@@ -19,7 +19,7 @@ const app = express();
 // ---------------------------------- CORS OPTION ----------------------------------
 // CORS options to allow requests only from specific origins
 const corsOptions = {
-  origin: ["http://localhost:5173", "http://localhost:8000"], // Allowed origins
+  origin: ["http://localhost:5173", "http://localhost:8000", "https://swift-pay-server-lemon.vercel.app"], // Allowed origins
   credentials: true, // Enable credentials (cookies, authorization headers, etc.)
   optionsSuccessStatus: 200,
 };
