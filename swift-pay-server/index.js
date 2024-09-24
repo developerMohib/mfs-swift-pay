@@ -73,7 +73,7 @@ app.post("/users", async (req, res) => {
         .status(400)
         .send({ error: "Email already in use. Please use a different email." });
     }
-
+    
     // Create a new user
     const newUser = new User(userData);
 

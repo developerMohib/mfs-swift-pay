@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
 
 const Register = () => {
   const [showPass, setShowPass] = useState(false);
+  const [rotating, setRotating] = useState(false);
   const axiosPublic = useAxiosPublic();
   const status = "pending";
   const handleRegister = async (e) => {
@@ -30,15 +32,13 @@ const Register = () => {
     try {
       // create user
       const response = await axiosPublic.post("/users", userData);
-      console.log('res',response.data.message)
+      console.log("res", response.data.message);
 
-      if(response?.data?.message){
+      if (response?.data?.message) {
         toast.success("Account created successfully!");
         toast.warn("wait for admin aproval !");
-        form.reset()
+        form.reset();
       }
-
-      
     } catch (error) {
       if (error.response && error.response.data.error) {
         toast.error(`Error: ${error.response.data.error}`); // Display backend error message (e.g., "Email already in use")
@@ -46,6 +46,15 @@ const Register = () => {
         toast.error("Something went wrong. Please try again."); // General error message
       }
     }
+  };
+  const handleShowHidePass = () => {
+    setShowPass(!showPass);
+    setRotating(true);
+
+    // Set a timeout to stop rotating after 400ms
+    setTimeout(()=>{
+      setRotating(false)
+    },400)
   };
 
   return (
@@ -95,24 +104,24 @@ const Register = () => {
             >
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Full Name</span>
+                  <span className="label-text">Your Name</span>
                 </label>
                 <input
                   name="fullName"
                   required
                   type="text"
-                  placeholder="full name"
+                  placeholder="Your Name"
                   className="input input-bordered"
                 />
               </div>
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Phone Number</span>
+                  <span className="label-text">Your Phone Number</span>
                 </label>
                 <input
                   name="phoneNumber"
                   type="text"
-                  placeholder="phone nubmer"
+                  placeholder="Your Phone nubmer"
                   className="input input-bordered"
                   required
                 />
@@ -166,10 +175,18 @@ const Register = () => {
                   required
                 />
                 <span
-                  onClick={() => setShowPass(!showPass)}
+                  onClick={handleShowHidePass}
                   className="absolute right-2 bottom-3 cursor-pointer"
                 >
-                  hh
+                  {showPass ? (
+                    <IoEyeOutline
+                      className={`text-2xl ${rotating ? "animate-spin" : " "}`}
+                    />
+                  ) : (
+                    <IoEyeOffOutline
+                      className={`text-2xl ${rotating ? "animate-spin" : " "}`}
+                    />
+                  )}
                 </span>
               </div>
 
