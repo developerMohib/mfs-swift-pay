@@ -44,10 +44,42 @@ mongoose
 
 // Get user by email or phone
 app.post("/loginUser", async (req, res) => {
-  console.log("requ", req.body);
+  try {
+    const { phoneOrEmail, password } = req.body;
+
+    // Find user by email or phone
+    const query = {
+      $or: [{ userEmail: phoneOrEmail }, { userPhone: phoneOrEmail }],
+    };
+
+    const user = await User.findOne(query);
+    
+    // If user is not found
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found. Check your email/phone and try again.",
+      });
+    }
+
+    // Password validation
+    const isPassValid = await comparePassword(password, user.password);
+    if (!isPassValid) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    // Authentication successful
+    return res.status(200).json({
+      message: "Authentication successful",
+      user, // Send the user object in the response
+    });
+  } catch (error) {
+    // Handle any server errors
+    return res.status(500).json({
+      message: "Authentication failed, log in error.",
+      error: error.message,
+    });
+  }
 });
-
-
 
 // POST route to create a new user
 app.post("/registerUsers", async (req, res) => {
@@ -62,7 +94,6 @@ app.post("/registerUsers", async (req, res) => {
       status,
     } = req.body;
 
-
     const hashedPassword = await hashPassword(password);
     const userData = {
       userName,
@@ -73,7 +104,6 @@ app.post("/registerUsers", async (req, res) => {
       userRole,
       status,
     };
-
 
     const query = { $or: [{ userEmail: userEmail }, { userPhone: userPhone }] };
     // Check if the email already exists in the database
@@ -101,8 +131,6 @@ app.post("/registerUsers", async (req, res) => {
       .send({ error: "Failed to create user", details: error.message });
   }
 });
-
-
 
 // Route handler for the root URL (for testing server)
 app.get("/", (req, res) => {

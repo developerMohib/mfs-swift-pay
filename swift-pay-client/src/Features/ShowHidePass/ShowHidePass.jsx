@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const ShowHidePass = ({ showPass, handleShowHidePass, rotating }) => {
   return (
-    <button onClick={handleShowHidePass} className="absolute right-2 bottom-3">
+    <span onClick={handleShowHidePass} className="absolute right-2 bottom-3 cursor-pointer">
       {showPass ? (
         <IoEyeOutline
           className={`text-2xl ${rotating ? "animate-spin" : " "}`}
@@ -13,7 +13,7 @@ const ShowHidePass = ({ showPass, handleShowHidePass, rotating }) => {
           className={`text-2xl ${rotating ? "animate-spin" : " "}`}
         />
       )}
-    </button>
+    </span>
   );
 };
 ShowHidePass.propTypes = {

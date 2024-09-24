@@ -1,21 +1,46 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import ShowHidePass from "../../Features/ShowHidePass/ShowHidePass";
+import { UserContext } from "../../AuthProvider/AuthProvider";
 
 const Login = () => {
+  const { login } = useContext(UserContext);
+  const navigate = useNavigate();
   const [showPass, setShowPass] = useState(false);
   const [rotating, setRotating] = useState(false);
   const axiosPublic = useAxiosPublic();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     const form = e.target;
     const phoneOrEmail = form.phoneNumber.value;
     const password = form.password.value;
     const userData = { phoneOrEmail, password };
 
-    axiosPublic.get("/loginUser", userData);
+    try {
+      // Make the POST request to the server
+      const response = await axiosPublic.post("/loginUser", userData);
+
+      // Check if the response is successful
+      if (response?.status === 200) {
+        toast.success("Log in successfully!");
+        navigate('/')
+        // You can also handle the user data here (e.g., save token, navigate to another page)
+        const user = response.data.user;
+        login(user);  
+        form.reset();
+      }
+    } catch (error) {
+      // Handle errors (e.g., invalid credentials, server error)
+      if (error.response && error.response.status === 401) {
+        toast.error("Invalid credentials! Please try again.");
+      } else {
+        toast.error("An error occurred. Please try again.");
+      }
+      console.error(error);
+    }
   };
 
   const handleShowHidePass = () => {
