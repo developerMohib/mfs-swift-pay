@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import ShowHidePass from "../../Features/ShowHidePass/ShowHidePass";
 
 const Register = () => {
   const [showPass, setShowPass] = useState(false);
@@ -31,10 +31,11 @@ const Register = () => {
 
     try {
       // create user
-      const response = await axiosPublic.post("/users", userData);
+      const response = await axiosPublic.post("/registerUsers", userData);
 
       if (response?.data?.message) {
         toast.success("Account created successfully!");
+
         // Delay the warning toast by 1 second (1000 ms)
         setTimeout(() => {
           toast.warn("Wait for admin approval!");
@@ -176,20 +177,11 @@ const Register = () => {
                   className="input input-bordered"
                   required
                 />
-                <span
-                  onClick={handleShowHidePass}
-                  className="absolute right-2 bottom-3 cursor-pointer"
-                >
-                  {showPass ? (
-                    <IoEyeOutline
-                      className={`text-2xl ${rotating ? "animate-spin" : " "}`}
-                    />
-                  ) : (
-                    <IoEyeOffOutline
-                      className={`text-2xl ${rotating ? "animate-spin" : " "}`}
-                    />
-                  )}
-                </span>
+                <ShowHidePass
+                  showPass={showPass}
+                  handleShowHidePass={handleShowHidePass}
+                  rotating={rotating}
+                />
               </div>
 
               <div className="form-control mt-4 col-span-2 flex justify-center items-center">

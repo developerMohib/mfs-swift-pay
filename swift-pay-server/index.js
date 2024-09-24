@@ -42,8 +42,15 @@ mongoose
 
 // ---------------------------------- Route Here --------------------------------
 
+// Get user by email or phone
+app.post("/loginUser", async (req, res) => {
+  console.log("requ", req.body);
+});
+
+
+
 // POST route to create a new user
-app.post("/users", async (req, res) => {
+app.post("/registerUsers", async (req, res) => {
   try {
     const {
       userName,
@@ -54,19 +61,23 @@ app.post("/users", async (req, res) => {
       userRole,
       status,
     } = req.body;
-    const hashedPassword = await hashPassword(password)
+
+
+    const hashedPassword = await hashPassword(password);
     const userData = {
       userName,
       userEmail,
-      password :hashedPassword , // hashed pass to store in db
+      password: hashedPassword, // hashed pass to store in db
       userPhone,
       userNID,
       userRole,
       status,
     };
 
+
+    const query = { $or: [{ userEmail: userEmail }, { userPhone: userPhone }] };
     // Check if the email already exists in the database
-    const existingUser = await User.findOne({ userEmail });
+    const existingUser = await User.findOne(query);
 
     if (existingUser) {
       // If email already exists, send an error response
@@ -90,6 +101,8 @@ app.post("/users", async (req, res) => {
       .send({ error: "Failed to create user", details: error.message });
   }
 });
+
+
 
 // Route handler for the root URL (for testing server)
 app.get("/", (req, res) => {
