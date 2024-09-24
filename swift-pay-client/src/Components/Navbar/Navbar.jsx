@@ -9,13 +9,14 @@ import { Transition } from "@headlessui/react";
 import logo from "/swift-pay-logo.png";
 import { UserContext } from "../../AuthProvider/AuthProvider";
 import "./navbar.css";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const menuRef = useRef(null);
-  const { user, logout } = useContext(UserContext);
+  const { user, logout, loading } = useContext(UserContext);
   const role = user?.userRole || null;
   const isAuthenticated = role !== null;
-  console.log("athe", isAuthenticated, "role", role);
+  
   const [open, setOpen] = useState(false);
   const [rotating, setRotating] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
@@ -55,10 +56,14 @@ const Navbar = () => {
   }, []);
 
   // log out
-  const handleLogout = () =>{
-    logout()
+  const handleLogout = () => {
+    // Just Call the logout function from AuthContext
+    logout();
+    toast.success("Log out successfully!");
+  };
+  if (loading) {
+    return <p>Loading...</p>;
   }
-
   const nav = (
     <>
       {isAuthenticated ? (
@@ -136,7 +141,10 @@ const Navbar = () => {
         </div>
 
         {user ? (
-          <button onClick={handleLogout} className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-white font-medium transition-all duration-200">
+          <button
+            onClick={handleLogout}
+            className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-white font-medium transition-all duration-200"
+          >
             {" "}
             Logout
           </button>

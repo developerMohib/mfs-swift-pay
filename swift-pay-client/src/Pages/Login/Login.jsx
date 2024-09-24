@@ -6,7 +6,7 @@ import ShowHidePass from "../../Features/ShowHidePass/ShowHidePass";
 import { UserContext } from "../../AuthProvider/AuthProvider";
 
 const Login = () => {
-  const { login } = useContext(UserContext);
+  const { login, setLoading } = useContext(UserContext);
   const navigate = useNavigate();
   const [showPass, setShowPass] = useState(false);
   const [rotating, setRotating] = useState(false);
@@ -26,11 +26,14 @@ const Login = () => {
       // Check if the response is successful
       if (response?.status === 200) {
         toast.success("Log in successfully!");
-        navigate('/')
-        // You can also handle the user data here (e.g., save token, navigate to another page)
+        
+        // navigate user to home page and user data store in local storage
         const user = response.data.user;
-        login(user);  
+        login(user); 
+        setLoading(true) 
         form.reset();
+        navigate('/')
+        setLoading(false) 
       }
     } catch (error) {
       // Handle errors (e.g., invalid credentials, server error)

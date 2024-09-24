@@ -79,7 +79,7 @@ export const router = createBrowserRouter([
         path: "agent",
         children: [
           {
-            path: "transection",
+            path: "transaction",
             element: <AgentTransection />,
           },
           {
