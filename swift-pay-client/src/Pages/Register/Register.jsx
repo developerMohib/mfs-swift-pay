@@ -32,11 +32,13 @@ const Register = () => {
     try {
       // create user
       const response = await axiosPublic.post("/users", userData);
-      console.log("res", response.data.message);
 
       if (response?.data?.message) {
         toast.success("Account created successfully!");
-        toast.warn("wait for admin aproval !");
+        // Delay the warning toast by 1 second (1000 ms)
+        setTimeout(() => {
+          toast.warn("Wait for admin approval!");
+        }, 500);
         form.reset();
       }
     } catch (error) {
@@ -52,9 +54,9 @@ const Register = () => {
     setRotating(true);
 
     // Set a timeout to stop rotating after 400ms
-    setTimeout(()=>{
-      setRotating(false)
-    },400)
+    setTimeout(() => {
+      setRotating(false);
+    }, 400);
   };
 
   return (
