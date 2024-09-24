@@ -41,6 +41,15 @@ mongoose
   });
 
 // ---------------------------------- Route Here --------------------------------
+// testing purpose all user get
+app.get('/all-users', async(req, res)=>{
+  try {
+    const users = await User.find(); // Fetch all users
+    res.json(users); // Send the users back as a JSON response
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching users', error });
+  }
+})
 
 // Get user by email or phone
 app.post("/loginUser", async (req, res) => {
@@ -53,7 +62,7 @@ app.post("/loginUser", async (req, res) => {
     };
 
     const user = await User.findOne(query);
-    
+
     // If user is not found
     if (!user) {
       return res.status(404).json({
