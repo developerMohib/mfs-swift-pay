@@ -30,10 +30,15 @@ const Register = () => {
     try {
       // create user
       const response = await axiosPublic.post("/users", userData);
-      console.log('res',response)
-      toast.success("Account created successfully!");
-      toast.warn("wait for admin aproval !");
-      form.reset()
+      console.log('res',response.data.message)
+
+      if(response?.data?.message){
+        toast.success("Account created successfully!");
+        toast.warn("wait for admin aproval !");
+        form.reset()
+      }
+
+      
     } catch (error) {
       if (error.response && error.response.data.error) {
         toast.error(`Error: ${error.response.data.error}`); // Display backend error message (e.g., "Email already in use")

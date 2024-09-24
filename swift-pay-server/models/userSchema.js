@@ -5,7 +5,6 @@ const userSchema = new mongoose.Schema({
   userName: {
     type: String,
     required: true,
-    unique: true,
     trim: true, // Removes spaces from the beginning and end of the string
   },
   userEmail: {
@@ -20,9 +19,11 @@ const userSchema = new mongoose.Schema({
   },
   userPhone: {
     type: String,
+    unique : true,
   },
   userNID: {
     type: String,
+    unique : true,
   },
   userRole: {
     type: String,

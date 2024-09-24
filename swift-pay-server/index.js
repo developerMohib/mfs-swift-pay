@@ -5,7 +5,7 @@ const cors = require("cors"); // Import CORS middleware for cross-origin request
 require("dotenv").config(); // Load environment variables from .env file
 
 // bcryptjs function here
-const User = require('./models/userSchema')
+const User = require("./models/userSchema");
 const { hashPassword, comparePassword } = require("./authHelper/authHelpler");
 
 // Set up port from environment variables or default to 8000
@@ -29,31 +29,49 @@ const corsOptions = {
 app.use(express.json());
 app.use(cors(corsOptions));
 
-
 // ---------------------------------- mongodb ----------------------------------
 // ---------------------------------- mongoose ---------------------------------
-mongoose.connect(process.env.MongoDB_url)
-.then(()=>{
-  console.log('mongoDB connection successfully')
-})
-.catch(err =>{
-  console.log(err)
-})
+mongoose
+  .connect(process.env.MongoDB_url)
+  .then(() => {
+    console.log("mongoDB connection successfully");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 // ---------------------------------- Route Here --------------------------------
 
 // POST route to create a new user
-app.post('/users', async (req, res) => {
+app.post("/users", async (req, res) => {
   try {
-    const { userName, userEmail, password,userPhone,userNID,userRole,status } = req.body;
-    const userData = { userName, userEmail, password,userPhone,userNID,userRole,status };
+    const {
+      userName,
+      userEmail,
+      password,
+      userPhone,
+      userNID,
+      userRole,
+      status,
+    } = req.body;
+    const userData = {
+      userName,
+      userEmail,
+      password,
+      userPhone,
+      userNID,
+      userRole,
+      status,
+    };
 
     // Check if the email already exists in the database
     const existingUser = await User.findOne({ userEmail });
 
     if (existingUser) {
       // If email already exists, send an error response
-      return res.status(400).send({ error: 'Email already in use. Please use a different email.' });
+      return res
+        .status(400)
+        .send({ error: "Email already in use. Please use a different email." });
     }
 
     // Create a new user
@@ -61,11 +79,14 @@ app.post('/users', async (req, res) => {
 
     // Save the user to the database
     await newUser.save();
-    res.status(201).send({ message: 'User created successfully', user: newUser });
-
+    res
+      .status(201)
+      .send({ message: "User created successfully", user: newUser });
   } catch (error) {
     console.error(error);
-    res.status(400).send({ error: 'Failed to create user', details: error.message });
+    res
+      .status(400)
+      .send({ error: "Failed to create user", details: error.message });
   }
 });
 

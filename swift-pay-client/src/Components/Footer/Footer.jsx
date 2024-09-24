@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 
+import logo from "/swift-pay-logo.png";
+
 const Footer = () => {
   const date = new Date();
   const year = date.getFullYear();
@@ -15,6 +17,7 @@ const Footer = () => {
                 aria-label="Back to homepage"
                 className="flex items-center font-bold md:text-5xl text-3xl p-2"
               >
+                <img className="h-10 w-auto" src={logo} alt="swift pay logo" />
                 <span className="text-primary">swift</span>
                 <span className="text-secondary">Pay</span>
               </Link>

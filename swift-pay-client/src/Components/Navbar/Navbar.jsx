@@ -5,6 +5,7 @@ import { IoCloseOutline } from "react-icons/io5";
 import { ImSpinner2 } from "react-icons/im";
 import { Transition } from "@headlessui/react";
 
+import logo from "/swift-pay-logo.png";
 import "./navbar.css";
 
 const Navbar = () => {
@@ -19,6 +20,7 @@ const Navbar = () => {
 
   const [open, setOpen] = useState(false);
   const [rotating, setRotating] = useState(false);
+  const [isSticky, setIsSticky] = useState(false);
 
   const handleMenu = () => {
     setRotating(true);
@@ -47,17 +49,31 @@ const Navbar = () => {
     };
   }, []);
 
+  // Navbar making sticky
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        //set sticky true
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return ()=> window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const nav = (
     <>
       {isAuthenticated ? (
         role === "user" ? (
           <>
-          <NavLink
-            className={({ isActive }) => (isActive ? "active" : "navlink")}
-            to="/"
-          >
-            Home
-          </NavLink>
+            <NavLink
+              className={({ isActive }) => (isActive ? "active" : "navlink")}
+              to="/"
+            >
+              Home
+            </NavLink>
 
             <NavLink
               className={({ isActive }) => (isActive ? "active" : "navlink")}
@@ -96,18 +112,18 @@ const Navbar = () => {
           </>
         ) : role === "admin" ? (
           <>
-          <NavLink
-            className={({ isActive }) => (isActive ? "active" : "navlink")}
-            to="/"
-          >
-            Home
-          </NavLink>
+            <NavLink
+              className={({ isActive }) => (isActive ? "active" : "navlink")}
+              to="/"
+            >
+              Home
+            </NavLink>
 
             <NavLink
               className={({ isActive }) => (isActive ? "active" : "navlink")}
               to="admin/transection"
             >
-             All Transactions
+              All Transactions
             </NavLink>
 
             <NavLink
@@ -126,12 +142,12 @@ const Navbar = () => {
           </>
         ) : role === "agent" ? (
           <>
-          <NavLink
-            className={({ isActive }) => (isActive ? "active" : "navlink")}
-            to="/"
-          >
-            Home
-          </NavLink>
+            <NavLink
+              className={({ isActive }) => (isActive ? "active" : "navlink")}
+              to="/"
+            >
+              Home
+            </NavLink>
 
             <NavLink
               className={({ isActive }) => (isActive ? "active" : "navlink")}
@@ -189,7 +205,9 @@ const Navbar = () => {
     </>
   );
   return (
-    <header className="px-4 py-1 text-gray-800 shadow">
+    <header className={`px-4 py-1 text-gray-800 shadow transition-all duration-500 ${
+      isSticky ? 'sticky top-0 w-full z-50 bg-white shadow-lg' : ''
+    }`}>
       <div className="flex items-center md:gap-x-4 ">
         <div className="flex justify-between items-center container mx-auto ">
           <Link
@@ -198,6 +216,7 @@ const Navbar = () => {
             aria-label="Back to homepage"
             className="flex items-center font-bold md:text-4xl text-3xl p-2"
           >
+            <img className="h-10 w-auto" src={logo} alt="swift pay logo" />
             <span className="text-primary">swift</span>
             <span className="text-secondary">Pay</span>
           </Link>
