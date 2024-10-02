@@ -67,7 +67,7 @@ export const router = createBrowserRouter([
             element: <SendMoney />,
           },
           {
-            path: "transection",
+            path: "transaction",
             element: <Transections />,
           },
         ],

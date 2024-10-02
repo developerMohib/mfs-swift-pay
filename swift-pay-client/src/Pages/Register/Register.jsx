@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
@@ -8,6 +8,7 @@ const Register = () => {
   const [showPass, setShowPass] = useState(false);
   const [rotating, setRotating] = useState(false);
   const axiosPublic = useAxiosPublic();
+  const navigate = useNavigate();
   const status = "pending";
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -41,6 +42,7 @@ const Register = () => {
           toast.warn("Wait for admin approval!");
         }, 500);
         form.reset();
+        navigate("/sign-in")
       }
     } catch (error) {
       if (error.response && error.response.data.error) {
