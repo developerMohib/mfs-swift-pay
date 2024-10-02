@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 import logo from "/swift-pay-logo.png";
+import "./footer.css";
 
 const Footer = () => {
   const date = new Date();
@@ -25,7 +26,9 @@ const Footer = () => {
           </div>
           <div className="grid grid-cols-2 text-sm gap-x-3 gap-y-8 lg:w-2/3 sm:grid-cols-4">
             <div className="space-y-3">
-              <h3 className="tracking-wide uppercase text-gray-900">Product</h3>
+              <h3 className="tracking-wide uppercase font-semibold text-gray-900">
+                Product
+              </h3>
               <ul className="space-y-1">
                 <li>
                   <a rel="noopener noreferrer" href="#">
@@ -50,7 +53,9 @@ const Footer = () => {
               </ul>
             </div>
             <div className="space-y-3">
-              <h3 className="tracking-wide uppercase text-gray-900">Company</h3>
+              <h3 className="tracking-wide uppercase font-semibold text-gray-900">
+                Company
+              </h3>
               <ul className="space-y-1">
                 <li>
                   <a rel="noopener noreferrer" href="#">
@@ -65,7 +70,9 @@ const Footer = () => {
               </ul>
             </div>
             <div className="space-y-3">
-              <h3 className="uppercase text-gray-900">Developers</h3>
+              <h3 className="uppercase font-semibold text-gray-900">
+                Developers
+              </h3>
               <ul className="space-y-1">
                 <li>
                   <a rel="noopener noreferrer" href="#">
@@ -86,10 +93,11 @@ const Footer = () => {
             </div>
             <div className="space-y-3">
               <div className="uppercase text-gray-900">Social media</div>
-              <div className="flex justify-start space-x-3">
+              <div className="flex justify-start icon space-x-3">
                 <a
                   rel="noopener noreferrer"
-                  href="#"
+                  href="https://www.facebook.com/mohibullah.jubileean"
+                  target="_blank"
                   title="Facebook"
                   className="flex items-center p-1"
                 >
@@ -104,7 +112,8 @@ const Footer = () => {
                 </a>
                 <a
                   rel="noopener noreferrer"
-                  href="#"
+                  href="https://twitter.com/Mohib333"
+                  target="_blank"
                   title="Twitter"
                   className="flex items-center p-1"
                 >
@@ -118,8 +127,9 @@ const Footer = () => {
                 </a>
                 <a
                   rel="noopener noreferrer"
-                  href="#"
-                  title="Instagram"
+                  href="https://www.linkedin.com/in/mohibullah-mohim"
+                  target="_blank"
+                  title="Linkedin"
                   className="flex items-center p-1"
                 >
                   <svg
@@ -136,7 +146,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="py-6 text-sm text-center text-gray-600">
-          &copy; {year} Company Co. All rights reserved.
+          &copy; {year} <Link to="/">swiftPay</Link>. All rights reserved.
         </div>
       </footer>
     </div>
