@@ -51,7 +51,7 @@ const ServiceCardSlider = () => {
                 Join us online on May 10, 2023
               </p>
               <div className="flex justify-center">
-                <span className="bg-secondary rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-yellow-500 transition-all duration-150 ease-in-out cursor-pointer " >Cash In</span>
+                <span className="bg-secondary rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-primary transition-all duration-150 ease-in-out cursor-pointer " >Cash In</span>
               </div>
               <p className="text-base md:text-lg font-normal leading-normal text-tarnary mt-6">
                 Hi Young,
@@ -75,7 +75,7 @@ const ServiceCardSlider = () => {
                 Join us online on May 10, 2023
               </p>
               <div className="flex justify-center">
-              <span className="bg-secondary rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-yellow-500 transition-all duration-150 ease-in-out cursor-pointer " >Cash Out </span>
+              <span className="bg-secondary rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-primary transition-all duration-150 ease-in-out cursor-pointer " >Cash Out </span>
               </div>
               <p className="text-base md:text-lg font-normal leading-normal text-tarnary mt-6">
                 Hi Young,
@@ -100,7 +100,7 @@ const ServiceCardSlider = () => {
                 Join us online on May 10, 2023
               </p>
               <div className="flex justify-center">
-              <span className="bg-secondary rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-yellow-500 transition-all duration-150 ease-in-out cursor-pointer" >Send Monry</span>
+              <span className="bg-secondary rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-primary transition-all duration-150 ease-in-out cursor-pointer" >Send Money</span>
               </div>
               <p className="text-base md:text-lg font-normal leading-normal text-tarnary mt-6">
                 Hi Young,

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import SlideHome from "../SlideHome/SlideHome";
 
 const Hero = () => {
@@ -10,7 +11,7 @@ const Hero = () => {
         <div className="flex flex-col px-6 rounded-sm lg:max-w-md xl:max-w-lg text-left">
           <h1 className="md:text-5xl text-3xl font-bold leading-none">
             Ac mattis
-            <span className="text-indigo-600">senectus</span>erat pharetra
+            <span className="text-secondary">senectus</span>erat pharetra
           </h1>
           <p className="mt-6 mb-8 text-lg sm:mb-12">
             Dictum aliquam porta in condimentum ac integer
@@ -18,20 +19,18 @@ const Hero = () => {
             turpis pulvinar, est scelerisque ligula sem
           </p>
           <div className="flex flex-col space-y-4 sm:items-center sm:justify-center sm:flex-row sm:space-y-0 sm:space-x-4 lg:justify-start">
-            <a
+            <Link
               rel="noopener noreferrer"
-              href="#"
-              className="px-8 py-3 text-lg font-semibold rounded bg-indigo-600 text-gray-50"
+              className="px-8 py-3 text-lg font-semibold rounded bg-primary hover:bg-secondary text-gray-50"
             >
               Suspendisse
-            </a>
-            <a
+            </Link>
+            <Link
               rel="noopener noreferrer"
-              href="#"
-              className="px-8 py-3 text-lg font-semibold border rounded border-gray-800"
+              className="px-8 py-3 text-lg font-semibold border rounded border-tarnary hover:bg-primary hover:text-white "
             >
               Malesuada
-            </a>
+            </Link>
           </div>
         </div>
       </div>

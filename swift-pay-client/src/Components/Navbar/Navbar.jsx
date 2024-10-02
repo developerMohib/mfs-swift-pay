@@ -4,12 +4,12 @@ import { FcMenu } from "react-icons/fc";
 import { IoCloseOutline } from "react-icons/io5";
 import { ImSpinner2 } from "react-icons/im";
 import { Transition } from "@headlessui/react";
+import { toast } from "react-toastify";
 
 // Local imports
 import logo from "/swift-pay-logo.png";
 import { UserContext } from "../../AuthProvider/AuthProvider";
 import "./navbar.css";
-import { toast } from "react-toastify";
 
 const Navbar = () => {
   const menuRef = useRef(null);
