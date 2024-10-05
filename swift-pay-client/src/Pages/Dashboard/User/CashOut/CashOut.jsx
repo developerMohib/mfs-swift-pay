@@ -15,7 +15,7 @@ const CashOut = () => {
     <div className="w-full flex justify-center items-center mt-10">
       <form
         onSubmit={handleSubmit}
-        className="md:w-1/2 bg-purple-50 px-20 py-8 rounded-lg"
+        className="md:w-1/2 bg-bg px-20 py-8 rounded-lg"
       >
         <h3 className="text-3xl text-center ">
           User <span className="text-primary">Cash Out </span>
@@ -28,7 +28,7 @@ const CashOut = () => {
             name="receiver"
             type="text"
             placeholder="phone number"
-            className="focus:outline-none px-4 py-3 bg-white rounded-lg"
+            className="focus:outline-none px-4 py-3 bg-bg rounded-lg"
             required
           />
         </div>
@@ -40,7 +40,7 @@ const CashOut = () => {
             name="amount"
             type="number"
             placeholder="Enter amount"
-            className="focus:outline-none px-4 py-3 bg-white  rounded-lg "
+            className="focus:outline-none px-4 py-3 bg-bg  rounded-lg "
             required
           />
         </div>
@@ -52,14 +52,14 @@ const CashOut = () => {
             name="password"
             type="password"
             placeholder="password"
-            className="focus:outline-none px-4 py-3 bg-white  rounded-lg "
+            className="focus:outline-none px-4 py-3 bg-bg  rounded-lg "
             required
           />
         </div>
         <div className="mt-5 flex justify-center w-full">
           <input
             type="submit"
-            className="w-fit cursor-pointer focus:outline-none px-4 py-3 bg-secondary hover:bg-primary text-white rounded-lg"
+            className="w-fit cursor-pointer focus:outline-none px-4 py-3 bg-secondary hover:bg-primary text-bg rounded-lg"
             value={"Cash out Request"}
           />
         </div>

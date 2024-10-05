@@ -3,7 +3,7 @@ import SlideHome from "../SlideHome/SlideHome";
 
 const Hero = () => {
   return (
-    <section className="text-gray-800 pt-6">
+    <section className="text-tarnary pt-6">
       <div className="md:flex flex-col justify-center p-6 mx-auto lg:flex-row lg:justify-between">
         {/* Here slider */}
         <SlideHome />
@@ -21,13 +21,13 @@ const Hero = () => {
           <div className="flex flex-col space-y-4 sm:items-center sm:justify-center sm:flex-row sm:space-y-0 sm:space-x-4 lg:justify-start">
             <Link
               rel="noopener noreferrer"
-              className="px-8 py-3 text-lg font-semibold rounded bg-primary hover:bg-secondary text-gray-50"
+              className="px-8 py-3 text-lg font-semibold rounded bg-primary hover:bg-secondary text-text"
             >
               Suspendisse
             </Link>
             <Link
               rel="noopener noreferrer"
-              className="px-8 py-3 text-lg font-semibold border rounded border-tarnary hover:bg-primary hover:text-white "
+              className="px-8 py-3 text-lg font-semibold border rounded border-tarnary hover:bg-primary hover:text-bg"
             >
               Malesuada
             </Link>

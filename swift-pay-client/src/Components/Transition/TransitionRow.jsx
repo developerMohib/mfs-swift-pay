@@ -17,8 +17,8 @@ const TransitionRow = () => {
             <td>Cashin </td>
             <td>
                 <button className={`px-2  rounded-full capitalize
-                 ${status === 'pending' ? "bg-base-200  " :
-                        status === "approved" ? "bg-green-50 text-green-500" :
+                 ${status === 'pending' ? "bg-base-200" :
+                        status === "approved" ? "bg-bg text-primary" :
                             status === "rejected" ? "bg-red-50 text-red-500 " : ""}`}
                 >
                     {status}

@@ -7,9 +7,11 @@ export default {
   theme: {
     extend: {
       colors : {
-        "primary" : "#22c55e", // green 
-        "secondary" : "#f97316", // orange
-        "tarnary" : "#0f172a", //
+        primary: 'var(--logo-primary-color)', // green
+        secondary: 'var(--logo-secondary-color)', // orange
+        tarnary : 'var(--text-black)', //
+        text: "rgba(var(--text-color))",
+        bg: "rgba(var(--bg-color))",
       }
     },
   },

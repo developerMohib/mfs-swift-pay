@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const HomeAgent = () => {
   return (
-    <section className="text-gray-600 body-font">
+    <section className="text-text body-font">
       <div className="container px-5 py-24 mx-auto">
         <div className="flex flex-wrap -m-4">
           <div className="p-4 md:w-1/3">
@@ -13,10 +13,10 @@ const HomeAgent = () => {
                 alt="blog"
               />
               <div className="p-6">
-                <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">
+                <h2 className="tracking-widest text-xs title-font font-medium text-text mb-1">
                   CATEGORY-1
                 </h2>
-                <h1 className="title-font text-lg font-medium text-gray-600 mb-3">
+                <h1 className="title-font text-lg font-medium text-text mb-3">
                   Transactions
                 </h1>
                 <p className="leading-relaxed mb-3">
@@ -25,7 +25,7 @@ const HomeAgent = () => {
                 </p>
                 <div className="flex items-center flex-wrap ">
                   <Link to="/agent/transaction">
-                    <button className="bg-gradient-to-r from-primary to-secondary hover:scale-105 hover:from-secondary hover:to-primary transition-all duration-500 text-white shadow-cla-blue px-4 py-1 rounded-lg">
+                    <button className="bg-gradient-to-r from-primary to-secondary hover:scale-105 hover:from-secondary hover:to-primary transition-all duration-500 text-bg shadow-cla-blue px-4 py-1 rounded-lg">
                       View Details
                     </button>
                   </Link>
@@ -41,10 +41,10 @@ const HomeAgent = () => {
                 alt="blog"
               />
               <div className="p-6">
-                <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">
+                <h2 className="tracking-widest text-xs title-font font-medium text-text mb-1">
                   CATEGORY-2
                 </h2>
-                <h1 className="title-font text-lg font-medium text-gray-600 mb-3">
+                <h1 className="title-font text-lg font-medium text-text mb-3">
                   Cash In
                 </h1>
                 <p className="leading-relaxed mb-3">
@@ -53,7 +53,7 @@ const HomeAgent = () => {
                 </p>
                 <div className="flex items-center flex-wrap ">
                   <Link to="/agent/cashin">
-                    <button className="bg-gradient-to-r from-primary to-secondary hover:scale-105 hover:from-secondary hover:to-primary transition-all duration-500 text-white shadow-cla-blue px-4 py-1 rounded-lg">
+                    <button className="bg-gradient-to-r from-primary to-secondary hover:scale-105 hover:from-secondary hover:to-primary transition-all duration-500 text-bg shadow-cla-blue px-4 py-1 rounded-lg">
                       View Details
                     </button>
                   </Link>
@@ -69,10 +69,10 @@ const HomeAgent = () => {
                 alt="blog"
               />
               <div className="p-6">
-                <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">
+                <h2 className="tracking-widest text-xs title-font font-medium text-text mb-1">
                   CATEGORY-1
                 </h2>
-                <h1 className="title-font text-lg font-medium text-gray-600 mb-3">
+                <h1 className="title-font text-lg font-medium text-text mb-3">
                   Cash Out
                 </h1>
                 <p className="leading-relaxed mb-3">
@@ -81,7 +81,7 @@ const HomeAgent = () => {
                 </p>
                 <div className="flex items-center flex-wrap ">
                   <Link to="/agent/cashout">
-                    <button className="bg-gradient-to-r from-primary to-secondary hover:scale-105 hover:from-secondary hover:to-primary transition-all duration-500 text-white shadow-cla-blue px-4 py-1 rounded-lg">
+                    <button className="bg-gradient-to-r from-primary to-secondary hover:scale-105 hover:from-secondary hover:to-primary transition-all duration-500 text-bg shadow-cla-blue px-4 py-1 rounded-lg">
                       View Details
                     </button>
                   </Link>

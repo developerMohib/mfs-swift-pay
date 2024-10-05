@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import logo from "/swift-pay-logo.png";
 import { UserContext } from "../../AuthProvider/AuthProvider";
 import "./navbar.css";
-import ThemeChanger from "../Features/ThemeChanger/ThemeChanger";
+import ThemeChanger from "../../Features/ThemeChanger/ThemeChanger";
 
 const Navbar = () => {
   const menuRef = useRef(null);
@@ -106,8 +106,8 @@ const Navbar = () => {
 
   return (
     <header
-      className={`px-4 py-1 text-gray-800 shadow transition-all duration-500 ${
-        isSticky ? "sticky top-0 w-full z-50 bg-white shadow-lg" : ""
+      className={`px-4 py-1 text-tarnary shadow transition-all duration-500 ${
+        isSticky ? "sticky top-0 w-full z-50 bg-bg shadow-lg" : ""
       }`}
     >
       <div className="flex items-center md:gap-x-4 ">
@@ -144,13 +144,13 @@ const Navbar = () => {
         {user ? (
           <button
             onClick={handleLogout}
-            className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-white font-medium transition-all duration-200"
+            className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-bg font-medium transition-all duration-200"
           >
             {" "}
             Logout
           </button>
         ) : (
-          <button className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-white font-medium transition-all duration-200">
+          <button className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-bg font-medium transition-all duration-200">
             {" "}
             <Link to="/sign-in">Login</Link>{" "}
           </button>
@@ -173,7 +173,7 @@ const Navbar = () => {
           id="mobile-menu"
         >
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <ul className="flex flex-col text-white gap-4"> {nav} </ul>
+            <ul className="flex flex-col text-bg gap-4"> {nav} </ul>
           </div>
         </div>
       </Transition>

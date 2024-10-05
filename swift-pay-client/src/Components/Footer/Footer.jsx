@@ -8,7 +8,7 @@ const Footer = () => {
   const year = date.getFullYear();
   return (
     <div>
-      <footer className="px-4 divide-y bg-gray-100 text-gray-800">
+      <footer className="px-4 divide-y bg-bg text-tarnary">
         <div className="flex flex-col justify-between py-10 mx-auto space-y-8 lg:flex-row lg:space-y-0">
           <div className="lg:w-1/3">
             <div className="self-center text-2xl font-semibold">
@@ -26,7 +26,7 @@ const Footer = () => {
           </div>
           <div className="grid grid-cols-2 text-sm gap-x-3 gap-y-8 lg:w-2/3 sm:grid-cols-4">
             <div className="space-y-3">
-              <h3 className="tracking-wide uppercase font-semibold text-gray-900">
+              <h3 className="tracking-wide uppercase font-semibold text-tarnary">
                 Product
               </h3>
               <ul className="space-y-1">
@@ -53,7 +53,7 @@ const Footer = () => {
               </ul>
             </div>
             <div className="space-y-3">
-              <h3 className="tracking-wide uppercase font-semibold text-gray-900">
+              <h3 className="tracking-wide uppercase font-semibold text-tarnary">
                 Company
               </h3>
               <ul className="space-y-1">
@@ -70,7 +70,7 @@ const Footer = () => {
               </ul>
             </div>
             <div className="space-y-3">
-              <h3 className="uppercase font-semibold text-gray-900">
+              <h3 className="uppercase font-semibold text-tarnary">
                 Developers
               </h3>
               <ul className="space-y-1">
@@ -92,7 +92,7 @@ const Footer = () => {
               </ul>
             </div>
             <div className="space-y-3">
-              <div className="uppercase text-gray-900">Social media</div>
+              <div className="uppercase text-tarnary font-semibold">Social media</div>
               <div className="flex justify-start icon space-x-3">
                 <a
                   rel="noopener noreferrer"
@@ -145,7 +145,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="py-6 text-sm text-center text-gray-600">
+        <div className="py-6 text-sm text-center text-text">
           &copy; {year} <Link to="/">swiftPay</Link>. All rights reserved.
         </div>
       </footer>

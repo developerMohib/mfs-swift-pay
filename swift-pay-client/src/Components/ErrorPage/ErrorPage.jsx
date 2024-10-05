@@ -1,12 +1,12 @@
 const ErrorPage = () => {
   return (
     <div>
-      <div className="grid h-screen place-content-center bg-white px-4">
+      <div className="grid h-screen place-content-center bg-bg px-4">
         <div className="text-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 1024 768"
-            className="mx-auto h-56 w-auto text-black sm:h-64"
+            className="mx-auto h-56 w-auto text-tarnary sm:h-64"
           >
             <g fill="none" fillRule="evenodd">
               <g fill="#FF5678">
@@ -22,15 +22,15 @@ const ErrorPage = () => {
             </g>
           </svg>
 
-          <h1 className="mt-6 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <h1 className="mt-6 text-2xl font-bold tracking-tight text-tarnary sm:text-4xl">
             Uh-oh!
           </h1>
 
-          <p className="mt-4 text-gray-500">We can&apos;t find that page.</p>
+          <p className="mt-4 text-text">We can&apos;t find that page.</p>
           <button>
             <a
               href="#_"
-              className="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-bold text-white rounded-md shadow-2xl group"
+              className="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-bold text-text rounded-md shadow-2xl group"
             >
               <span className="absolute inset-0 w-full h-full transition duration-300 ease-out opacity-0 bg-gradient-to-br from-pink-600 via-purple-700 to-blue-400 group-hover:opacity-100"></span>
               <span className="absolute top-0 left-0 w-full bg-gradient-to-b from-white to-transparent opacity-5 h-1/3"></span>
@@ -38,7 +38,7 @@ const ErrorPage = () => {
               <span className="absolute bottom-0 left-0 w-4 h-full bg-gradient-to-r from-white to-transparent opacity-5"></span>
               <span className="absolute bottom-0 right-0 w-4 h-full bg-gradient-to-l from-white to-transparent opacity-5"></span>
               <span className="absolute inset-0 w-full h-full border border-white rounded-md opacity-10"></span>
-              <span className="absolute w-0 h-0 transition-all duration-300 ease-out bg-white rounded-full group-hover:w-56 group-hover:h-56 opacity-5"></span>
+              <span className="absolute w-0 h-0 transition-all duration-300 ease-out bg-bg rounded-full group-hover:w-56 group-hover:h-56 opacity-5"></span>
               <span className="relative">Button Text</span>
             </a>
           </button>

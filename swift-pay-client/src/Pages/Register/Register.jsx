@@ -187,7 +187,7 @@ const Register = () => {
               </div>
 
               <div className="form-control mt-4 col-span-2 flex justify-center items-center">
-                <button className="btn bg-primary hover:bg-secondary text-lg border-none text-white w-full">
+                <button className="btn bg-primary hover:bg-secondary text-lg border-none text-bg w-full">
                   Register
                 </button>
               </div>

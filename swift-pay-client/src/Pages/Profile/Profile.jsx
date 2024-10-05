@@ -4,7 +4,7 @@ const Profile = () => {
   console.log("user", user);
   return (
     <div className="flex justify-center items-center mt-20">
-      <div className="w-full max-w-sm bg-purple-50 rounded-lg">
+      <div className="w-full max-w-sm bg-bg rounded-lg">
         <img
           className="w-40 h-40 rounded-full mx-auto"
           src={user?.userPhoto}
@@ -20,7 +20,7 @@ const Profile = () => {
             {" "}
             Role : {user?.userRole}
           </p>
-          <div className="bg-white px-7 py-3 text-center mt-5 ">
+          <div className="bg-bg px-7 py-3 text-center mt-5 ">
             <p className=""> Account Balance</p>
             <h1 className="text-3xl  ">12000 </h1>
           </div>
