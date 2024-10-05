@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "title": "Is my money secure when I transfer it?",
+    "details": "Yes, all transactions are encrypted and protected by advanced security protocols to ensure your money and personal information are safe."
+  },
+  {
+    "id": 2,
+    "title": "What should I do if my transaction fails?",
+    "details": "If your transaction fails, please contact our support team with the transaction ID. We’ll investigate the issue and resolve it as soon as possible."
+  },
+  {
+    "id": 3,
+    "title": "How can I view my transaction history?",
+    "details": "You can view your transaction history by navigating to the 'Transaction History' section in your account dashboard. All past transactions will be listed with details."
+  },
+  {
+    "id": 4,
+    "title": "Can I transfer money internationally?",
+    "details": "Yes, international money transfers are available depending on your account type and the recipient's country. Additional fees and currency conversion rates may apply."
+  }
+]

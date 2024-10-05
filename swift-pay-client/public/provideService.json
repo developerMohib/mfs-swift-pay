@@ -1,0 +1,44 @@
+[
+    {
+      "id": 1,
+      "Title": "Transfer money instantly",
+      "service_name": "Send Money",
+      "description": "Easily send money to any registered user through their phone number or account ID. Instant and secure transactions guaranteed.",
+      "icon": "💸" 
+    },
+    {
+      "id": 2,
+      "Title": "Deposit funds to your account",
+      "service_name": "Cash In",
+      "description": "Deposit money into your account using any authorized agent or bank transfer. Available for all users with minimal transaction fees.",
+      "icon": "🏦"
+    },
+    {
+      "id": 3,
+      "Title": "Withdraw money from your account",
+      "service_name": "Cash Out",
+      "description": "Withdraw funds from your account via authorized agents or direct bank transfers. Enjoy quick and secure cash outs anytime.",
+      "icon": "💰"
+    },
+    {
+      "id": 4,
+      "Title": "Create an account",
+      "service_name": "Register as a User",
+      "description": "Sign up for an account and enjoy seamless transactions. Get access to features like Send Money, Cash In, Cash Out, and more.",
+      "icon": "📝" 
+    },
+    {
+      "id": 5,
+      "Title": "Become an authorized agent",
+      "service_name": "Register as an Agent",
+      "description": "Join our network as an agent and provide cash in and cash out services. Enjoy competitive commission rates and business opportunities.",
+       "icon": "📊"
+    },
+    {
+      "id": 6,
+      "Title": "View your past transactions",
+      "service_name": "Transaction History",
+      "description": "Keep track of your past transactions including money transfers, cash ins, and cash outs. Detailed history available in your account.",
+       "icon": "📊"
+    }
+  ]  

@@ -1,24 +1,23 @@
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import Loader from "../../Components/Loader/Loader";
+
 const Services = () => {
-  const data = [
-    {
-      id: 1,
-      title:
-        "Perfect for learning how the framework works, prototyping a new idea, or creating a demo to share online.",
+
+  const { data: provideServices , isLoading } = useQuery({
+    queryKey: ["service"],
+    queryFn: async () => {
+      const response = await axios.get("/provideService.json");
+      return response?.data;
     },
-    {
-      id: 2,
-      title:
-        "Perfect for learning how the framework works, prototyping a new idea, or creating a demo to share online.",
-    },
-    {
-      id: 3,
-      title:
-        "Perfect for learning how the framework works, prototyping a new idea, or creating a demo to share online.",
-    },
-  ];
+  });
+
+  if (isLoading) return <Loader />;
+
+
   return (
     <div className="md:grid grid-cols-3 gap-4" >
-      {data.map((card) => (
+      {provideServices?.map((card) => (
         <div
           key={card.id}
           className="sm:py-12"
@@ -27,33 +26,14 @@ const Services = () => {
             <span className="absolute top-10 z-0 h-20 w-20 rounded-full bg-sky-500 transition-all duration-300 group-hover:scale-[10]" />
             <div className="relative z-10 mx-auto max-w-md">
               <span className="grid h-20 w-20 place-items-center rounded-full bg-sky-500 transition-all duration-300 group-hover:bg-sky-400">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="h-10 w-10 text-white transition-all"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
-                  />
-                </svg>
+              {card.icon}            
               </span>
-              <div className="space-y-6 pt-5 text-base leading-7 text-gray-600 transition-all duration-300 group-hover:text-white/90">
-                <p>{card.title}</p>
+              <div className="pt-5 text-base leading-7 text-gray-600 transition-all duration-300 group-hover:text-white/90">
+                <h1 className="text-2xl md:text-4xl font-semibold text-tarnary mb-6" >{card.service_name}</h1>
+                <p className="text-base md:text-lg font-normal text-tarnary mb-6">{card.Title}</p>
               </div>
-              <div className="pt-5 text-base font-semibold leading-7">
-                <p>
-                  <a
-                    href="#"
-                    className="text-sky-500 transition-all duration-300 group-hover:text-white"
-                  >
-                    Read the docs →
-                  </a>
-                </p>
+              <div className="pt-5 text-base text-gray-600 leading-7">
+                <p>{card.description}</p>
               </div>
             </div>
           </div>

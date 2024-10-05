@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import logo from "/swift-pay-logo.png";
 import { UserContext } from "../../AuthProvider/AuthProvider";
 import "./navbar.css";
+import ThemeChanger from "../Features/ThemeChanger/ThemeChanger";
 
 const Navbar = () => {
   const menuRef = useRef(null);
@@ -154,6 +155,7 @@ const Navbar = () => {
             <Link to="/sign-in">Login</Link>{" "}
           </button>
         )}
+        <ThemeChanger />
       </div>
 
       {/* Navbar for mobile device, make it headless ui */}
