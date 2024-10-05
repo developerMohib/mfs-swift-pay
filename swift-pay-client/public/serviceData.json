@@ -1,17 +1,20 @@
 [
     {
+        "id" : 1,
         "service_name" : "Cash In",
         "Title" : "we commit to a dynamic work environment to support",
         "service" : "What is Cash in",
         "description":"Cash In refers to the process of depositing an amount into a swiftPay account from swiftpay-authorized Uddokta Point."
     },
     {
+        "id" : 2,
         "service_name" : "Cash Out",
         "Title" : "we commit to a dynamic work environment to support",
         "service" : "What is Cash out",
         "description":"Cash Out refers to the process of withdrawing cash from one’s own swifPay account by visiting a nearby swifPay Uddokta. Customers can initiate Cash Out."
     },
     {
+        "id" : 3,
         "service_name" : "Send Money",
         "Title" : "we commit to a dynamic work environment to support",
         "service" : "What is Send Money",
