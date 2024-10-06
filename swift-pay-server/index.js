@@ -3,12 +3,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors"); // Import CORS middleware for cross-origin requests
 require("dotenv").config(); // Load environment variables from .env file
-const createUser = require("./Routes/create.user")
-const createAgent = require("./Routes/create.agent")
-
-
+const createUser = require("./Routes/create.user");
+const createAgent = require("./Routes/create.agent");
+const {loginAdmin} = require("./controllers/admin.controller")
 // bcryptjs function here
-const User = require("./models/userSchema");
+const { User, Admin } = require("./models/userSchema");
 const { comparePassword } = require("./authHelper/authHelpler");
 
 // Set up port from environment variables or default to 8000
@@ -97,9 +96,12 @@ app.post("/loginUser", async (req, res) => {
   }
 });
 
+// Admin login route
+app.post("/loginAdmin", loginAdmin);
+
 // route to create a new user
-app.use(createUser)
-app.use(createAgent)
+app.use(createUser);
+app.use(createAgent);
 
 // Route handler for the root URL (for testing server)
 app.get("/", (req, res) => {
