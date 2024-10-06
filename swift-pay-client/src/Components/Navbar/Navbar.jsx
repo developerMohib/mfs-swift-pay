@@ -17,7 +17,7 @@ const Navbar = () => {
   const { user, logout, loading } = useContext(UserContext);
   const role = user?.userRole || null;
   const isAuthenticated = role !== null;
-  
+
   const [open, setOpen] = useState(false);
   const [rotating, setRotating] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
@@ -107,7 +107,7 @@ const Navbar = () => {
   return (
     <header
       className={`px-4 py-1 text-tarnary shadow transition-all duration-500 ${
-        isSticky ? "sticky top-0 w-full z-50 bg-bg shadow-lg" : ""
+        isSticky ? "sticky top-0 w-full z-50 bg-bg shadow-lg backdrop-blur-md" : ""
       }`}
     >
       <div className="flex items-center md:gap-x-4 ">

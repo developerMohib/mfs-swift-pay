@@ -23,6 +23,8 @@ const Footer = () => {
                 <span className="text-secondary">Pay</span>
               </Link>
             </div>
+            <p className="text-text mr-5 px-5 ">&quot;SwiftPay: Fast, Secure, and Reliable Money Transfers Anytime, Anywhere.  
+            Seamless transactions with just a few clicks.&quot;</p>
           </div>
           <div className="grid grid-cols-2 text-sm gap-x-3 gap-y-8 lg:w-2/3 sm:grid-cols-4">
             <div className="space-y-3">
@@ -145,7 +147,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="py-6 text-sm text-center text-text">
+        <div className="py-6 text-sm text-center text-tarnary">
           &copy; {year} <Link to="/">swiftPay</Link>. All rights reserved.
         </div>
       </footer>

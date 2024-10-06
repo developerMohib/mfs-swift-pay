@@ -60,7 +60,7 @@ const ServiceCardSlider = () => {
         {servicesData?.map((service) => (
           <div key={service.id}>
             {/* Each slide content */}
-            <div className="bg-white md:mx-2 md:mt-5">
+            <div className="bg-bg md:mx-2 md:mt-5">
               <div className="px-4 py-6 mx-2 border-2 border-tarnary rounded-md">
                 <h1 className="text-2xl md:text-4xl font-semibold text-tarnary mb-6">
                {service.service}
