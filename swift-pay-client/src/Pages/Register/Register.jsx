@@ -20,6 +20,7 @@ const Register = () => {
     const userNID = form.nid.value;
     const userRole = form.accountType.value;
     const password = form.password.value;
+    console.log('user role', userRole)
     const userData = {
       userName,
       userPhone,
@@ -31,8 +32,16 @@ const Register = () => {
     };
 
     try {
+      let apiURL = " ";
+      if(userRole === "Agent"){
+        apiURL = "/registerAgent"
+      }
+      if(userRole === "User"){
+        apiURL = "/registerUser"
+      }
+
       // create user
-      const response = await axiosPublic.post("/registerUsers", userData);
+      const response = await axiosPublic.post(apiURL, userData);
 
       if (response?.data?.message) {
         toast.success("Account created successfully!");
@@ -77,9 +86,7 @@ const Register = () => {
                 Register now!
               </h1>
               <p className="py-6 text-left ">
-                Provident cupiditate voluptatem et in. Quaerat fugiat ut
-                assumenda excepturi exercitationem quasi. In deleniti eaque aut
-                repudiandae et a id nisi.
+              Join SwiftPay today for fast, secure, and effortless money transfers. Our platform offers a seamless experience, making local and international transactions hassle-free. With top-notch security, your funds are always protected. Sign up now and start enjoying instant, reliable payments at your fingertips!
               </p>
             </div>
 

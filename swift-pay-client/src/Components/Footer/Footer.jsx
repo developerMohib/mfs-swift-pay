@@ -7,7 +7,6 @@ const Footer = () => {
   const date = new Date();
   const year = date.getFullYear();
   return (
-    <div>
       <footer className="px-4 divide-y bg-bg text-tarnary">
         <div className="flex flex-col justify-between py-10 mx-auto space-y-8 lg:flex-row lg:space-y-0">
           <div className="lg:w-1/3">
@@ -151,7 +150,6 @@ const Footer = () => {
           &copy; {year} <Link to="/">swiftPay</Link>. All rights reserved.
         </div>
       </footer>
-    </div>
   );
 };
 

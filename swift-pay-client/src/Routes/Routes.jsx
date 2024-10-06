@@ -17,6 +17,7 @@ import UserManage from "../Pages/Dashboard/Admin/UserManage/UserManage";
 import AgentTransection from "../Pages/Dashboard/Agent/AgentTransection/AgentTransection";
 import CashOutRequ from "../Pages/Dashboard/Agent/CashOutRequ/CashOutRequ";
 import CashInRequ from "../Pages/Dashboard/Agent/CashInRequ/CashInRequ";
+import AdminLogin from "../Pages/AdminLogin/AdminLogin";
 
 export const router = createBrowserRouter([
   {
@@ -44,16 +45,16 @@ export const router = createBrowserRouter([
         path: "/sign-up",
         element: <Register />,
       },
+      {
+        path: "/user/profile",
+        element: <Profile />,
+      },      
 
       // Here User route added
       // Here User route added
       {
         path: "user",
         children: [
-          {
-            path: "profile",
-            element: <Profile />,
-          },
           {
             path: "cash-in",
             element: <CashInto />,
@@ -99,7 +100,7 @@ export const router = createBrowserRouter([
         path: "admin",
         children: [
           {
-            path: "transection",
+            path: "transaction",
             element: <AllTransition />,
           },
           {
@@ -113,5 +114,9 @@ export const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: "/wp-admin",
+    element: <AdminLogin />,
   },
 ]);

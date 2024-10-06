@@ -72,7 +72,6 @@ const Navbar = () => {
           <NavLink to="/">Home</NavLink>
           {role === "User" && (
             <>
-              <NavLink to="user/profile">Profile</NavLink>
               <NavLink to="user/cash-in">Cash In</NavLink>
               <NavLink to="user/cash-out">Cash Out</NavLink>
               <NavLink to="user/send-money">Send Money</NavLink>
@@ -142,6 +141,8 @@ const Navbar = () => {
         </div>
 
         {user ? (
+          <>
+          <Link to="/user/profile" > <img title={user?.userName} className="h-8 rounded-full" src={user?.userPhoto} alt={user?.userName} /> </Link>
           <button
             onClick={handleLogout}
             className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-bg font-medium transition-all duration-200"
@@ -149,6 +150,7 @@ const Navbar = () => {
             {" "}
             Logout
           </button>
+          </>
         ) : (
           <button className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-bg font-medium transition-all duration-200">
             {" "}
