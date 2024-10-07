@@ -1,8 +1,9 @@
+import ImgFileUp from "../ImgFileUp/ImgFileUp";
 
 const HomeAdmin = () => {
     return (
         <div>
-            <h1>Home For Admin</h1>
+            <ImgFileUp />
         </div>
     );
 };

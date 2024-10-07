@@ -25,6 +25,7 @@ const corsOptions = {
     "http://localhost:5173",
     "http://localhost:8000",
     "https://swift-pay-server-lemon.vercel.app",
+    "https://swift-pay-money-transfer.netlify.app"
   ], // Allowed origins
   credentials: true, // Enable credentials (cookies, authorization headers, etc.)
   optionsSuccessStatus: 200,
