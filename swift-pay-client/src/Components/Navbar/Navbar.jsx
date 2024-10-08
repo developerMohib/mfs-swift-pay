@@ -11,6 +11,7 @@ import logo from "/swift-pay-logo.png";
 import { UserContext } from "../../AuthProvider/AuthProvider";
 import ThemeChanger from "../../Features/ThemeChanger/ThemeChanger";
 import "./navbar.css";
+import useAdmin from "../../Hooks/useAdmin";
 
 const Navbar = () => {
   const menuRef = useRef(null);
@@ -21,9 +22,9 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [rotating, setRotating] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
-
+  const { admin } = useAdmin();
   // const imgUrl = localStorage.getItem('uploadedImage');
-  // console.log('img',user)
+  console.log("img", admin);
 
   const handleMenu = () => {
     setRotating(true);
@@ -109,7 +110,9 @@ const Navbar = () => {
   return (
     <header
       className={`px-4 py-1 text-tarnary shadow transition-all duration-500 ${
-        isSticky ? "sticky top-0 w-full z-50 bg-bg shadow-lg backdrop-blur-md" : ""
+        isSticky
+          ? "sticky top-0 w-full z-50 bg-bg shadow-lg backdrop-blur-md"
+          : ""
       }`}
     >
       <div className="flex items-center md:gap-x-4 ">
@@ -146,14 +149,22 @@ const Navbar = () => {
 
         {user ? (
           <>
-          <Link to="/user/profile" > <img title={user?.userName} className="h-8 rounded-full" src={user?.userPhoto} alt={user?.userName} /> </Link>
-          <button
-            onClick={handleLogout}
-            className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-bg font-medium transition-all duration-200"
-          >
-            {" "}
-            Logout
-          </button>
+            <Link to="/user/profile">
+              {" "}
+              <img
+                title={user?.userName}
+                className="h-8 rounded-full"
+                src={user?.userPhoto}
+                alt={user?.userName}
+              />{" "}
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-bg font-medium transition-all duration-200"
+            >
+              {" "}
+              Logout
+            </button>
           </>
         ) : (
           <button className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-bg font-medium transition-all duration-200">
