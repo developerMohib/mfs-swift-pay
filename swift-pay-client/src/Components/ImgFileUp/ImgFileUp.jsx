@@ -27,6 +27,9 @@ const ImgFileUp = () => {
         });
         if (response.data) {
           toast.success(response.data.message);
+          // console.log('img',response.data)
+          // const imgUrl = response.data.fileUrl;
+          // localStorage.setItem('uploadedImage', imgUrl);
         }
       } catch (error) {
         toast.success(error?.response?.data.message);

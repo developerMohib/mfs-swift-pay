@@ -1,11 +1,32 @@
 import Proptypes from "prop-types";
 import { createContext, useEffect, useState } from "react";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
 
 export const UserContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+const axiosPublic = useAxiosPublic()
+
+
+useEffect(() => {
+  const userData = async () => {
+    try {
+      const response = await axiosPublic.get('/get-admin');
+      const data = response.data[0];
+      console.log( "for admin", data)
+      // setAdminData(response.data); // Save the response data in state
+    } catch (error) {
+      console.error('Error fetching admin data:', error);
+      // setError(error); // Save the error in state
+    }
+  };
+
+  userData(); // Call the async function to fetch data
+}, [axiosPublic]);
+
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");

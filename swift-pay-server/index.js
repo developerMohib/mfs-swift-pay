@@ -36,7 +36,8 @@ const corsOptions = {
 // ---------------------------------- Middleware ----------------------------------
 
 // upload via multer --------------------------------------------------------------
-const folder = "./uploadsProfilePic/";
+// const folder = "./uploadsProfilePic/";
+const folder = "./public/profileImages/";
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, folder);
@@ -95,11 +96,23 @@ mongoose
 app.get("/all-users", async (req, res) => {
   try {
     const users = await User.find(); // Fetch all users
-    res.json(users); // Send the users back as a JSON response
+    res.send(users); // Send the users back as a JSON response
   } catch (error) {
     res.status(500).json({ message: "Error fetching users", error });
   }
 });
+
+// all admin get here
+app.get('/get-admin',async(req,res)=>{
+  try {
+  const admins = await Admin.find();
+  res.status(200).json(admins); // Send the users back as a JSON response
+} catch (error) {
+  res.status(500).json({ message: "Error fetching users", error });
+}
+})
+
+
 
 // Get user by email or phone
 app.post("/loginUser", async (req, res) => {
@@ -152,7 +165,7 @@ app.post("/profile-img", upload.single("profile"), async (req, res) => {
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
   }
-  const imgUrl = `./uploadsProfilePic/${req.file.filename}`;
+  const imgUrl = `./public/profileImages/${req.file.filename}`;
 
   // Optionally, handle or rename/move the file here
   res.status(200).send({

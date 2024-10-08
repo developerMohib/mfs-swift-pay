@@ -22,6 +22,9 @@ const Navbar = () => {
   const [rotating, setRotating] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
 
+  // const imgUrl = localStorage.getItem('uploadedImage');
+  // console.log('img',user)
+
   const handleMenu = () => {
     setRotating(true);
 
@@ -121,6 +124,7 @@ const Navbar = () => {
             <span className="text-primary">swift</span>
             <span className="text-secondary">Pay</span>
           </Link>
+          {/* <div> <img src={imgUrl} alt="" /> </div> */}
           <ul className="items-stretch hidden space-x-3 md:flex">{nav}</ul>
           <button
             ref={menuRef}
