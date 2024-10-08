@@ -1,7 +1,9 @@
+import { toast } from "react-toastify";
 import { useContext, useRef, useState } from "react";
+import { ImSpinner9 } from "react-icons/im";
 import { UserContext } from "../../AuthProvider/AuthProvider";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
-import { toast } from "react-toastify";
+
 
 const ImgFileUp = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -25,11 +27,10 @@ const ImgFileUp = () => {
           },
         });
         if (response.data) {
-          toast.success("File uploaded successfully");
+          toast.success(response.data);
         }
-
-        console.log("File uploaded successfully:", response.data);
       } catch (error) {
+        toast.success(error?.response?.data.message);
         console.error("Error uploading file:", error);
       } finally {
         setLoading(false); // Remove loading state
@@ -101,7 +102,7 @@ const ImgFileUp = () => {
           onClick={handleSubmit}
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-md w-full mt-6 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-500 dark:focus:ring-opacity-50"
         >
-          {loading ? "Uploading..." : "Upload Image"}
+          {loading ? <ImSpinner9 className="text-2xl" /> : "Upload Image"}
         </button>
       </div>
 
