@@ -43,9 +43,9 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // control file name like -> important file.png => important-file-time(forUni).png
-    const fileExt = path.extname(file?.originalname); 
+    const fileExt = path.extname(file?.originalname);
     const filename =
-      (file.originalname 
+      (file.originalname
         ? file.originalname
             .replace(fileExt, "") // here your file name will be -> important file
             .toLowerCase()
@@ -152,9 +152,13 @@ app.post("/profile-img", upload.single("profile"), async (req, res) => {
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
   }
+  const imgUrl = `./uploadsProfilePic/${req.file.filename}`;
 
   // Optionally, handle or rename/move the file here
-  res.status(200).send("File uploaded successfully!");
+  res.status(200).send({
+    message: "File uploaded successfully!",
+    fileUrl: imgUrl,
+  });
 });
 
 // Route handler for the root URL (for testing server)

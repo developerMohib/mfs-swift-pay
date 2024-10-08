@@ -4,7 +4,6 @@ import { ImSpinner9 } from "react-icons/im";
 import { UserContext } from "../../AuthProvider/AuthProvider";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 
-
 const ImgFileUp = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -27,7 +26,7 @@ const ImgFileUp = () => {
           },
         });
         if (response.data) {
-          toast.success(response.data);
+          toast.success(response.data.message);
         }
       } catch (error) {
         toast.success(error?.response?.data.message);
