@@ -1,25 +1,49 @@
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { UserContext } from "../../AuthProvider/AuthProvider";
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import { toast } from "react-toastify";
 
 const ImgFileUp = () => {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { user } = useContext(UserContext);
-  
-  const handleSubmit = (e) => {
+  const formRef = useRef(null);
+  const axiosPublic = useAxiosPublic();
+  // upload file in server
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (selectedFile) {
-      console.log("File ready for upload:", selectedFile);
-      // Add file upload logic here, such as sending the file to a server
+      const formData = new FormData();
+      formData.append("profile", selectedFile);
+
+      try {
+        // Send the image file to the backend (adjust the URL to your backend endpoint)
+        const response = await axiosPublic.post("/profile-img", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        if (response.data) {
+          toast.success("File uploaded successfully");
+        }
+
+        console.log("File uploaded successfully:", response.data);
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      } finally {
+        setLoading(false); // Remove loading state
+      }
     } else {
       console.log("No file selected");
     }
   };
 
+  // it's for preview
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file); // Store the file in state
-      console.log("Selected file:", file);
     }
   };
 
@@ -31,12 +55,14 @@ const ImgFileUp = () => {
         </h2>
 
         <form
+          ref={formRef}
+          action="/submit"
           id="uploadForm"
-          onSubmit={handleSubmit}
           className="relative border-2 border-dashed border-bg rounded-md px-6 py-8"
         >
           <input
             type="file"
+            name="profile"
             className="hidden"
             id="fileInput"
             accept="image/*" // Ensures only image files can be selected
@@ -44,7 +70,8 @@ const ImgFileUp = () => {
           />
 
           <svg
-            className="mx-auto h-16 w-16 text-gray-400 dark:text-gray-300 mb-4"
+            onClick={() => document.getElementById("fileInput").click()}
+            className="mx-auto h-16 w-16 text-gray-400 dark:text-gray-300 mb-4 cursor-pointer"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -70,10 +97,11 @@ const ImgFileUp = () => {
         </form>
 
         <button
-          onClick={() => document.getElementById("fileInput").click()} 
+          disabled={loading}
+          onClick={handleSubmit}
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-md w-full mt-6 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-500 dark:focus:ring-opacity-50"
         >
-          Upload
+          {loading ? "Uploading..." : "Upload Image"}
         </button>
       </div>
 

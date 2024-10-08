@@ -1,6 +1,7 @@
 // Import necessary modules
 const express = require("express");
 const mongoose = require("mongoose");
+const multer = require("multer");
 const cors = require("cors"); // Import CORS middleware for cross-origin requests
 require("dotenv").config(); // Load environment variables from .env file
 const createUser = require("./Routes/create.user");
@@ -32,6 +33,12 @@ const corsOptions = {
 };
 
 // ---------------------------------- Middleware ----------------------------------
+
+// upload via multer --------------------------------------------------------------
+const folder = "./uploadsProfilePic/"
+let upload = multer({
+  dest : folder
+});
 // ---------------------------------- Middleware ----------------------------------
 app.use(express.json());
 app.use(cors(corsOptions));
@@ -103,6 +110,17 @@ app.post("/loginAdmin", loginAdmin);
 // route to create a new user
 app.use(createUser);
 app.use(createAgent);
+
+// profile image upload
+app.post("/profile-img", upload.single("profile"), async (req, res)=>{
+  
+  if (!req.file) {
+    return res.status(400).send('No file uploaded.');
+  }
+
+  // Optionally, handle or rename/move the file here
+  res.status(200).send('File uploaded successfully!');
+})
 
 // Route handler for the root URL (for testing server)
 app.get("/", (req, res) => {
