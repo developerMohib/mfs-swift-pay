@@ -17,13 +17,13 @@ const AdminLogin = () => {
     const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
-    
+
     const adminData = { name, email, password };
 
     try {
       // Make the POST request to the server
       const response = await axiosPublic.post("/loginAdmin", adminData);
-console.log(response)
+      console.log(response);
       // Check if the response is successful
       if (response?.status === 200) {
         toast.success("Log in successfully!");

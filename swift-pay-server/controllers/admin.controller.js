@@ -1,7 +1,8 @@
 const { comparePassword } = require("../authHelper/authHelpler");
 const { Admin } = require("../models/userSchema");
+
 // log in admin
-const loginAdmin = async (req, res) => {
+const loginAdmin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     console.log("email", email, password);
@@ -32,11 +33,22 @@ const loginAdmin = async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       message: "Admin Authentication failed, log in error.",
       error: error.message,
     });
+    next(error);
   }
 };
 
-module.exports = { loginAdmin };
+const getAdmin = async (req, res, next) => {
+  try {
+    const admins = await Admin.find();
+    res.status(200).json(admins); // Send the users back as a JSON response
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching users", error });
+    next(error);
+  }
+};
+
+module.exports = { loginAdmin, getAdmin };

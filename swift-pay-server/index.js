@@ -1,26 +1,26 @@
-// Import necessary modules
 const express = require("express");
-const path = require("path");
 const mongoose = require("mongoose");
 const multer = require("multer");
-const cors = require("cors"); // Import CORS middleware for cross-origin requests
-require("dotenv").config(); // Load environment variables from .env file
-const createUser = require("./Routes/create.user");
-const createAgent = require("./Routes/create.agent");
-const { loginAdmin } = require("./controllers/admin.controller");
-// bcryptjs function here
-const { User, Admin } = require("./models/userSchema");
-const { comparePassword } = require("./authHelper/authHelpler");
+const path = require("path");
+const cors = require("cors");
+require("dotenv").config();
 
-// Set up port from environment variables or default to 8000
-const port = process.env.PORT || 8000;
-
-// ---------------------------- create here an express app ------------------------
-// Create an Express app
+// Initialize the Express app
 const app = express();
 
-// ---------------------------------- CORS OPTION ----------------------------------
-// ---------------------------------- CORS OPTION ----------------------------------
+// Middleware for parsing JSON
+app.use(express.json());
+
+// ---------------------------------- Database Connection ----------------------------------
+mongoose
+  .connect(process.env.MongoDB_url)
+  .then(() => {
+    console.log("MongoDB connection successful");
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
+
 // CORS options to allow requests only from specific origins
 const corsOptions = {
   origin: [
@@ -33,10 +33,10 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-// ---------------------------------- Middleware ----------------------------------
+// middle ware
+app.use(cors(corsOptions));
 
-// upload via multer --------------------------------------------------------------
-// const folder = "./uploadsProfilePic/";
+// upload via multer
 const folder = "./public/profileImages/";
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -76,131 +76,60 @@ let upload = multer({
     }
   },
 });
-// ---------------------------------- Middleware ----------------------------------
-app.use(express.json());
-app.use(cors(corsOptions));
 
-// ---------------------------------- mongodb ----------------------------------
-// ---------------------------------- mongoose ---------------------------------
-mongoose
-  .connect(process.env.MongoDB_url)
-  .then(() => {
-    console.log("mongoDB connection successfully");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+// Import route files
+const createUserRoute = require("./Routes/user.routes");
+const createAgentRoute = require("./Routes/agent.routes");
+const adminRoute = require("./Routes/admin.routes");
+const alluserRoute = require("./Routes/user.routes");
+const allAgentRoute = require("./Routes/agent.routes");
+const loginUserRoute = require("./Routes/user.routes");
 
-// ---------------------------------- Route Here --------------------------------
-// testing purpose all user get
-app.get("/all-users", async (req, res) => {
-  try {
-    const users = await User.find(); // Fetch all users
-    res.send(users); // Send the users back as a JSON response
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching users", error });
-  }
-});
+// controller function files
+const { loginAdmin } = require("./controllers/admin.controller");
 
-// all admin get here
-app.get('/get-admin',async(req,res)=>{
-  try {
-  const admins = await Admin.find();
-  res.status(200).json(admins); // Send the users back as a JSON response
-} catch (error) {
-  res.status(500).json({ message: "Error fetching users", error });
-}
-})
+// Define API routes
+app.use("/user", createUserRoute);
+app.use("/login", loginUserRoute);
+app.use("/all", alluserRoute);
 
+app.use("/agent", createAgentRoute);
+app.use("/all", allAgentRoute);
 
+app.use("/admin", adminRoute); 
+app.use("/admin", adminRoute); 
 
-// Get user by email or phone
-app.post("/loginUser", async (req, res) => {
-  try {
-    const { phoneOrEmail, password } = req.body;
-
-    // Find user by email or phone
-    const query = {
-      $or: [{ userEmail: phoneOrEmail }, { userPhone: phoneOrEmail }],
-    };
-
-    const user = await User.findOne(query);
-
-    // If user is not found
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found. Check your email/phone and try again.",
-      });
-    }
-
-    // Password validation
-    const isPassValid = await comparePassword(password, user.password);
-    if (!isPassValid) {
-      return res.status(401).json({ message: "Invalid password" });
-    }
-
-    // Authentication successful
-    return res.status(200).json({
-      message: "Authentication successful",
-      user, // Send the user object in the response
-    });
-  } catch (error) {
-    // Handle any server errors
-    return res.status(500).json({
-      message: "Authentication failed, log in error.",
-      error: error.message,
-    });
-  }
-});
-
-// Admin login route
-app.post("/loginAdmin", loginAdmin);
-
-// route to create a new user
-app.use(createUser);
-app.use(createAgent);
-
-// profile image upload
-app.post("/profile-img", upload.single("profile"), async (req, res) => {
+// Profile image upload route
+app.post("/profile-img", upload.single("profile"), (req, res) => {
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
   }
   const imgUrl = `./public/profileImages/${req.file.filename}`;
-
-  // Optionally, handle or rename/move the file here
   res.status(200).send({
     message: "File uploaded successfully!",
     fileUrl: imgUrl,
   });
 });
 
-// Route handler for the root URL (for testing server)
+
+// Test route to check server status
 app.get("/", (req, res) => {
-  res.status(500).send("swiftPay server is ready");
+  res.status(200).send("swiftPay server is ready");
 });
 
-// --------------------------------- Error handling ---------------------------------
-// --------------------------------- Error handling ---------------------------------
+// -------------------- Error Handling --------------------
 app.use((err, req, res, next) => {
-  if (err) {
-    if (err instanceof multer.MulterError) {
-      res.status(500).send("There was an uploaded error !! ");
-    } else {
-      res.status(500).json({
-        message: err.message || "Internal Server Error",
-        error: err, // optional, remove in production for security reasons
-      });
-    }
-  } else {
-    // If no specific error, pass control to the next middleware
-    res.status(500).json({
-      message: "An unexpected error occurred",
-    });
+  console.error(err); // Log error for debugging
+  if (err instanceof multer.MulterError) {
+    return res.status(500).send("There was an upload error!!");
   }
+  res.status(500).json({
+    message: err.message || "Internal Server Error",
+  });
 });
 
-// --------------------------------- Port Listen ---------------------------------
-// Start the server and listen on the specified port
+// -------------------- Server Setup --------------------
+const port = process.env.PORT || 8000;
 app.listen(port, () => {
   console.log(`swiftPay server is listening on port ${port}`);
 });

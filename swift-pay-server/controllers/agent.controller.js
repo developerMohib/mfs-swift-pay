@@ -1,10 +1,6 @@
-const express = require("express");
-const router = express.Router();
-const { User } = require("../models/userSchema");
 const { hashPassword } = require("../authHelper/authHelpler");
-
-// POST route to create a new user
-router.post("/registerUser", async (req, res) => {
+const { Agent } = require("../models/userSchema");
+const createAgent = async (req, res, next) => {
   try {
     const {
       userName,
@@ -31,7 +27,7 @@ router.post("/registerUser", async (req, res) => {
     // Check if the email already exists in the database
     const query = { $or: [{ userEmail: userEmail }, { userPhone: userPhone }] };
 
-    const existingUser = await User.findOne(query);
+    const existingUser = await Agent.findOne(query);
 
     if (existingUser) {
       const usedEmail =
@@ -41,15 +37,13 @@ router.post("/registerUser", async (req, res) => {
       const usedValue = usedEmail || usedPhone;
 
       // If email already exists, send an error response
-      return res
-        .status(400)
-        .send({
-          error: `${usedValue} already in use. Please use a different ${usedValue}.`,
-        });
+      return res.status(400).send({
+        error: `${usedValue} already in use. Please use a different ${usedValue}.`,
+      });
     }
 
     // Create a new user
-    const newUser = new User(userData);
+    const newUser = new Agent(userData);
 
     // Save the user to the database
     await newUser.save();
@@ -62,5 +56,15 @@ router.post("/registerUser", async (req, res) => {
       .status(400)
       .send({ error: "Failed to create user", details: error.message });
   }
-});
-module.exports = router;
+};
+
+const allAgent = async (req, res, next) => {
+  try {
+    const users = await User.find(); // Fetch all users
+    res.send(users); // Send the users back as a JSON response
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching users", error });
+    next(error);
+  }
+};
+module.exports = { createAgent, allAgent };

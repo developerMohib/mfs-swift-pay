@@ -7,7 +7,7 @@ const useAdmin = () => {
         queryKey: ["admin"],
         queryFn: async () => {
             // To Do - get specific admin
-          const res = await axiosPublic.get("/get-admin");
+          const res = await axiosPublic.get("/admin/find");
           return res?.data[0];
         },
       });
