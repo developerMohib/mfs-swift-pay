@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Navbar from "./Components/Navbar/Navbar";
 import Footer from "./Components/Footer/Footer";
 import { ToastContainer, Slide } from "react-toastify";
+import BottomTop from "./Features/BottomTop/BottomTop";
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
         <Outlet />
       </div>
       <Footer />
-      
+      <BottomTop />    
       {/* Toast here */}
       <ToastContainer
         position="top-right"

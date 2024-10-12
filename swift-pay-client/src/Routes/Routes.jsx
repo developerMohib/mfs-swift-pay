@@ -119,4 +119,8 @@ export const router = createBrowserRouter([
     path: "/wp-admin",
     element: <AdminLogin />,
   },
+  {
+    path:"*",
+    element: <ErrorPage />,
+  },
 ]);
