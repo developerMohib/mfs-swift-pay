@@ -20,7 +20,6 @@ const Register = () => {
     const userNID = form.nid.value;
     const userRole = form.accountType.value;
     const password = form.password.value;
-    console.log('user role', userRole)
     const userData = {
       userName,
       userPhone,
