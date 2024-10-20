@@ -8,6 +8,7 @@ import { UserContext } from "../../AuthProvider/AuthProvider";
 const Login = () => {
   const { login, setLoading } = useContext(UserContext);
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false)
   const [showPass, setShowPass] = useState(false);
   const [rotating, setRotating] = useState(false);
   const axiosPublic = useAxiosPublic();
@@ -18,17 +19,20 @@ const Login = () => {
     const phoneOrEmail = form.phoneNumber.value;
     const password = form.password.value;
     const userData = { phoneOrEmail, password };
+    // console.log("lgin ", userData)
 
     try {
       // Make the POST request to the server
-      const response = await axiosPublic.post("/loginUser", userData);
+      const response = await axiosPublic.post("/login/user", userData);
 
       // Check if the response is successful
       if (response?.status === 200) {
         toast.success("Log in successfully!");
         
         // navigate user to home page and user data store in local storage
-        const user = response.data.user;
+        const user = response?.data?.user;
+        console.log('from beck end', user)
+        // const saveUserLocal = {}
         login(user); 
         setLoading(true) 
         form.reset();
@@ -119,12 +123,14 @@ const Login = () => {
                   placeholder="password"
                   className="input input-bordered"
                   required
+                  onChange={(e)=>setOpen(e.target.value)}
                 />
-                <ShowHidePass
+                {open && <ShowHidePass
                   showPass={showPass}
                   handleShowHidePass={handleShowHidePass}
                   rotating={rotating}
-                />
+                />}
+                
               </div>
               <div className="form-control mt-6">
                 <button className="btn bg-primary hover:bg-secondary text-lg border-none text-bg w-full">

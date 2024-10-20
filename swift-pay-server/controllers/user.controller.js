@@ -70,6 +70,7 @@ const loginUser = async (req, res, next) => {
     };
 
     const user = await User.findOne(query);
+    console.log('65 user control', user)
 
     // If user is not found
     if (!user) {

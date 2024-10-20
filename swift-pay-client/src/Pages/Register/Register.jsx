@@ -5,6 +5,7 @@ import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import ShowHidePass from "../../Features/ShowHidePass/ShowHidePass";
 
 const Register = () => {
+  const [open, setOpen] = useState(false)
   const [showPass, setShowPass] = useState(false);
   const [rotating, setRotating] = useState(false);
   const axiosPublic = useAxiosPublic();
@@ -184,12 +185,14 @@ const Register = () => {
                   placeholder="password"
                   className="input input-bordered"
                   required
+                  onChange={(e)=>setOpen(e.target.value)}
                 />
-                <ShowHidePass
+                {open && <ShowHidePass
                   showPass={showPass}
                   handleShowHidePass={handleShowHidePass}
                   rotating={rotating}
-                />
+                /> }
+                
               </div>
 
               <div className="form-control mt-4 col-span-2 flex justify-center items-center">

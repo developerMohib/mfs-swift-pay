@@ -11,7 +11,6 @@ import logo from "/swift-pay-logo.png";
 import { UserContext } from "../../AuthProvider/AuthProvider";
 import ThemeChanger from "../../Features/ThemeChanger/ThemeChanger";
 import "./navbar.css";
-import useAdmin from "../../Hooks/useAdmin";
 
 const Navbar = () => {
   const menuRef = useRef(null);
@@ -22,9 +21,8 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [rotating, setRotating] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
-  const { admin } = useAdmin();
   // const imgUrl = localStorage.getItem('uploadedImage');
-  console.log("img", admin);
+
 
   const handleMenu = () => {
     setRotating(true);
