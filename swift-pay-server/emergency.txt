@@ -1,0 +1,1 @@
+MongoDB_url=mongodb+srv://swiftPayUserName:4aGyX5m6n416wF1P@swiftpay.ieakn.mongodb.net/swiftPayDB?retryWrites=true&w=majority&appName=swiftPay

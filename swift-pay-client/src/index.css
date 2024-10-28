@@ -13,6 +13,7 @@
         --logo-primary-color: rgb(34, 197, 94); /* logo text color, -- green */ 
         --logo-secondary-color: rgb(249, 115, 22); /* logo text color, -- orange */
         --text-black: rgb(15, 23, 42); /* strong text color*/
+        --border-black: rgb(15, 23, 42); /* border color*/
         --text-color: rgb(51, 51, 51) ; /* General text color -- dark gray */
         --bg-color: rgb(244, 244, 249); /* Background color -- white */
     }
@@ -21,7 +22,7 @@
     [data-theme="dark"] {
         --logo-primary-color: rgb(34, 197, 94); /* logo text color, -- green */ 
         --logo-secondary-color: rgb(249, 115, 22); /* logo text color, -- orange */
-        --bg-color: rgb(18, 18, 18); 
+        --border-black: rgb(255, 255, 255); /* border color*/
         --text-black: rgb(240, 244, 255); /* strong text color*/
         --text-color: rgb(204, 204, 209); /* General text color for dark theme */
     }

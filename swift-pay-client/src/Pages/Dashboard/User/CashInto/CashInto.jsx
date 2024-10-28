@@ -19,7 +19,7 @@ const CashInto = () => {
         className="md:w-1/2 bg-bg px-20 py-8 rounded-lg"
       >
         <h3 className="text-3xl text-center ">
-          User<span className="text-primary"> Cash In </span>{" "}
+          <span className="text-primary"> Cash In </span>{" "} Request
         </h3>
         <div className="form-control mt-5">
           <label className="label">

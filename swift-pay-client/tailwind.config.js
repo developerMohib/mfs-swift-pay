@@ -12,6 +12,7 @@ export default {
         tarnary : 'var(--text-black)', //
         text: "rgba(var(--text-color))",
         bg: "rgba(var(--bg-color))",
+        border : "rgba(var(--border-black)",
       }
     },
   },
