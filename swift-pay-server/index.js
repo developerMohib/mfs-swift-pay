@@ -128,6 +128,22 @@ app.use((err, req, res, next) => {
   });
 });
 
+
+// Global Error Handling Middleware
+app.use("*", (req, res, next) => {
+  const error = new Error(`Cannot find ${req.originalUrl} on this server!`);
+  error.status = 404;
+  next(error);
+});
+// Error handling middleware (Handles all errors)
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
+
+
 // -------------------- Server Setup --------------------
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
