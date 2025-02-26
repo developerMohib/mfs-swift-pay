@@ -7,5 +7,5 @@ const router = (0, express_1.Router)();
 // POST route to create a new user
 router.post('/register', authController_1.registerUser);
 router.post('/login', authController_1.login);
-router.post('/login', authController_1.login);
+// router.post('/login', login);
 exports.authRouter = router;

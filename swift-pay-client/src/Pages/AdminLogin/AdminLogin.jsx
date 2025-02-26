@@ -1,8 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import ShowHidePass from "../../Features/ShowHidePass/ShowHidePass";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../AuthProvider/AuthProvider";
 
 const AdminLogin = () => {
@@ -21,18 +21,30 @@ const AdminLogin = () => {
     const adminData = { name, email, password };
 
     try {
-      // Make the POST request to the server
-      const response = await axiosPublic.post("/loginAdmin", adminData);
-      console.log(response);
-      // Check if the response is successful
-      if (response?.status === 200) {
+      const response = await axiosPublic.post("/admin/login", adminData);
+      
+      if (response?.status=== 200) {
+        console.log(response);
         toast.success("Log in successfully!");
+        const user = response.data.admin || null;
+        console.log(user)
+        // const token = response.data.token || null;
 
-        // navigate user to home page and user data store in local storage
-        const user = response.data.user;
+        if (!user) {
+          toast.error("Invalid response from server!");
+          return;
+        }
+
+        console.log("From backend:", user);
+
+        localStorage.setItem("token", );
+        localStorage.setItem("user", JSON.stringify(user));
+
         login(user);
         e.target.reset();
-        navigate("/");
+        
+        console.log("Navigating to home...");
+        navigate("/", { replace: true }); 
       }
     } catch (error) {
       // Handle errors (e.g., invalid credentials, server error)
@@ -77,7 +89,7 @@ const AdminLogin = () => {
                 placeholder=" "
               />
               <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[4.1] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:!border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:!border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
-                Name
+                Name (Optional)
               </label>
             </div>
             <div className="relative h-11 w-full min-w-[200px]">

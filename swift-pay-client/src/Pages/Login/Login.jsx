@@ -37,7 +37,6 @@ const Login = () => {
 
         console.log("From backend:", user);
 
-        // ✅ Store token & user data properly
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
 

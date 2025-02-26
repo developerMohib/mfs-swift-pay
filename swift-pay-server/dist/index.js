@@ -10,9 +10,11 @@ const authRoutes_1 = require("./routes/authRoutes");
 const userRoutes_1 = require("./routes/userRoutes");
 const agentRoutes_1 = require("./routes/agentRoutes");
 const path_1 = __importDefault(require("path"));
+const adminRoutes_1 = require("./routes/adminRoutes");
 // parsers
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
+app.use('/admin', adminRoutes_1.adnminRouter);
 // my routes
 app.use('/user', authRoutes_1.authRouter);
 app.use('/all', userRoutes_1.userRouter);

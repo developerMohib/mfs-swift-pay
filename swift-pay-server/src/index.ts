@@ -5,10 +5,12 @@ import { authRouter } from './routes/authRoutes';
 import { userRouter } from './routes/userRoutes';
 import { agentRouter } from './routes/agentRoutes';
 import path from 'path';
+import { adnminRouter } from './routes/adminRoutes';
 // parsers
 app.use(express.json());
 app.use(cors());
 
+app.use('/admin',adnminRouter)
 // my routes
 app.use('/user',authRouter)
 app.use('/all',userRouter)

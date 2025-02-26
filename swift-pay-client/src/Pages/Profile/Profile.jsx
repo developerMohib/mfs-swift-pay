@@ -1,7 +1,7 @@
 const Profile = () => {
   const data = localStorage.getItem("user");
   const user = JSON.parse(data);
-  console.log("user", user);
+  // console.log("user", user);
   return (
     <div className="flex justify-center items-center mt-20">
       <div className="w-full max-w-sm bg-bg rounded-lg">

@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
-import config from './config/db';
+import config from './config/config';
 import app from './index';
 
 
 
 // connect mongodb with mongose
-const database_Url = config.database_url;
+const database_Url = config.databaseUrl;
 const port = config.port;
 
 async function main() {

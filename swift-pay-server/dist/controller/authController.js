@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = exports.registerUser = void 0;
+// import jwt from 'jsonwebtoken';
 const User_1 = require("../model/User");
 const Agent_1 = require("../model/Agent");
 const authMiddleware_1 = require("../middleware/authMiddleware");
@@ -102,10 +103,11 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Generate JWT token
         // const token = jwt.sign(
-        //   { id: account._id, role: account.userRole },
+        //   { id: account._id, role: account.userRole }, // Include role in the token
         //   process.env.JWT_SECRET as string,
         //   { expiresIn: '1h' },
         // );
+        // console.log(token);
         res.status(200).json({
             message: 'Login successful',
             user: account, // Send userRole to frontend

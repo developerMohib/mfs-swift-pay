@@ -48,15 +48,7 @@ export const router = createBrowserRouter([
       {
         path: "/user/profile",
         element: <Profile />,
-      },      
-      {
-        path: "/agent/profile",
-        element: <Profile />,
-      },      
-      {
-        path: "/admin/profile",
-        element: <Profile />,
-      },      
+      }, 
 
       // Here User route added
       // Here User route added
@@ -99,6 +91,10 @@ export const router = createBrowserRouter([
             path: "cashout",
             element: <CashOutRequ />,
           },
+          {
+            path: "profile",
+            element: <Profile />,
+          },
         ],
       },
 
@@ -119,6 +115,10 @@ export const router = createBrowserRouter([
             path: "manage-users",
             element: <UserManage />,
           },
+          {
+            path: "profile",
+            element: <Profile />,
+          }, 
         ],
       },
     ],

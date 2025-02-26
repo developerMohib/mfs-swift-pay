@@ -11,6 +11,8 @@ const SendMoney = () => {
     const data = { receiver, amount, password };
     console.log(data);
   };
+
+  
   return (
     <div className="w-full flex justify-center items-center mt-10">
       <form
@@ -21,6 +23,7 @@ const SendMoney = () => {
           {" "}
           <span className="text-primary">Send Money</span> to User{" "}
         </h3>
+        <p className="my-3">For Every Send Money over 100 BDT will charge 5.00 BDT as Fee</p>
         <div className="form-control mt-5">
           <label className="label">
             <span className="label-text text-lg">Receiver Account Number</span>

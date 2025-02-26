@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 import { User } from '../model/User';
 import { Agent } from '../model/Agent';
 import { comparePassword, hashPassword } from '../middleware/authMiddleware';
@@ -114,10 +114,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     // Generate JWT token
     // const token = jwt.sign(
-    //   { id: account._id, role: account.userRole },
+    //   { id: account._id, role: account.userRole }, // Include role in the token
     //   process.env.JWT_SECRET as string,
     //   { expiresIn: '1h' },
     // );
+    // console.log(token);
+
 
     res.status(200).json({
       message: 'Login successful',
