@@ -11,6 +11,7 @@ const Register = () => {
   const axiosPublic = useAxiosPublic();
   const navigate = useNavigate();
   const status = "pending";
+
   const handleRegister = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -30,14 +31,14 @@ const Register = () => {
       password,
       status,
     };
-
+    
     try {
-      let apiURL = " ";
+      let apiURL = "";
       if(userRole === "Agent"){
-        apiURL = "/registerAgent"
+        apiURL = "/register/agent"
       }
       if(userRole === "User"){
-        apiURL = "/registerUser"
+        apiURL = "/register/user"
       }
 
       // create user
@@ -47,10 +48,12 @@ const Register = () => {
         toast.success("Account created successfully!");
 
         // Delay the warning toast by 1 second (1000 ms)
-        setTimeout(() => {
+        console.log('response', response)
+        if(response.data.user.userRole === "Agent"){
           toast.warn("Wait for admin approval!");
-        }, 500);
+        }
         form.reset();
+
         navigate("/sign-in")
       }
     } catch (error) {
@@ -182,7 +185,7 @@ const Register = () => {
                 <input
                   name="password"
                   type={showPass ? "text" : "password"}
-                  placeholder="password"
+                  placeholder="5 digit password"
                   className="input input-bordered"
                   required
                   onChange={(e)=>setOpen(e.target.value)}

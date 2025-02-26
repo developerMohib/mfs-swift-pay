@@ -11,14 +11,14 @@ const app = express();
 // Middleware for parsing JSON
 app.use(express.json());
 
-// ---------------------------------- Database Connection ----------------------------------
+// Database Connection
 mongoose
   .connect(process.env.MongoDB_url)
   .then(() => {
-    console.log("MongoDB connection successful");
+    console.log("MongoDB connection successful !");
   })
   .catch((err) => {
-    console.error("MongoDB connection error:", err);
+    console.error("Uhu, MongoDB connection error:", err);
   });
 
 // CORS options to allow requests only from specific origins
@@ -89,15 +89,15 @@ const loginUserRoute = require("./Routes/user.routes");
 const { loginAdmin } = require("./controllers/admin.controller");
 
 // Define API routes
-app.use("/user", createUserRoute);
+app.use("/register", createUserRoute);
+
 app.use("/login", loginUserRoute);
 app.use("/all", alluserRoute);
 
 app.use("/agent", createAgentRoute);
 app.use("/all", allAgentRoute);
 
-app.use("/admin", adminRoute); 
-app.use("/admin", adminRoute); 
+app.use("/admin", adminRoute);
 
 // Profile image upload route
 app.post("/profile-img", upload.single("profile"), (req, res) => {

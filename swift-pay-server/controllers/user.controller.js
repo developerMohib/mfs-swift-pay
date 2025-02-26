@@ -13,7 +13,7 @@ const createUser = async (req, res, next) => {
       userRole,
       status,
     } = req.body;
-
+console.log('16 user', req.body)
     const hashedPassword = await hashPassword(password);
     const userData = {
       userName,
@@ -23,7 +23,7 @@ const createUser = async (req, res, next) => {
       userNID,
       userRole,
       status,
-      cash: 0,
+      cash: 40,
     };
 
     // Check if the email already exists in the database
@@ -36,7 +36,9 @@ const createUser = async (req, res, next) => {
         existingUser?.userEmail === userEmail ? userEmail : null;
       const usedPhone =
         existingUser?.userPhone === userPhone ? userPhone : null;
-      const usedValue = usedEmail || usedPhone;
+      const usedNID =
+        existingUser?.userNID === userNID ? userNID : null;
+      const usedValue = usedEmail || usedPhone || usedNID;
 
       // If email already exists, send an error response
       return res.status(400).send({

@@ -20,10 +20,12 @@ const baseSchema = new mongoose.Schema({
   userPhone: {
     type: String,
     unique: true,
+    required: true,
   },
   userNID: {
     type: String,
     unique: true,
+    required: true,
   },
   userRole: {
     type: String,
