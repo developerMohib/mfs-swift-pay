@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.allUser = void 0;
+exports.allAgent = void 0;
 const Agent_1 = require("../model/Agent");
-const allUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const allAgent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield Agent_1.Agent.find(); // Fetch all users
         res.send(users); // Send the users back as a JSON response
@@ -21,4 +21,4 @@ const allUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         next(error);
     }
 });
-exports.allUser = allUser;
+exports.allAgent = allAgent;

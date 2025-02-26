@@ -8,7 +8,6 @@ const useUsers = () => {
         queryFn: async () => {
             // To Do - get specific user
           const res = await axiosPublic.get("/all/users");
-          console.log(res)
           return res?.data;
         },
       });

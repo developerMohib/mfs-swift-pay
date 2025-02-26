@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { allUser } from '../controller/userController';
+import { allAgent } from '../controller/agentController';
 
 const router = Router();
 
 // POST route to create a new user
-router.get('/users', allUser);
+router.get('/agent', allAgent);
 
 export const agentRouter = router;

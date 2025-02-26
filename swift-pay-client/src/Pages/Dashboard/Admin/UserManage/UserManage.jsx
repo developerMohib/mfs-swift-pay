@@ -1,12 +1,16 @@
+import { useState } from "react";
 import useUsers from "../../../../Hooks/useUsers";
 
 const UserManage = () => {
-    const { user } = useUsers()
+    const { user, isLoading } = useUsers()
+    const [showBalance, setShowBalance] = useState(null);
     const handleSeeBalance = (id) => {
-        console.log('id', id)
+        setShowBalance(id);
+        setTimeout(() => {
+            setShowBalance(null);
+        }, 1000);
     }
-
-    console.log(' all user', user)
+    if (isLoading) { <p>Loading....</p> }
     return (
         <div className="overflow-x-auto w-full px-2 py-5">
             <h3 className='mb-3 font-bold text-center text-secondary text-2xl'>Manage <span className="text-primary">Users</span></h3>
@@ -29,7 +33,7 @@ const UserManage = () => {
                                 <th>{id + 1}</th>
                                 <td>{u.userName}</td>
                                 <td> {u.userRole}</td>
-                                <td><span className="cursor-pointer hover:text-secondary" onClick={handleSeeBalance}>Tap To See Balance {u.balance} </span></td>
+                                <td><span className="cursor-pointer hover:text-secondary" onClick={() => handleSeeBalance(u._id)}> {showBalance === u._id ? `${u.balance} BDT` : "Tap to see balance"} </span></td>
                                 <td> <button className="p-1 border border-primary rounded-md" >view briefly</button> </td>
                                 <td>
                                     <select

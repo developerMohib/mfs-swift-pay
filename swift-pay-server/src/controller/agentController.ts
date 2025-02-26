@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Agent } from "../model/Agent";
 
-export const allUser = async (
+export const allAgent = async (
   req: Request,
   res: Response,
   next: NextFunction,
