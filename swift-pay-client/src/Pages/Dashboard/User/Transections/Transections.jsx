@@ -11,7 +11,7 @@ const Transections = () => {
     const userId = user?._id
     const { transaction, isLoading } = useTransaction({ userId })
     if (isLoading) <Loader />
-
+    
     // Filter transactions by user name or mobile number
     const filteredTransactions = transaction?.filter(transaction =>
         transaction.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -25,7 +25,7 @@ const Transections = () => {
                 <TransitionHeader />
                 <tbody>
                     {
-                        [0, 1, 2, 3].map(item => <TransitionRow key={item} />)
+                        [0].map(item => <TransitionRow key={item} />)
                     }
                 </tbody>
             </table>

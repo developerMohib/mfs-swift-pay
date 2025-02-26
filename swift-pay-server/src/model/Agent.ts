@@ -19,7 +19,7 @@ const agentSchema = new Schema<IAgent>({
   userEmail: { type: String, required: true, unique: true },
   userNID: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  balance: { type: Number, default: 100000 },
+  balance: { type: Number, default: 0 },
   income: { type: Number, default: 0 },
   userRole: {
     type: String,

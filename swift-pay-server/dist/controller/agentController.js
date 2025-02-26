@@ -26,22 +26,32 @@ const updateStatusAgent = (req, res) => __awaiter(void 0, void 0, void 0, functi
     try {
         const { id } = req.params;
         const { status } = req.body;
+        console.log(24, status);
         // Validate input
         if (!id || !status) {
-            res.status(400).json({ message: 'Agent ID and status are required' });
+            res.status(400).json({ message: "Agent ID and status are required" });
             return;
         }
-        // Update user status
-        const updatedUser = yield Agent_1.Agent.findByIdAndUpdate(id, { status }, { new: true });
-        // Check if user exists
-        if (!updatedUser) {
-            res.status(404).json({ message: 'Agent not found' });
+        // Find the agent by ID
+        const agent = yield Agent_1.Agent.findById(id);
+        if (!agent) {
+            res.status(404).json({ message: "Agent not found" });
             return;
         }
+        // Check if the agent is new and status is being updated to "approved"
+        let bonusAdded = false;
+        if (agent.status === "pending" && status === "active") {
+            agent.balance = (agent.balance || 0) + 100000; // Add first-time bonus
+            bonusAdded = true;
+        }
+        // Update agent status
+        agent.status = status;
+        yield agent.save();
         // Send success response
         res.status(200).json({
             message: `Agent status updated to ${status}`,
-            user: updatedUser,
+            bonusAdded: bonusAdded ? 100000 : 0, // Indicate if bonus was added
+            user: agent,
         });
     }
     catch (error) {

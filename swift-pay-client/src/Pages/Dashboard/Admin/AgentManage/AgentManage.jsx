@@ -67,14 +67,17 @@ const AgentManage = () => {
                                 <td>
                                     <select
                                         name="accountType"
-                                        className={`p-2 border border-primary rounded-md ${u.status === "rejected" ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                                        className={`p-2 border border-primary rounded-md ${u.status === "block" || u.status === "active"
+                                                ? "cursor-not-allowed"
+                                                : "cursor-pointer"
+                                            }`}
                                         value={u.status}
-                                        disabled={u.status === "rejected"}
+                                        disabled={u.status === "block" || u.status === "active"}
                                         onChange={(e) => handleStatusChange(u._id, e.target.value)}
                                     >
                                         <option value="pending">Pending</option>
                                         <option value="active">Active</option>
-                                        <option value="rejected">Rejected</option>
+                                        <option value="block">Rejected</option>
                                     </select>
                                 </td>
                             </tr>
