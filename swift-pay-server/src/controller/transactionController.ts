@@ -9,9 +9,9 @@ export const sendMoney = async (req: Request, res: Response) => {
 
   try {
     const { senderId, receiverPhone, amount } = req.body;
-
+    console.log(12, req.body);
     // Validate input
-    if (!senderId|| !receiverPhone || !amount || amount < 50) {
+    if (!senderId || !receiverPhone || !amount || amount < 50) {
       await session.abortTransaction();
       res.status(400).json({ error: 'Invalid input' });
       return;
@@ -61,14 +61,17 @@ export const sendMoney = async (req: Request, res: Response) => {
 
     await transaction.save({ session });
 
-    // Add fee to admin's income (assuming admin has ID "admin123")
+    const adminId = process.env.ADMIN_ID;
+    const objectId = new mongoose.Types.ObjectId(adminId);
+
     await User.findByIdAndUpdate(
-      'admin123',
-      { $inc: { balance: fee } }, // Increment admin's balance by fee
+      objectId, // Use ObjectId here
+      { $inc: { balance: fee } },
       { session },
     );
 
     await session.commitTransaction();
+
     res.status(200).json({
       message: 'Money sent successfully',
       transaction,

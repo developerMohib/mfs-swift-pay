@@ -8,7 +8,6 @@ const useTransaction = ({ userId }) => {
         queryFn: async () => {
             // To Do - get specific user
             const res = await axiosPublic.get(`/all/transactions/${userId}`);
-            console.log(res)
             return res?.data|| [];
         },
     });

@@ -6,6 +6,7 @@ import { userRouter } from './routes/userRoutes';
 import { agentRouter } from './routes/agentRoutes';
 import path from 'path';
 import { adnminRouter } from './routes/adminRoutes';
+import { transectionRouter } from './routes/transactionRoutes';
 // parsers
 app.use(express.json());
 app.use(cors());
@@ -19,6 +20,8 @@ app.use('/user', userRouter);
 
 app.use('/all', agentRouter);
 app.use('/agent', agentRouter);
+
+app.use('/user', transectionRouter);
 
 // server static files
 app.use(express.static(path.join(__dirname, '../public')));

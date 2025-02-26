@@ -1,5 +1,13 @@
+import { useContext } from "react";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+import { UserContext } from "../../../../AuthProvider/AuthProvider";
+
 const SendMoney = () => {
-  const handleSubmit = (e) => {
+  const axiosPublic = useAxiosPublic()
+  const { user } = useContext(UserContext);
+  console.log(user)
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
 
@@ -10,9 +18,19 @@ const SendMoney = () => {
 
     const data = { receiver, amount, password };
     console.log(data);
+    try {
+      const response = await axiosPublic.post("/user/send-money", {
+        senderId: user._id,
+        receiverId: receiver,
+        amount,
+      });
+      console.log("Transaction Successful:", response.data);
+    } catch (error) {
+      console.log(error.response?.data?.message || "Transaction failed.");
+    }
   };
 
-  
+
   return (
     <div className="w-full flex justify-center items-center mt-10">
       <form

@@ -11,6 +11,7 @@ const userRoutes_1 = require("./routes/userRoutes");
 const agentRoutes_1 = require("./routes/agentRoutes");
 const path_1 = __importDefault(require("path"));
 const adminRoutes_1 = require("./routes/adminRoutes");
+const transactionRoutes_1 = require("./routes/transactionRoutes");
 // parsers
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
@@ -21,6 +22,7 @@ app.use('/all', userRoutes_1.userRouter);
 app.use('/user', userRoutes_1.userRouter);
 app.use('/all', agentRoutes_1.agentRouter);
 app.use('/agent', agentRoutes_1.agentRouter);
+app.use('/user', transactionRoutes_1.transectionRouter);
 // server static files
 app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
 app.get('/', (req, res) => {

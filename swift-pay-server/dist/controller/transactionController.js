@@ -21,6 +21,7 @@ const sendMoney = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     session.startTransaction();
     try {
         const { senderId, receiverPhone, amount } = req.body;
+        console.log(12, req.body);
         // Validate input
         if (!senderId || !receiverPhone || !amount || amount < 50) {
             yield session.abortTransaction();
@@ -61,9 +62,10 @@ const sendMoney = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             fee,
         });
         yield transaction.save({ session });
-        // Add fee to admin's income (assuming admin has ID "admin123")
-        yield User_1.User.findByIdAndUpdate('admin123', { $inc: { balance: fee } }, // Increment admin's balance by fee
-        { session });
+        const adminId = process.env.ADMIN_ID;
+        const objectId = new mongoose_1.default.Types.ObjectId(adminId);
+        yield User_1.User.findByIdAndUpdate(objectId, // Use ObjectId here
+        { $inc: { balance: fee } }, { session });
         yield session.commitTransaction();
         res.status(200).json({
             message: 'Money sent successfully',
