@@ -17,7 +17,6 @@ const Navbar = () => {
   const { user, logout, loading } = useContext(UserContext);
   const role = user?.userRole || null;
   const isAuthenticated = role !== null;
-
   const [open, setOpen] = useState(false);
   const [rotating, setRotating] = useState(false);
   const [isSticky, setIsSticky] = useState(false);

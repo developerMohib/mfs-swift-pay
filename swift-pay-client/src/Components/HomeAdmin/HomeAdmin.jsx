@@ -1,9 +1,8 @@
-import ImgFileUp from "../ImgFileUp/ImgFileUp";
 
 const HomeAdmin = () => {
     return (
-        <div>
-            <ImgFileUp />
+        <div className="h-screen flex items-center justify-center">
+            <h1>Hello world</h1>
         </div>
     );
 };

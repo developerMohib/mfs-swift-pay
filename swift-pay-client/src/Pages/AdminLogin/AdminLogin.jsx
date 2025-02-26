@@ -28,7 +28,7 @@ const AdminLogin = () => {
         toast.success("Log in successfully!");
         const user = response.data.admin || null;
         console.log(user)
-        // const token = response.data.token || null;
+        const token = response.data.token || null;
 
         if (!user) {
           toast.error("Invalid response from server!");
@@ -37,14 +37,12 @@ const AdminLogin = () => {
 
         console.log("From backend:", user);
 
-        localStorage.setItem("token", );
+        localStorage.setItem("token",token );
         localStorage.setItem("user", JSON.stringify(user));
 
         login(user);
         e.target.reset();
-        
-        console.log("Navigating to home...");
-        navigate("/", { replace: true }); 
+        navigate("/admin/profile", { replace: true }); 
       }
     } catch (error) {
       // Handle errors (e.g., invalid credentials, server error)
