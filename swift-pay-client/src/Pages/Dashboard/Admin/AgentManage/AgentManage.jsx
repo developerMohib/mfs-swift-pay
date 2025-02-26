@@ -3,6 +3,7 @@ import useAgent from "../../../../Hooks/useAgent";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import { toast } from "react-toastify";
 import Loader from "../../../../Components/Loader/Loader";
+import { Link } from "react-router-dom";
 
 const AgentManage = () => {
     const { agent, isLoading, refetch } = useAgent()
@@ -43,6 +44,7 @@ const AgentManage = () => {
                     <tr>
                         <th>#</th>
                         <th>Name</th>
+                        <th>Mobile</th>
                         <th>Account Category</th>
                         <th>Balance</th>
                         <th>View Details</th>
@@ -56,18 +58,23 @@ const AgentManage = () => {
                             <tr key={id}>
                                 <th>{id + 1}</th>
                                 <td>{u.userName}</td>
+                                <td>{u.userPhone}</td>
                                 <td> {u.userRole === 'user' ? 'Personal' : 'Agent'}</td>
                                 <td><span className="cursor-pointer hover:text-secondary" onClick={() => handleSeeBalance(u._id)}> {showBalance === u._id ? `${u.balance} BDT` : "Tap to see balance"} </span></td>
-                                <td> <button className="p-1 border border-primary rounded-md" >view briefly</button> </td>
+
+                                <td> <Link to={`/all-transactions/${u.userRole}/${u._id}`} className="p-1 text-secondary hover:underline" >view briefly</Link> </td>
+
                                 <td>
                                     <select
                                         name="accountType"
-                                        className="p-2 border border-primary rounded-md"
+                                        className={`p-2 border border-primary rounded-md ${u.status === "rejected" ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                                         value={u.status}
+                                        disabled={u.status === "rejected"}
                                         onChange={(e) => handleStatusChange(u._id, e.target.value)}
                                     >
                                         <option value="pending">Pending</option>
                                         <option value="active">Active</option>
+                                        <option value="rejected">Rejected</option>
                                     </select>
                                 </td>
                             </tr>

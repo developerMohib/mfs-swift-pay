@@ -18,6 +18,7 @@ import AgentTransection from "../Pages/Dashboard/Agent/AgentTransection/AgentTra
 import CashOutRequ from "../Pages/Dashboard/Agent/CashOutRequ/CashOutRequ";
 import CashInRequ from "../Pages/Dashboard/Agent/CashInRequ/CashInRequ";
 import AdminLogin from "../Pages/AdminLogin/AdminLogin";
+import AlTransactions from "../Pages/alTransactions/AlTransactions";
 
 export const router = createBrowserRouter([
   {
@@ -48,7 +49,11 @@ export const router = createBrowserRouter([
       {
         path: "/user/profile",
         element: <Profile />,
-      }, 
+      },
+      {
+        path: "/all-transactions/:role/:id",
+        element: <AlTransactions />,
+      },
 
       // Here User route added
       // Here User route added
@@ -118,7 +123,7 @@ export const router = createBrowserRouter([
           {
             path: "profile",
             element: <Profile />,
-          }, 
+          },
         ],
       },
     ],
@@ -128,7 +133,7 @@ export const router = createBrowserRouter([
     element: <AdminLogin />,
   },
   {
-    path:"*",
+    path: "*",
     element: <ErrorPage />,
   },
 ]);

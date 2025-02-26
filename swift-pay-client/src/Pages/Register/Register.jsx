@@ -29,11 +29,9 @@ const Register = () => {
       userRole,
       password,
     };
-    console.log('32',userData)
     try {
       let apiURL = "/user/register"
       
-
       // create user
       const response = await axiosPublic.post(apiURL, userData);
 
@@ -41,7 +39,6 @@ const Register = () => {
         toast.success("Account created successfully!");
 
         // Delay the warning toast by 1 second (1000 ms)
-        console.log('response', response)
         if(response.data.user.userRole === "agent"){
           toast.warn("Wait for admin approval!");
         }

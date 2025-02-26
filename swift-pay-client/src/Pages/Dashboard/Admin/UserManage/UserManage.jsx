@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import useUsers from "../../../../Hooks/useUsers";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
@@ -55,7 +56,9 @@ const UserManage = () => {
                                 <td>{u.userName}</td>
                                 <td> {u.userRole === 'user' ? 'Personal' : 'Agent'}</td>
                                 <td><span className="cursor-pointer hover:text-secondary" onClick={() => handleSeeBalance(u._id)}> {showBalance === u._id ? `${u.balance} BDT` : "Tap to see balance"} </span></td>
-                                <td> <button className="p-1 border border-primary rounded-md" >view briefly</button> </td>
+
+                                <td> <Link to={`/all-transactions/${u.userRole}/${u._id}`} className="p-1 text-secondary hover:underline" >view briefly</Link> </td>
+
                                 <td>
                                     <select
                                         name="accountType"
