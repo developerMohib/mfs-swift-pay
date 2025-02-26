@@ -47,7 +47,7 @@ const AgentManage = () => {
                         <th>Mobile</th>
                         <th>Account Category</th>
                         <th>Balance</th>
-                        <th>View Details</th>
+                        <th>View Transactions</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -57,7 +57,7 @@ const AgentManage = () => {
                         agent && agent?.map((u, id) => (
                             <tr key={id}>
                                 <th>{id + 1}</th>
-                                <td>{u.userName}</td>
+                                <td><Link to={`/all-transactions/${u.userRole}/${u._id}`}>{u.userName}</Link></td>
                                 <td>{u.userPhone}</td>
                                 <td> {u.userRole === 'user' ? 'Personal' : 'Agent'}</td>
                                 <td><span className="cursor-pointer hover:text-secondary" onClick={() => handleSeeBalance(u._id)}> {showBalance === u._id ? `${u.balance} BDT` : "Tap to see balance"} </span></td>

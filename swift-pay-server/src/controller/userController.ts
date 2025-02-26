@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { User } from '../model/User';
+import { Transaction } from '../model/Transaction';
 
 export const allUser = async (
   req: Request,
@@ -53,5 +54,22 @@ export const updateStatus = async (
     res
       .status(500)
       .json({ message: 'Server error', error: (error as Error).message });
+  }
+};
+
+export const userTransaction = async (req :Request, res : Response) => {
+  try {
+      const { userId } = req.params;
+
+      // Fetch last 100 transactions for the user (sorted by latest)
+      const transactions = await Transaction.find({ userId })
+          .sort({ createdAt: -1 }) // Sort by most recent
+          .limit(100);
+
+      res.json(transactions);
+  } catch (error) {
+    res
+    .status(500)
+    .json({ message: 'Server error', error: (error as Error).message });
   }
 };

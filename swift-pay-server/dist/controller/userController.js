@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateStatus = exports.allUser = void 0;
+exports.userTransaction = exports.updateStatus = exports.allUser = void 0;
 const User_1 = require("../model/User");
+const Transaction_1 = require("../model/Transaction");
 const allUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield User_1.User.find(); // Fetch all users
@@ -55,3 +56,19 @@ const updateStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.updateStatus = updateStatus;
+const userTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId } = req.params;
+        // Fetch last 100 transactions for the user (sorted by latest)
+        const transactions = yield Transaction_1.Transaction.find({ userId })
+            .sort({ createdAt: -1 }) // Sort by most recent
+            .limit(100);
+        res.json(transactions);
+    }
+    catch (error) {
+        res
+            .status(500)
+            .json({ message: 'Server error', error: error.message });
+    }
+});
+exports.userTransaction = userTransaction;
