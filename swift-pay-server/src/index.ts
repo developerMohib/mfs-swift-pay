@@ -10,11 +10,15 @@ import { adnminRouter } from './routes/adminRoutes';
 app.use(express.json());
 app.use(cors());
 
-app.use('/admin',adnminRouter)
+app.use('/admin', adnminRouter);
 // my routes
-app.use('/user',authRouter)
-app.use('/all',userRouter)
-app.use('/all',agentRouter)
+app.use('/user', authRouter);
+
+app.use('/all', userRouter);
+app.use('/user', userRouter);
+
+app.use('/all', agentRouter);
+app.use('/agent', agentRouter);
 
 // server static files
 app.use(express.static(path.join(__dirname, '../public')));

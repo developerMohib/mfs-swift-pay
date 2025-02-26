@@ -3,7 +3,7 @@ import useAxiosPublic from "./useAxiosPublic";
 
 const useUsers = () => {
     const axiosPublic = useAxiosPublic();
-    const { data: user = [], isLoading } = useQuery({
+    const { data: user = [], isLoading ,refetch } = useQuery({
         queryKey: ["user"],
         queryFn: async () => {
             // To Do - get specific user
@@ -12,7 +12,7 @@ const useUsers = () => {
         },
       });
     
-      return { user, isLoading };
+      return { user, isLoading ,refetch };
 };
 
 export default useUsers;

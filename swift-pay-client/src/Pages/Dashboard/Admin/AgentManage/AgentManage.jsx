@@ -1,10 +1,13 @@
 import { useState } from "react";
 import useAgent from "../../../../Hooks/useAgent";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+import { toast } from "react-toastify";
+import Loader from "../../../../Components/Loader/Loader";
 
 const AgentManage = () => {
-    const { agent, isLoading } = useAgent()
+    const { agent, isLoading, refetch } = useAgent()
     const [showBalance, setShowBalance] = useState(null);
-
+    const axiosPublic = useAxiosPublic();
 
     const handleSeeBalance = (id) => {
         setShowBalance(id);
@@ -12,7 +15,25 @@ const AgentManage = () => {
             setShowBalance(null);
         }, 1000);
     }
-    if (isLoading) { <p>Loading....</p> }
+
+    const handleStatusChange = async (userId, newStatus) => {
+        try {
+            const response = await axiosPublic.put(`/agent/status/${userId}`, { status: newStatus });
+
+            if (response.status === 200) {
+                toast.success(`User is now ${newStatus}`);
+                refetch()
+            } else {
+                toast.error("Failed to update status");
+            }
+        } catch (error) {
+            console.error("Error updating status:", error);
+            toast.error("Error updating status");
+        }
+    };
+
+
+    if (isLoading) { < Loader /> }
     return (
         <div className="overflow-x-auto w-full px-2 py-5">
             <h3 className='text-xl mb-3'> <span className="text-primary">Manage Agent</span></h3>
@@ -35,16 +56,18 @@ const AgentManage = () => {
                             <tr key={id}>
                                 <th>{id + 1}</th>
                                 <td>{u.userName}</td>
-                                <td> {u.userRole} {u.balance}</td>
+                                <td> {u.userRole === 'user' ? 'Personal' : 'Agent'}</td>
                                 <td><span className="cursor-pointer hover:text-secondary" onClick={() => handleSeeBalance(u._id)}> {showBalance === u._id ? `${u.balance} BDT` : "Tap to see balance"} </span></td>
                                 <td> <button className="p-1 border border-primary rounded-md" >view briefly</button> </td>
                                 <td>
                                     <select
                                         name="accountType"
                                         className="p-2 border border-primary rounded-md"
+                                        value={u.status}
+                                        onChange={(e) => handleStatusChange(u._id, e.target.value)}
                                     >
-                                        <option defaultValue>{u.status}</option>
-                                        <option>block</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="active">Active</option>
                                     </select>
                                 </td>
                             </tr>

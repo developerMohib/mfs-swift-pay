@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.allAgent = void 0;
+exports.updateStatusAgent = exports.allAgent = void 0;
 const Agent_1 = require("../model/Agent");
 const allAgent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -22,3 +22,33 @@ const allAgent = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.allAgent = allAgent;
+const updateStatusAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        // Validate input
+        if (!id || !status) {
+            res.status(400).json({ message: 'Agent ID and status are required' });
+            return;
+        }
+        // Update user status
+        const updatedUser = yield Agent_1.Agent.findByIdAndUpdate(id, { status }, { new: true });
+        // Check if user exists
+        if (!updatedUser) {
+            res.status(404).json({ message: 'Agent not found' });
+            return;
+        }
+        // Send success response
+        res.status(200).json({
+            message: `Agent status updated to ${status}`,
+            user: updatedUser,
+        });
+    }
+    catch (error) {
+        console.error('Error updating user status:', error);
+        res
+            .status(500)
+            .json({ message: 'Server error', error: error.message });
+    }
+});
+exports.updateStatusAgent = updateStatusAgent;

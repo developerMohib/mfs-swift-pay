@@ -3,7 +3,7 @@ import useAxiosPublic from "./useAxiosPublic";
 
 function useAgent() {
   const axiosPublic = useAxiosPublic();
-  const { data: agent = [], isLoading } = useQuery({
+  const { data: agent = [], isLoading,refetch } = useQuery({
     queryKey: ["agent"],
     queryFn: async () => {
       // To Do - get specific agent
@@ -12,7 +12,7 @@ function useAgent() {
     },
   });
 
-  return { agent, isLoading };
+  return { agent, isLoading,refetch };
 }
 
 export default useAgent;

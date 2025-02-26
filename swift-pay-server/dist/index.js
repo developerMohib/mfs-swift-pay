@@ -18,7 +18,9 @@ app.use('/admin', adminRoutes_1.adnminRouter);
 // my routes
 app.use('/user', authRoutes_1.authRouter);
 app.use('/all', userRoutes_1.userRouter);
+app.use('/user', userRoutes_1.userRouter);
 app.use('/all', agentRoutes_1.agentRouter);
+app.use('/agent', agentRoutes_1.agentRouter);
 // server static files
 app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
 app.get('/', (req, res) => {
