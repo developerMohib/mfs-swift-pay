@@ -49,6 +49,14 @@ export const router = createBrowserRouter([
         path: "/user/profile",
         element: <Profile />,
       },      
+      {
+        path: "/agent/profile",
+        element: <Profile />,
+      },      
+      {
+        path: "/admin/profile",
+        element: <Profile />,
+      },      
 
       // Here User route added
       // Here User route added

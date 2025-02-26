@@ -10,7 +10,6 @@ const Register = () => {
   const [rotating, setRotating] = useState(false);
   const axiosPublic = useAxiosPublic();
   const navigate = useNavigate();
-  const status = "pending";
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -29,17 +28,11 @@ const Register = () => {
       userNID,
       userRole,
       password,
-      status,
     };
-    
+    console.log('32',userData)
     try {
-      let apiURL = "";
-      if(userRole === "Agent"){
-        apiURL = "/register/agent"
-      }
-      if(userRole === "User"){
-        apiURL = "/register/user"
-      }
+      let apiURL = "/user/register"
+      
 
       // create user
       const response = await axiosPublic.post(apiURL, userData);
@@ -49,7 +42,7 @@ const Register = () => {
 
         // Delay the warning toast by 1 second (1000 ms)
         console.log('response', response)
-        if(response.data.user.userRole === "Agent"){
+        if(response.data.user.userRole === "agent"){
           toast.warn("Wait for admin approval!");
         }
         form.reset();
@@ -174,8 +167,8 @@ const Register = () => {
                   className="select select-bordered w-full max-w-xs"
                 >
                   <option defaultValue>Select account Type</option>
-                  <option>User</option>
-                  <option>Agent</option>
+                  <option>user</option>
+                  <option>agent</option>
                 </select>
               </div>
               <div className="form-control relative">

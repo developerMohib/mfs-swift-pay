@@ -17,27 +17,46 @@ const Login = () => {
     e.preventDefault();
     const form = e.target;
     const phoneOrEmail = form.phoneNumber.value;
-    const password = form.password.value;
-    const userData = { phoneOrEmail, password };
-    // console.log("lgin ", userData)
+    const pin = form.password.value;
+    const userData = { phoneOrEmail, pin };
 
     try {
       // Make the POST request to the server
-      const response = await axiosPublic.post("/login/user", userData);
+      const response = await axiosPublic.post("/user/login", userData);
 
       // Check if the response is successful
       if (response?.status === 200) {
         toast.success("Log in successfully!");
-        
-        // navigate user to home page and user data store in local storage
-        const user = response?.data?.user;
-        console.log('from beck end', user)
-        // const saveUserLocal = {}
-        login(user); 
-        setLoading(true) 
+        const user = response.data.user || null;
+        const token = response.data.token || null;
+
+        if (!user ) {
+          toast.error("Invalid response from server!");
+          return;
+        }
+
+        console.log("From backend:", user);
+
+        // ✅ Store token & user data properly
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        // Call login function to set user state
+        login(user);
+
+        setLoading(true);
         form.reset();
-        navigate('/')
-        setLoading(false) 
+
+        // Navigate user based on role
+        if (user.userRole === "admin") {
+          navigate("/admin/dashboard");
+        } else if (user.userRole === "agent") {
+          navigate("/agent/profile");
+        } else {
+          navigate("/user/profile"); // Default route
+        }
+
+        setLoading(false);
       }
     } catch (error) {
       // Handle errors (e.g., invalid credentials, server error)
@@ -123,14 +142,14 @@ const Login = () => {
                   placeholder="password"
                   className="input input-bordered"
                   required
-                  onChange={(e)=>setOpen(e.target.value)}
+                  onChange={(e) => setOpen(e.target.value)}
                 />
                 {open && <ShowHidePass
                   showPass={showPass}
                   handleShowHidePass={handleShowHidePass}
                   rotating={rotating}
                 />}
-                
+
               </div>
               <div className="form-control mt-6">
                 <button className="btn bg-primary hover:bg-secondary text-lg border-none text-bg w-full">

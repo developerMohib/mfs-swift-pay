@@ -20,9 +20,9 @@ const Profile = () => {
             {" "}
             Role : {user?.userRole}
           </p>
-          {user.userRole === "Admin" ? <p className="">ki bolbo</p> : <div className="bg-bg px-7 py-3 text-center mt-5 ">
+          {user.userRole === "admin" ? <p className="">ki bolbo</p> : <div className="bg-bg px-7 py-3 text-center mt-5 ">
             <p className=""> Account Balance</p>
-            <h1 className="text-3xl  ">{user?.cash} </h1>
+            <h1 className="text-3xl  ">{user?.balance} </h1>
           </div> }
           
         </div>

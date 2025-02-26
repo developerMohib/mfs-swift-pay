@@ -63,6 +63,7 @@ const Navbar = () => {
     // Just Call the logout function from AuthContext
     logout();
     toast.success("Log out successfully!");
+    
   };
   if (loading) {
     return <p>Loading...</p>;
@@ -72,7 +73,7 @@ const Navbar = () => {
       {isAuthenticated ? (
         <>
           <NavLink to="/">Home</NavLink>
-          {role === "User" && (
+          {role === "user" && (
             <>
               <NavLink to="user/cash-in">Cash In</NavLink>
               <NavLink to="user/cash-out">Cash Out</NavLink>
@@ -80,14 +81,14 @@ const Navbar = () => {
               <NavLink to="user/transaction">Transactions</NavLink>
             </>
           )}
-          {role === "Admin" && (
+          {role === "admin" && (
             <>
               <NavLink to="admin/transaction">All Transactions</NavLink>
               <NavLink to="admin/manage-agents">Manage Agents</NavLink>
               <NavLink to="admin/manage-users">Manage Users</NavLink>
             </>
           )}
-          {role === "Agent" && (
+          {role === "agent" && (
             <>
               <NavLink to="agent/transaction">Transactions</NavLink>
               <NavLink to="agent/cashin">Cash In</NavLink>

@@ -118,7 +118,7 @@ const AdminLogin = () => {
             >
               <input
                 type="checkbox"
-                className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-pink-500 checked:bg-pink-500 checked:before:bg-pink-500 hover:before:opacity-10"
+                className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-black checked:bg-primary checked:before:bg-pink-500 hover:before:opacity-10"
                 id="checkbox"
               />
               <span className="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
@@ -139,10 +139,10 @@ const AdminLogin = () => {
               </span>
             </label>
             <label
-              className="mt-px cursor-pointer select-none font-light text-gray-700"
+              className="mt-px cursor-pointer select-none font-light text-primary"
               htmlFor="checkbox"
             >
-              <p className="flex items-center font-sans text-sm font-normal leading-normal text-gray-700 antialiased">
+              <p className="flex items-center text-sm font-normal leading-normal text-gray-700 antialiased">
                 I agree the
                 <a
                   className="font-semibold transition-colors hover:text-pink-500"
@@ -154,7 +154,7 @@ const AdminLogin = () => {
             </label>
           </div>
           <button
-            className="mt-6 block w-full select-none rounded-lg bg-pink-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+            className="mt-6 bg-primary block w-full select-none rounded-lg py-3 px-6 text-center align-middle font-bold uppercase text-white shadow-md"
             type="submit"
             data-ripple-light="true"
           >
