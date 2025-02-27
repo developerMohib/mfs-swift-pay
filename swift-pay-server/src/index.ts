@@ -7,9 +7,16 @@ import { agentRouter } from './routes/agentRoutes';
 import path from 'path';
 import { adnminRouter } from './routes/adminRoutes';
 import { transectionRouter } from './routes/transactionRoutes';
+import cookieParser from 'cookie-parser';
 // parsers
 app.use(express.json());
-app.use(cors());
+app.use(cookieParser())
+app.use(
+  cors({
+    origin:'https://mfs-swift-pay.vercel.app',
+    credentials: true,
+  }),
+);
 
 app.use('/admin', adnminRouter);
 // my routes

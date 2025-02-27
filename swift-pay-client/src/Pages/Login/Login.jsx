@@ -14,6 +14,7 @@ const Login = () => {
   const axiosPublic = useAxiosPublic();
 
   const handleLogin = async (e) => {
+    console.log('axiosPublic',axiosPublic)
     e.preventDefault();
     const form = e.target;
     const phoneOrEmail = form.phoneNumber.value;

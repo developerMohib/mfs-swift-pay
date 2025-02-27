@@ -12,9 +12,14 @@ const agentRoutes_1 = require("./routes/agentRoutes");
 const path_1 = __importDefault(require("path"));
 const adminRoutes_1 = require("./routes/adminRoutes");
 const transactionRoutes_1 = require("./routes/transactionRoutes");
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 // parsers
 app.use(express_1.default.json());
-app.use((0, cors_1.default)());
+app.use((0, cookie_parser_1.default)());
+app.use((0, cors_1.default)({
+    origin: 'https://mfs-swift-pay.vercel.app',
+    credentials: true,
+}));
 app.use('/admin', adminRoutes_1.adnminRouter);
 // my routes
 app.use('/user', authRoutes_1.authRouter);
