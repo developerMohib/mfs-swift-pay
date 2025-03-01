@@ -17,7 +17,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
 app.use((0, cors_1.default)({
-    origin: 'https://mfs-swift-pay.vercel.app',
+    origin: 'https://swift-pay-client-theta.vercel.app',
     credentials: true,
 }));
 app.use('/admin', adminRoutes_1.adnminRouter);

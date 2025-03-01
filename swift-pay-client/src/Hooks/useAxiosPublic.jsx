@@ -1,7 +1,7 @@
 import axios from "axios";
 const useAxiosPublic = () => {
   const axiosPublic = axios.create({
-    baseURL: `${import.meta.env.VITE_baseUrl}`,
+    baseURL:"https://swift-pay-server-mu.vercel.app",
   });
   return axiosPublic;
 };

@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cookieParser())
 app.use(
   cors({
-    origin:'https://mfs-swift-pay.vercel.app',
+    origin:'https://swift-pay-client-theta.vercel.app',
     credentials: true,
   }),
 );
