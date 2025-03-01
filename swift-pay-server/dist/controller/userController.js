@@ -8,10 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userTransaction = exports.updateStatus = exports.allUser = void 0;
+exports.userTransaction = exports.updateStatus = exports.getLoginUser = exports.allUser = void 0;
 const User_1 = require("../model/User");
 const Transaction_1 = require("../model/Transaction");
+const mongoose_1 = __importDefault(require("mongoose"));
+const Agent_1 = require("../model/Agent");
+const Admin_1 = require("../model/Admin");
 const allUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield User_1.User.find(); // Fetch all users
@@ -26,6 +32,43 @@ const allUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.allUser = allUser;
+const getLoginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        // Validate if the ID is a valid MongoDB ObjectId
+        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+            res.status(400).json({ error: 'Invalid user ID' });
+            return;
+        }
+        let user = null;
+        // Check in User collection
+        user = yield User_1.User.findById(id);
+        // If not found, check in Admin collection
+        if (!user) {
+            user = yield Admin_1.Admin.findById(id);
+        }
+        // If not found, check in Agent collection
+        if (!user) {
+            user = yield Agent_1.Agent.findById(id);
+        }
+        // If user is still not found
+        if (!user) {
+            res
+                .status(404)
+                .json({ error: 'You are not registered user yet, please register' });
+            return;
+        }
+        // Return the user and the type (User, Admin, or Agent)
+        res.status(200).json(user);
+    }
+    catch (err) {
+        res.status(500).json({
+            error: 'Failed to retrieve user',
+            details: err instanceof Error ? err.message : 'An unknown error occurred',
+        });
+    }
+});
+exports.getLoginUser = getLoginUser;
 const updateStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;

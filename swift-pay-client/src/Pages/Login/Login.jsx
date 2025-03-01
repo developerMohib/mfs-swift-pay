@@ -34,9 +34,7 @@ const Login = () => {
           toast.error("Invalid response from server!");
           return;
         }
-
-        console.log("From backend:", user);
-
+        
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
 

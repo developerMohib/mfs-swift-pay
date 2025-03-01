@@ -6,7 +6,7 @@ export const loginAdmin = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     console.log(' 8', req.body);
-    const admin = await Admin.findOne({ email });
+    const admin = await Admin.findOne({userEmail: email });
     console.log(' 10', admin);
 
     if (!admin) {

@@ -21,7 +21,6 @@ const AuthProvider = ({ children }) => {
 
   // Function to log in and store user data in localStorage
   const login = (userData) => {
-    console.log('user track', userData)
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData)); // Save user data in localStorage
   };

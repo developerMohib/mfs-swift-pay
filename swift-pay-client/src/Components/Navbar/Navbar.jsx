@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FcMenu } from "react-icons/fc";
 import { IoCloseOutline } from "react-icons/io5";
 import { ImSpinner2 } from "react-icons/im";
@@ -14,6 +14,7 @@ import "./navbar.css";
 
 const Navbar = () => {
   const menuRef = useRef(null);
+  const navigate = useNavigate()
   const { user, logout, loading } = useContext(UserContext);
   const role = user?.userRole || null;
   const isAuthenticated = role !== null;
@@ -59,10 +60,9 @@ const Navbar = () => {
 
   // log out
   const handleLogout = () => {
-    // Just Call the logout function from AuthContext
     logout();
     toast.success("Log out successfully!");
-    
+    navigate('/')
   };
   if (loading) {
     return <p>Loading...</p>;
@@ -152,7 +152,7 @@ const Navbar = () => {
               <img
                 title={user?.userName}
                 className="h-8 rounded-full"
-                src={user?.userPhoto}
+                src={user?.userPhoto ? user?.userPhoto : "https://avatars.githubusercontent.com/u/92154638?v=4"}
                 alt={user?.userName}
               />{" "}
             </Link>

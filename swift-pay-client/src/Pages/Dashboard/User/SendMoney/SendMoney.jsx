@@ -1,11 +1,11 @@
 import { useContext } from "react";
+import { toast } from "react-toastify";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import { UserContext } from "../../../../AuthProvider/AuthProvider";
 
 const SendMoney = () => {
   const axiosPublic = useAxiosPublic()
   const { user } = useContext(UserContext);
-  console.log(user)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,17 +14,19 @@ const SendMoney = () => {
     const receiver = form.receiver.value;
     const amount = Number(form.amount.value);
     const password = form.password.value;
-    // const transactionType = transactionTypes.SEND_MONEY
 
     const data = { receiver, amount, password };
     console.log(data);
     try {
-      const response = await axiosPublic.post("/user/send-money", {
+      const response = await axiosPublic.put("/user/send-money", {
         senderId: user._id,
         receiverId: receiver,
         amount,
       });
-      console.log("Transaction Successful:", response.data);
+      // console.log("Transaction Successful:", response.data);
+      if (response?.data?.message) {
+        toast.success(response?.data?.message);
+      }
     } catch (error) {
       console.log(error.response?.data?.message || "Transaction failed.");
     }

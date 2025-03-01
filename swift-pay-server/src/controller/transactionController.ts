@@ -2,24 +2,25 @@ import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { User } from '../model/User';
 import { Transaction } from '../model/Transaction';
+import { Admin } from '../model/Admin';
 
 export const sendMoney = async (req: Request, res: Response) => {
   const session = await mongoose.startSession();
   session.startTransaction();
-
   try {
-    const { senderId, receiverPhone, amount } = req.body;
-    console.log(12, req.body);
+    const { senderId, receiverId, amount } = req.body;
     // Validate input
-    if (!senderId || !receiverPhone || !amount || amount < 50) {
+    if (!senderId || !receiverId || !amount || amount < 50) {
       await session.abortTransaction();
       res.status(400).json({ error: 'Invalid input' });
       return;
     }
 
     // Find sender and receiver
-    const sender = await User.findById(senderId).session(session);
-    const receiver = await User.findOne({ userPhone: receiverPhone }).session(
+    const sender = await User.findOne({ _id: new Object(senderId) }).session(
+      session,
+    );
+    const receiver = await User.findOne({ userPhone: receiverId }).session(
       session,
     );
 
@@ -34,9 +35,7 @@ export const sendMoney = async (req: Request, res: Response) => {
     const totalAmount = amount + fee;
 
     // Check sender balance
-    // if (sender.balance < totalAmount) {
-    //     return res.status(400).json({ message: "Insufficient balance" });
-    //   }
+
     if (sender.balance < totalAmount) {
       await session.abortTransaction();
       res.status(400).json({ error: 'Insufficient balance' });
@@ -57,18 +56,26 @@ export const sendMoney = async (req: Request, res: Response) => {
       receiver: receiver._id,
       amount,
       fee,
+      type: 'send-money', // Set transaction type
+      status: 'success', // Set transaction status
     });
-
     await transaction.save({ session });
 
-    const adminId = process.env.ADMIN_ID;
-    const objectId = new mongoose.Types.ObjectId(adminId);
+    const adminId = process.env.ADMIN_ID; // mongose object id
+    // Add fee to admin's balance
+    if (adminId) {
+      const admin = await Admin.findOne({ _id: new Object(adminId) }).session(
+        session,
+      );
+      if (!admin) {
+        await session.abortTransaction();
+        res.status(404).json({ error: 'Admin not found' });
+        return;
+      }
 
-    await User.findByIdAndUpdate(
-      objectId, // Use ObjectId here
-      { $inc: { balance: fee } },
-      { session },
-    );
+      admin.balance += fee;
+      await admin.save({ session });
+    }
 
     await session.commitTransaction();
 
