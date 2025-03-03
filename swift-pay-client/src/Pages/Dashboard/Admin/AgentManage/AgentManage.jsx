@@ -34,7 +34,7 @@ const AgentManage = () => {
     };
 
 
-    if (isLoading) { < Loader /> }
+    if (isLoading) return <Loader />;
     return (
         <div className="overflow-x-auto w-full px-2 py-5">
             <h3 className='text-xl mb-3'> <span className="text-primary">Manage Agent</span></h3>

@@ -10,13 +10,15 @@ const Transections = () => {
     const { user } = useContext(UserContext);
     const userId = user?._id
     const { transaction, isLoading } = useTransaction({ userId })
-    if (isLoading) <Loader />
-    
+
+
     // Filter transactions by user name or mobile number
     const filteredTransactions = transaction?.filter(transaction =>
         transaction.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         transaction.mobile.includes(searchQuery)
     );
+    console.log('transaction', transaction)
+    if (isLoading) return <Loader />;
     return (
         <div className="overflow-x-auto w-full px-2 py-5">
             <h3 className='text-xl mb-3'>User <span className='text-primary'>Transactions</span></h3>

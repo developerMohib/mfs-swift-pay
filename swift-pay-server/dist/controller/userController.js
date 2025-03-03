@@ -102,11 +102,12 @@ exports.updateStatus = updateStatus;
 const userTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
+        console.log('user id', userId);
         // Fetch last 100 transactions for the user (sorted by latest)
         const transactions = yield Transaction_1.Transaction.find({ userId })
             .sort({ createdAt: -1 }) // Sort by most recent
             .limit(100);
-        res.json(transactions);
+        res.status(200).json(transactions);
     }
     catch (error) {
         res

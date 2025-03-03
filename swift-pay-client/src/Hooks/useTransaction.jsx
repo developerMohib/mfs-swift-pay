@@ -7,7 +7,7 @@ const useTransaction = ({ userId }) => {
         queryKey: ["transition"],
         queryFn: async () => {
             // To Do - get specific user
-            const res = await axiosPublic.get(`/all/transactions/${userId}`);
+            const res = await axiosPublic.get(`/user/transactions/${userId}`);
             return res?.data|| [];
         },
     });

@@ -106,13 +106,13 @@ export const updateStatus = async (
 export const userTransaction = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-
+    console.log('user id', userId);
     // Fetch last 100 transactions for the user (sorted by latest)
     const transactions = await Transaction.find({ userId })
       .sort({ createdAt: -1 }) // Sort by most recent
       .limit(100);
 
-    res.json(transactions);
+    res.status(200).json(transactions);
   } catch (error) {
     res
       .status(500)

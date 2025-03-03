@@ -1,5 +1,14 @@
+import { useContext } from "react";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+import { UserContext } from "../../../../AuthProvider/AuthProvider";
+import { toast } from "react-toastify";
+
 const CashInto = () => {
-  const handleSubmit = (e) => {
+
+  const axiosPublic = useAxiosPublic()
+  const { user } = useContext(UserContext);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
 
@@ -8,10 +17,22 @@ const CashInto = () => {
     const password = form.password.value;
     // const transactionType = transactionTypes.CASH_IN
 
-    const data = { receiver, amount, password };
-
-    console.log(data);
+    try {
+      const response = await axiosPublic.put("/user/cash-in", {
+        senderId: user._id,
+        receiverId: receiver,
+        amount,
+        password
+      });
+      // console.log("Transaction Successful:", response.data);
+      if (response?.data?.message) {
+        toast.success(response?.data?.message);
+      }
+    } catch (error) {
+      console.log(error.response?.data?.message || "Transaction failed.");
+    }
   };
+  
   return (
     <div className="w-full flex justify-center items-center mt-10">
       <form

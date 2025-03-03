@@ -20,7 +20,7 @@ const CashOut = () => {
     const password = form.password.value;
     // const transactionType = transactionTypes.CASH_OUT
 
-    const data = { senderId, receiverId, amount, password };
+    // const data = { senderId, receiverId, amount, password };
     try {
       const response = await axiosPublic.put("/user/cash-out", {
         senderId,
@@ -37,7 +37,7 @@ const CashOut = () => {
     }
   };
 
-  if (isLoading) <Loader />
+  if (isLoading) return <Loader />;
   return (
     <div className="w-full flex justify-center items-center mt-10">
       <form

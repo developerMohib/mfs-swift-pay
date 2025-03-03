@@ -32,7 +32,7 @@ const UserManage = () => {
         }
     };
 
-    if (isLoading) { < Loader /> }
+    if (isLoading) return <Loader />;
     return (
         <div className="overflow-x-auto w-full px-2 py-5">
             <h3 className='mb-3 font-bold text-center text-secondary text-2xl'>Manage <span className="text-primary">Users</span></h3>

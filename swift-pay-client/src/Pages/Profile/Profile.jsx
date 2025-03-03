@@ -8,7 +8,7 @@ const Profile = () => {
   const user = JSON.parse(data);
   const id = user?._id
   const { loginUser, isLoading } = useLoginUser({ id })
-console.log(loginUser)
+
   const handleSeeBalance = (id) => {
     setShowBalance(id);
     setTimeout(() => {
@@ -16,7 +16,7 @@ console.log(loginUser)
     }, 1000);
   }
 
-  if (isLoading) <Loader />
+  if (isLoading) return <Loader />;
   return (
     <div className="flex justify-center items-center mt-20">
       <div className="w-full bg-bg rounded-lg">

@@ -111,36 +111,38 @@ export const sendMoney = async (req: Request, res: Response) => {
 export const cashInFromAgent = async (req: Request, res: Response) => {
   const session = await mongoose.startSession();
   session.startTransaction();
+  const { senderId, receiverId, amount, password } = req.body;
+  console.log('115', req.body);
+  // Validate input
+  if (!senderId || !receiverId || !amount) {
+    await session.abortTransaction();
+    res.status(400).json({ error: 'Invalid input' });
+    return;
+  }
   try {
-    const { senderId, receiverId, amount } = req.body;
-    // Validate input
-    if (!senderId || !receiverId || !amount) {
-      await session.abortTransaction();
-      res.status(400).json({ error: 'Invalid input' });
-      return;
-    }
-
     // Find sender and receiver
     const sender = await User.findOne({ _id: new Object(senderId) }).session(
       session,
     );
-    const receiver = await User.findOne({ userPhone: receiverId }).session(
+    const receiver = await Agent.findOne({ userPhone: receiverId }).session(
       session,
     );
-
+    console.log('receiver', receiver);
     if (!sender || !receiver) {
       await session.abortTransaction();
       res.status(404).json({ error: 'Sender or receiver not found' });
       return;
     }
 
+    const isMatch = await comparePassword(password, sender.password);
+    console.log('is match', isMatch);
     // Record transaction
     const transaction = new Transaction({
       sender: sender._id,
       receiver: receiver._id,
       amount,
       type: 'cash-in', // Set transaction type
-      status: 'success', // Set transaction status
+      status: 'pending', // Set transaction status
     });
     await transaction.save({ session });
 
@@ -197,7 +199,7 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
       return;
     }
 
-    const isMatch = (await comparePassword(password, sender.password));
+    const isMatch = await comparePassword(password, sender.password);
 
     if (!isMatch) {
       res
@@ -221,7 +223,7 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
     const agentFee = amount * (1 / 100); // 1% to agent
     const adminFee = amount * (0.5 / 100); // 0.5% to admin
     const finalAmount = amount - totalFee; // Amount user receives from agent
-    console.log('final amount',finalAmount)
+    console.log('final amount', finalAmount);
 
     // find Admin
     const adminId = process.env.ADMIN_ID; // mongose object id
@@ -240,16 +242,14 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
       await admin.save({ session });
     }
 
+    // Update balances
+    sender.balance -= amount; // Deduct full amount from user
+    receiver.balance += agentFee; // Add final amount to agent
+    receiver.income += agentFee; // Update agent's income
 
-     // Update balances
-     sender.balance -= amount; // Deduct full amount from user
-     receiver.balance += agentFee; // Add final amount to agent
-     receiver.income += agentFee; // Update agent's income
-
-     // Save changes
-     await sender.save();
-     await receiver.save();
-
+    // Save changes
+    await sender.save();
+    await receiver.save();
 
     // Record transaction
     const transaction = new Transaction({
@@ -292,8 +292,9 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
 
 export const allTransaction = async (req: Request, res: Response) => {
   try {
-    const result = await Transaction.find();
-    console.log(result);
+    const result = await Transaction.find()
+    .populate('sender', 'userName userPhone userEmail userRole') // Fetch sender details
+    .populate('receiver', 'userName userPhone userEmail userRole');
 
     res.status(200).json({
       message: 'All transaction retrive successfully',

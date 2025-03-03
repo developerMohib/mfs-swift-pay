@@ -102,29 +102,33 @@ exports.sendMoney = sendMoney;
 const cashInFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const session = yield mongoose_1.default.startSession();
     session.startTransaction();
+    const { senderId, receiverId, amount, password } = req.body;
+    console.log('115', req.body);
+    // Validate input
+    if (!senderId || !receiverId || !amount) {
+        yield session.abortTransaction();
+        res.status(400).json({ error: 'Invalid input' });
+        return;
+    }
     try {
-        const { senderId, receiverId, amount } = req.body;
-        // Validate input
-        if (!senderId || !receiverId || !amount) {
-            yield session.abortTransaction();
-            res.status(400).json({ error: 'Invalid input' });
-            return;
-        }
         // Find sender and receiver
         const sender = yield User_1.User.findOne({ _id: new Object(senderId) }).session(session);
-        const receiver = yield User_1.User.findOne({ userPhone: receiverId }).session(session);
+        const receiver = yield Agent_1.Agent.findOne({ userPhone: receiverId }).session(session);
+        console.log('receiver', receiver);
         if (!sender || !receiver) {
             yield session.abortTransaction();
             res.status(404).json({ error: 'Sender or receiver not found' });
             return;
         }
+        const isMatch = yield (0, authMiddleware_1.comparePassword)(password, sender.password);
+        console.log('is match', isMatch);
         // Record transaction
         const transaction = new Transaction_1.Transaction({
             sender: sender._id,
             receiver: receiver._id,
             amount,
             type: 'cash-in', // Set transaction type
-            status: 'success', // Set transaction status
+            status: 'pending', // Set transaction status
         });
         yield transaction.save({ session });
         // Update sender and receiver transaction history
@@ -169,7 +173,7 @@ const cashOutFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, functio
             res.status(404).json({ error: 'Sender not found' });
             return;
         }
-        const isMatch = (yield (0, authMiddleware_1.comparePassword)(password, sender.password));
+        const isMatch = yield (0, authMiddleware_1.comparePassword)(password, sender.password);
         if (!isMatch) {
             res
                 .status(400)
@@ -244,8 +248,9 @@ const cashOutFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.cashOutFromAgent = cashOutFromAgent;
 const allTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield Transaction_1.Transaction.find();
-        console.log(result);
+        const result = yield Transaction_1.Transaction.find()
+            .populate('sender', 'userName userPhone userEmail userRole') // Fetch sender details
+            .populate('receiver', 'userName userPhone userEmail userRole');
         res.status(200).json({
             message: 'All transaction retrive successfully',
             data: result,

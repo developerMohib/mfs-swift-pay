@@ -14,7 +14,6 @@ const Services = () => {
 
   if (isLoading) return <Loader />;
 
-
   return (
     <>
     <div className="md:grid grid-cols-3 gap-4" >

@@ -1,24 +1,27 @@
 import { useState } from "react";
+import useGetAllTransaction from "../../../../Hooks/useGetAllTransac";
+import Loader from "../../../../Components/Loader/Loader";
 
 const AllTransition = () => {
-    const transactions = [
-        { id: 1, name: "Cy Ganderton", job: "Quality Control Specialist", color: "Blue", mobile: "1234567890", email: "cy@example.com" },
-        { id: 2, name: "Hart Hagerty", job: "Desktop Support Technician", color: "Purple", mobile: "9876543210", email: "hart@example.com" },
-        { id: 3, name: "Brice Swyre", job: "Tax Accountant", color: "Red", mobile: "5556667777", email: "br2ice@example.com" },
-        { id: 4, name: "Brice Swyre", job: "Tax Accountant", color: "Ded", mobile: "5369667777", email: "br3ice@example.com" },
-        { id: 5, name: "Drice Swyre", job: "Bax Accountant", color: "Ced", mobile: "5556867777", email: "bri4ce@example.com" },
-    ];
-    
+    const { allTransaction, isLoading } = useGetAllTransaction()
+    const data = allTransaction?.data;
+
 
     const [searchQuery, setSearchQuery] = useState("");
 
     // Filter transactions based on searchQuery (mobile or email)
-    const filteredTransactions = transactions.filter(transaction =>
-        transaction.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        transaction.mobile.includes(searchQuery)
-    );
+    const filteredTransactions = data?.filter(transaction => {
+        const query = searchQuery.toLowerCase();
 
+        return (
+            transaction.type.toLowerCase().includes(query) ||
+            transaction.amount.toString().includes(query) ||
+            transaction?.sender?.userName?.toLowerCase().includes(query) ||
+            transaction?.receiver?.userName?.toLowerCase().includes(query)
+        );
+    });
 
+    if (isLoading) return <Loader />;
     return (
         <div className="overflow-x-auto w-full px-2 py-5">
             <h3 className='text-xl mb-3'>
@@ -28,7 +31,7 @@ const AllTransition = () => {
             {/* Search Input */}
             <input
                 type="text"
-                placeholder="Search by Name or Mobile..."
+                placeholder="Search by Name or Amount or Type"
                 className="mb-4 p-2 border rounded w-full"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -39,21 +42,23 @@ const AllTransition = () => {
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Name</th>
-                        <th>Job</th>
-                        <th>Favorite Color</th>
-                        <th>Mobile</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Sender</th>
+                        <th>Receiver</th>
+                        <th>Transaction Id</th>
                     </tr>
                 </thead>
                 <tbody>
                     {filteredTransactions?.length > 0 ? (
                         filteredTransactions?.map((transaction, index) => (
-                            <tr key={transaction.id}>
+                            <tr key={transaction._id}>
                                 <th>{index + 1}</th>
-                                <td>{transaction.name}</td>
-                                <td>{transaction.job}</td>
-                                <td>{transaction.color}</td>
-                                <td>{transaction.mobile}</td>
+                                <td>{transaction.type}</td>
+                                <td>{transaction.amount}</td>
+                                <td>{transaction?.sender?.userName} ({transaction?.sender?.userRole})</td>
+                                <td>{transaction?.receiver?.userName} ({transaction?.sender?.userRole}) </td>
+                                <td>{transaction._id}</td>
                             </tr>
                         ))
                     ) : (
