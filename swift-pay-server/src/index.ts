@@ -13,7 +13,8 @@ import { transectionRouter } from './routes/transactionRoutes';
 app.use(express.json());
 app.use(cookieParser())
 app.use(bodyParser.json())
-
+// https://swift-pay-client-theta.vercel.app
+// http://localhost:5173
 app.use(
   cors({
     origin:'https://swift-pay-client-theta.vercel.app',

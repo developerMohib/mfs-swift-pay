@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { Agent } from '../model/Agent';
+import { Transaction } from '../model/Transaction';
 
 export const allAgent = async (
   req: Request,
@@ -14,6 +15,7 @@ export const allAgent = async (
     next(error);
   }
 };
+
 export const updateStatusAgent = async (
   req: Request,
   res: Response,
@@ -57,5 +59,78 @@ export const updateStatusAgent = async (
     res
       .status(500)
       .json({ message: 'Server error', error: (error as Error).message });
+  }
+};
+
+export const getPendingCashInRequests = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const pendingRequests = await Transaction.find({ status: "pending", type: "cash-in" });
+
+    if (!pendingRequests.length) {
+      res.status(404).json({ message: "No pending cash-in requests found" });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Pending cash-in requests retrieved successfully",
+      data: pendingRequests,
+    });
+  } catch (error) {
+    console.error("Error fetching pending requests:", error);
+    res.status(500).json({ message: "Server error", error: (error as Error).message });
+  }
+};
+
+export const cashInOkayAgent = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { transactionId } = req.params;
+    const { status } = req.body;
+
+    if (!transactionId || !status) {
+      res.status(400).json({ message: "Transaction ID and status are required" });
+      return;
+    }
+
+    const transaction = await Transaction.findById(transactionId).populate("agent");
+
+    if (!transaction) {
+      res.status(404).json({ message: "Transaction not found" });
+      return;
+    }
+
+    if (transaction.status !== "pending") {
+      res.status(400).json({ message: "This transaction has already been processed" });
+      return;
+    }
+
+    // const agent = await Agent.findById(transaction.agent);
+
+    // if (!agent) {
+    //   res.status(404).json({ message: "Agent not found" });
+    //   return;
+    // }
+
+    // if (status === "approved") {
+    //   agent.balance = (agent.balance || 0) + transaction.amount; // Add cash-in amount
+    //   transaction.status = "approved";
+    //   await agent.save();
+    //   await transaction.save();
+    // } else {
+    //   transaction.status = "rejected";
+    //   await transaction.save();
+    // }
+
+    // res.status(200).json({
+    //   message: `Cash-in request ${status}`,
+    //   updatedBalance: agent.balance,
+    //   transaction,
+    // });
+    res.send('data fetching pending')
+  } catch (error) {
+    console.error("Error updating transaction status:", error);
+    res.status(500).json({ message: "Server error", error: (error as Error).message });
   }
 };

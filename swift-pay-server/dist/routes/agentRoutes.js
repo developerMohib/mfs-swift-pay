@@ -7,4 +7,5 @@ const router = (0, express_1.Router)();
 // POST route to create a new user
 router.get('/agent', agentController_1.allAgent);
 router.put('/status/:id', agentController_1.updateStatusAgent);
+router.get('/cash-in/request', agentController_1.getPendingCashInRequests);
 exports.agentRouter = router;

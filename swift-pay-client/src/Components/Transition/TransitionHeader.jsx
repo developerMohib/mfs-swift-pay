@@ -6,7 +6,6 @@ const TransitionHeader = () => {
             <tr>
                 <th></th>
                 <th>Sender </th>
-                <th>Receiver</th>
                 <th>Amount</th>
                 <th>Transaction Type</th>
                 <th>Status</th>

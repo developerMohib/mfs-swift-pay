@@ -103,7 +103,6 @@ const cashInFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, function
     const session = yield mongoose_1.default.startSession();
     session.startTransaction();
     const { senderId, receiverId, amount, password } = req.body;
-    console.log('115', req.body);
     // Validate input
     if (!senderId || !receiverId || !amount) {
         yield session.abortTransaction();

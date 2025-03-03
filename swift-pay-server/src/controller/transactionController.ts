@@ -112,7 +112,6 @@ export const cashInFromAgent = async (req: Request, res: Response) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   const { senderId, receiverId, amount, password } = req.body;
-  console.log('115', req.body);
   // Validate input
   if (!senderId || !receiverId || !amount) {
     await session.abortTransaction();

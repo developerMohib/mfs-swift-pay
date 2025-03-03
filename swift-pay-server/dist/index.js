@@ -18,6 +18,8 @@ const transactionRoutes_1 = require("./routes/transactionRoutes");
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
 app.use(body_parser_1.default.json());
+// https://swift-pay-client-theta.vercel.app
+// http://localhost:5173
 app.use((0, cors_1.default)({
     origin: 'https://swift-pay-client-theta.vercel.app',
     credentials: true,

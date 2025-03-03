@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateStatusAgent = exports.allAgent = void 0;
+exports.cashInOkayAgent = exports.getPendingCashInRequests = exports.updateStatusAgent = exports.allAgent = void 0;
 const Agent_1 = require("../model/Agent");
+const Transaction_1 = require("../model/Transaction");
 const allAgent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield Agent_1.Agent.find(); // Fetch all users
@@ -62,3 +63,65 @@ const updateStatusAgent = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.updateStatusAgent = updateStatusAgent;
+const getPendingCashInRequests = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const pendingRequests = yield Transaction_1.Transaction.find({ status: "pending", type: "cash-in" });
+        if (!pendingRequests.length) {
+            res.status(404).json({ message: "No pending cash-in requests found" });
+            return;
+        }
+        res.status(200).json({
+            message: "Pending cash-in requests retrieved successfully",
+            data: pendingRequests,
+        });
+    }
+    catch (error) {
+        console.error("Error fetching pending requests:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+exports.getPendingCashInRequests = getPendingCashInRequests;
+const cashInOkayAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { transactionId } = req.params;
+        const { status } = req.body;
+        if (!transactionId || !status) {
+            res.status(400).json({ message: "Transaction ID and status are required" });
+            return;
+        }
+        const transaction = yield Transaction_1.Transaction.findById(transactionId).populate("agent");
+        if (!transaction) {
+            res.status(404).json({ message: "Transaction not found" });
+            return;
+        }
+        if (transaction.status !== "pending") {
+            res.status(400).json({ message: "This transaction has already been processed" });
+            return;
+        }
+        // const agent = await Agent.findById(transaction.agent);
+        // if (!agent) {
+        //   res.status(404).json({ message: "Agent not found" });
+        //   return;
+        // }
+        // if (status === "approved") {
+        //   agent.balance = (agent.balance || 0) + transaction.amount; // Add cash-in amount
+        //   transaction.status = "approved";
+        //   await agent.save();
+        //   await transaction.save();
+        // } else {
+        //   transaction.status = "rejected";
+        //   await transaction.save();
+        // }
+        // res.status(200).json({
+        //   message: `Cash-in request ${status}`,
+        //   updatedBalance: agent.balance,
+        //   transaction,
+        // });
+        res.send('data fetching pending');
+    }
+    catch (error) {
+        console.error("Error updating transaction status:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+exports.cashInOkayAgent = cashInOkayAgent;
