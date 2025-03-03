@@ -15,8 +15,6 @@ const SendMoney = () => {
     const amount = Number(form.amount.value);
     const password = form.password.value;
 
-    const data = { receiver, amount, password };
-    console.log(data);
     try {
       const response = await axiosPublic.put("/user/send-money", {
         senderId: user._id,

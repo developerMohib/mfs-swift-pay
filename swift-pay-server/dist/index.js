@@ -4,18 +4,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const path_1 = __importDefault(require("path"));
 const app = (0, express_1.default)();
 const cors_1 = __importDefault(require("cors"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const body_parser_1 = __importDefault(require("body-parser"));
 const authRoutes_1 = require("./routes/authRoutes");
 const userRoutes_1 = require("./routes/userRoutes");
 const agentRoutes_1 = require("./routes/agentRoutes");
-const path_1 = __importDefault(require("path"));
 const adminRoutes_1 = require("./routes/adminRoutes");
 const transactionRoutes_1 = require("./routes/transactionRoutes");
-const cookie_parser_1 = __importDefault(require("cookie-parser"));
 // parsers
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
+app.use(body_parser_1.default.json());
 app.use((0, cors_1.default)({
     origin: 'https://swift-pay-client-theta.vercel.app',
     credentials: true,

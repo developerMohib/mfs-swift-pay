@@ -14,11 +14,11 @@ const Home = () => {
   return (
     <div>
       {isAuthenticated ? (
-        role === "User" ? (
+        role === "user" ? (
           <HomeUser />
-        ) : role === "Agent" ? (
+        ) : role === "agent" ? (
           <HomeAgent />
-        ) : role === "Admin" ? (
+        ) : role === "admin" ? (
           <HomeAdmin />
         ) : (
           <> </>

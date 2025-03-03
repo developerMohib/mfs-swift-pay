@@ -5,10 +5,8 @@ const Profile = () => {
   const data = localStorage.getItem("user");
   const user = JSON.parse(data);
   const id = user?._id
-
   const { loginUser, isLoading } = useLoginUser({ id })
-
-
+  
   if (isLoading) <Loader />
   return (
     <div className="flex justify-center items-center mt-20">

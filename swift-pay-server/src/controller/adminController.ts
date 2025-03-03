@@ -7,7 +7,6 @@ export const loginAdmin = async (req: Request, res: Response) => {
     const { email, password } = req.body;
     console.log(' 8', req.body);
     const admin = await Admin.findOne({userEmail: email });
-    console.log(' 10', admin);
 
     if (!admin) {
       res.status(400).json({ message: 'Admin not found' });

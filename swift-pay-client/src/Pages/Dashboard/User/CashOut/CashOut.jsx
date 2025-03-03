@@ -1,16 +1,43 @@
+import { toast } from "react-toastify";
+import Loader from "../../../../Components/Loader/Loader";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+import useLoginUser from "../../../../Hooks/useSingleUser";
+
 const CashOut = () => {
-  const handleSubmit = (e) => {
+  const data = localStorage.getItem("user");
+  const user = JSON.parse(data);
+  const id = user?._id
+  const { loginUser, isLoading } = useLoginUser({ id })
+  const senderId = loginUser?._id;
+  const axiosPublic = useAxiosPublic();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
 
-    const receiver = form.receiver.value;
+    const receiverId = form.receiver.value;
     const amount = Number(form.amount.value);
     const password = form.password.value;
     // const transactionType = transactionTypes.CASH_OUT
 
-    const data = { receiver, amount, password };
-    console.log(data);
+    const data = { senderId, receiverId, amount, password };
+    try {
+      const response = await axiosPublic.put("/user/cash-out", {
+        senderId,
+        receiverId,
+        amount,
+        password
+      });
+      console.log("Transaction Successful:", response.data);
+      if (response?.data?.message) {
+        toast.success(response?.data?.message);
+      }
+    } catch (error) {
+      console.log(error.response?.data?.message || "Transaction failed.");
+    }
   };
+
+  if (isLoading) <Loader />
   return (
     <div className="w-full flex justify-center items-center mt-10">
       <form

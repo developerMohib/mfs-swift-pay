@@ -1,5 +1,6 @@
 # swift pay 
--Live Link(https://swift-pay-client-theta.vercel.app)
+- Live Link Client (https://swift-pay-client-theta.vercel.app)
+- Live Link Server (https://swift-pay-server-mu.vercel.app)
 ## How to run 
 
 ```bash
@@ -16,6 +17,7 @@ nodemon index.js
 
 - login 
 - sign up
+- For admin /wp-admin
 
 ### Usages packegs
 

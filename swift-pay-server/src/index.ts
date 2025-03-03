@@ -1,16 +1,19 @@
 import express, { Application, NextFunction, Request, Response } from 'express';
+import path from 'path';
 const app: Application = express();
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
 import { authRouter } from './routes/authRoutes';
 import { userRouter } from './routes/userRoutes';
 import { agentRouter } from './routes/agentRoutes';
-import path from 'path';
 import { adnminRouter } from './routes/adminRoutes';
 import { transectionRouter } from './routes/transactionRoutes';
-import cookieParser from 'cookie-parser';
 // parsers
 app.use(express.json());
 app.use(cookieParser())
+app.use(bodyParser.json())
+
 app.use(
   cors({
     origin:'https://swift-pay-client-theta.vercel.app',

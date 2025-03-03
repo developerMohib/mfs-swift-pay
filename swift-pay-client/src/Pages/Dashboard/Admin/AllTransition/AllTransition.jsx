@@ -8,6 +8,7 @@ const AllTransition = () => {
         { id: 4, name: "Brice Swyre", job: "Tax Accountant", color: "Ded", mobile: "5369667777", email: "br3ice@example.com" },
         { id: 5, name: "Drice Swyre", job: "Bax Accountant", color: "Ced", mobile: "5556867777", email: "bri4ce@example.com" },
     ];
+    
 
     const [searchQuery, setSearchQuery] = useState("");
 

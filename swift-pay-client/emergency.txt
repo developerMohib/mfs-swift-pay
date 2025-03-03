@@ -1,2 +1,13 @@
+(server)
 VITE_baseUrl=http://localhost:8000
-# VITE_baseUrl=https://swift-pay-server-mu.vercel.app
+VITE_baseUrl=https://swift-pay-server-mu.vercel.app
+
+(client)
+
+1. need to change before pushing github
+    i. env localhost link to live link server and client both 
+        => location : 
+            a. server - hook
+            b. client - index ts cors origin
+    ii. check any link remain for change
+    iii. git push and then npm build and make new update to live
