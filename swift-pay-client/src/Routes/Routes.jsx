@@ -19,6 +19,7 @@ import CashOutRequ from "../Pages/Dashboard/Agent/CashOutRequ/CashOutRequ";
 import CashInRequ from "../Pages/Dashboard/Agent/CashInRequ/CashInRequ";
 import AdminLogin from "../Pages/AdminLogin/AdminLogin";
 import AlTransactions from "../Pages/alTransactions/AlTransactions";
+import CashDeposit from "../Pages/Dashboard/Agent/CashDeposit/CashDeposit";
 
 export const router = createBrowserRouter([
   {
@@ -95,6 +96,10 @@ export const router = createBrowserRouter([
           {
             path: "cashout",
             element: <CashOutRequ />,
+          },
+          {
+            path: "cash-deposit",
+            element: <CashDeposit />,
           },
           {
             path: "profile",

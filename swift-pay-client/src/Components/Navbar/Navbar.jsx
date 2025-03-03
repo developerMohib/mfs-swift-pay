@@ -92,6 +92,7 @@ const Navbar = () => {
               <NavLink to="agent/transaction">Transactions</NavLink>
               <NavLink to="agent/cashin">Cash In</NavLink>
               <NavLink to="agent/cashout">Cash Out</NavLink>
+              <NavLink to="agent/cash-deposit">Deposit Personal</NavLink>
             </>
           )}
         </>

@@ -13,7 +13,7 @@ const SendMoney = () => {
 
     const receiver = form.receiver.value;
     const amount = Number(form.amount.value);
-    const password = form.password.value;
+    // const password = form.password.value;
 
     try {
       const response = await axiosPublic.put("/user/send-money", {

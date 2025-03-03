@@ -13,3 +13,5 @@ link = https://swift-pay-client-theta.vercel.app
             b. client - index ts cors origin
     ii. check any link remain for change
     iii. git push and then npm build and make new update to live
+
+    in cash in - you can make i notificaion like pending. (From Personal account side)
