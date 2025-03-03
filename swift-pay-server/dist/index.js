@@ -31,6 +31,8 @@ app.use('/all', userRoutes_1.userRouter);
 app.use('/user', userRoutes_1.userRouter);
 app.use('/all', agentRoutes_1.agentRouter);
 app.use('/agent', agentRoutes_1.agentRouter);
+app.use('/approved', agentRoutes_1.agentRouter);
+app.use('/rejected', agentRoutes_1.agentRouter);
 app.use('/user', transactionRoutes_1.transectionRouter);
 // server static files
 app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));

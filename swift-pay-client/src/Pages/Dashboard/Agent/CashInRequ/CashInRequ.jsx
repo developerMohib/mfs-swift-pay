@@ -1,19 +1,46 @@
+import { toast } from "react-toastify";
 import Loader from "../../../../Components/Loader/Loader";
 import TransitionHeader from "../../../../Components/Transition/TransitionHeader";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import useCashinRequst from "../../../../Hooks/useCashinRequst";
 
 const CashInRequ = () => {
-    const { cashIn, isLoading } = useCashinRequst();
+    const { cashIn, isLoading, refetch } = useCashinRequst();
     const data = cashIn?.data;
     console.log('cash is', data)
-    // const status = 'pending'
+    const axiosPublic = useAxiosPublic()
     const role = 'agent'
-    const handleApproved = (e) => {
-        console.log('approved')
-        console.log('approved', e)
+    const handleApproved = async (id) => {
+        const status = 'approved'
+        try {
+            const response = await axiosPublic.put(`/approved/request/${id}`, { status });
+
+            if (response.status === 200) {
+                toast.success(`Cash in Request is now ${status}`);
+                refetch()
+            } else {
+                toast.error("Failed to update status");
+            }
+        } catch (error) {
+            console.error("Error updating status:", error);
+            toast.error("Error updating status");
+        }
+
     }
-    const handleRejected = (e) => {
-        console.log('Rejected', e)
+    const handleRejected = async (id) => {
+        const status = 'rejected'
+        try {
+            const response = await axiosPublic.put(`/rejected/request/${id}`, { status });
+            if (response.status === 200) {
+                toast.success(`Cash in request is now ${status}`);
+                refetch()
+            } else {
+                toast.error("Failed to update status");
+            }
+        } catch (error) {
+            console.error("Error updating status:", error);
+            toast.error("Error updating status");
+        }
     }
 
     if (isLoading) return <Loader />
@@ -47,13 +74,13 @@ const CashInRequ = () => {
                                 {role === "agent" && (
                                     <td className="flex gap-2 items-center">
                                         <button
-                                            onClick={(e) => handleApproved(e, item._id)}
+                                            onClick={() => handleApproved(item._id)}
                                             className="px-2 py-1 rounded-lg bg-blue-100 text-blue-500"
                                         >
                                             Approved
                                         </button>
                                         <button
-                                            onClick={(e) => handleRejected(e, item._id)}
+                                            onClick={() => handleRejected(item._id)}
                                             className="px-2 py-1 rounded-lg bg-red-100 text-red-500"
                                         >
                                             Rejected

@@ -31,6 +31,8 @@ app.use('/user', userRouter);
 
 app.use('/all', agentRouter);
 app.use('/agent', agentRouter);
+app.use('/approved', agentRouter);
+app.use('/rejected', agentRouter);
 
 app.use('/user', transectionRouter);
 
