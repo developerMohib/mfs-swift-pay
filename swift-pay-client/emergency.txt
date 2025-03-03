@@ -3,11 +3,13 @@ VITE_baseUrl=http://localhost:8000
 VITE_baseUrl=https://swift-pay-server-mu.vercel.app
 
 (client)
+link = http://localhost:5173
+link = https://swift-pay-client-theta.vercel.app
 
 1. need to change before pushing github
     i. env localhost link to live link server and client both 
         => location : 
-            a. server - hook
+            a. server - client hook, and env
             b. client - index ts cors origin
     ii. check any link remain for change
     iii. git push and then npm build and make new update to live

@@ -15,7 +15,6 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const loginAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
-        console.log(' 8', req.body);
         const admin = yield Admin_1.Admin.findOne({ userEmail: email });
         if (!admin) {
             res.status(400).json({ message: 'Admin not found' });

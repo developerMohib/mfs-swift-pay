@@ -6,7 +6,7 @@ const Profile = () => {
   const user = JSON.parse(data);
   const id = user?._id
   const { loginUser, isLoading } = useLoginUser({ id })
-  
+
   if (isLoading) <Loader />
   return (
     <div className="flex justify-center items-center mt-20">
@@ -23,8 +23,12 @@ const Profile = () => {
           <span className="text-lg "> {loginUser?.userPhone} </span>
           <span className="text-sm "> {loginUser?.userEmail} </span>
           <p className="text-sm rounded-lg px-3 py-1 font-bold capitalize">
-            {" "}
-            Account Type : {loginUser?.userRole === "user" ? "Personal" : loginUser?.userRole}
+            Account Type:{" "}
+            {loginUser?.userRole === "user"
+              ? "Personal"
+              : loginUser?.status === "pending"
+                ? "Pending"
+                : loginUser?.userRole}
           </p>
           <div className="bg-bg px-7 py-3 text-center mt-5 ">
             <p className=""> Account Balance</p>

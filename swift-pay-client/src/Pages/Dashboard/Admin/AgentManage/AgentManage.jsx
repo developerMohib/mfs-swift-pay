@@ -22,7 +22,7 @@ const AgentManage = () => {
             const response = await axiosPublic.put(`/agent/status/${userId}`, { status: newStatus });
 
             if (response.status === 200) {
-                toast.success(`User is now ${newStatus}`);
+                toast.success(`Agent is now ${newStatus}`);
                 refetch()
             } else {
                 toast.error("Failed to update status");

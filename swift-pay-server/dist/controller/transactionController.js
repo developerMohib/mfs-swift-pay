@@ -156,7 +156,6 @@ const cashOutFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, functio
     session.startTransaction();
     try {
         const { senderId, receiverId, amount, password } = req.body;
-        console.log(180, req.body);
         // Validate input
         if (!senderId || !receiverId || !amount) {
             yield session.abortTransaction();
@@ -179,7 +178,6 @@ const cashOutFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, functio
         }
         // find agent
         const receiver = yield Agent_1.Agent.findOne({ userPhone: receiverId }).session(session);
-        console.log('receiver', receiver);
         if (!receiver) {
             yield session.abortTransaction();
             res.status(404).json({ error: 'Receiver not found' });
@@ -235,7 +233,7 @@ const cashOutFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, functio
     catch (err) {
         yield session.abortTransaction();
         res.status(500).json({
-            error: 'Registration failed',
+            error: 'Cash out transaction failed',
             details: err instanceof Error ? err.message : 'An unknown error occurred',
         });
     }
@@ -253,8 +251,11 @@ const allTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function*
             data: result,
         });
     }
-    catch (error) {
-        console.log(error);
+    catch (err) {
+        res.status(500).json({
+            error: 'All transaction failed',
+            details: err instanceof Error ? err.message : 'An unknown error occurred',
+        });
     }
 });
 exports.allTransaction = allTransaction;

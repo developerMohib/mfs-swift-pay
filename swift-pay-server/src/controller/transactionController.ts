@@ -178,7 +178,7 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
   session.startTransaction();
   try {
     const { senderId, receiverId, amount, password } = req.body;
-    console.log(180, req.body);
+
     // Validate input
     if (!senderId || !receiverId || !amount) {
       await session.abortTransaction();
@@ -210,7 +210,6 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
     const receiver = await Agent.findOne({ userPhone: receiverId }).session(
       session,
     );
-    console.log('receiver', receiver);
     if (!receiver) {
       await session.abortTransaction();
       res.status(404).json({ error: 'Receiver not found' });
@@ -283,7 +282,7 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
   } catch (err) {
     await session.abortTransaction();
     res.status(500).json({
-      error: 'Registration failed',
+      error: 'Cash out transaction failed',
       details: err instanceof Error ? err.message : 'An unknown error occurred',
     });
   } finally {
@@ -300,7 +299,10 @@ export const allTransaction = async (req: Request, res: Response) => {
       message: 'All transaction retrive successfully',
       data: result,
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    res.status(500).json({
+      error: 'All transaction failed',
+      details: err instanceof Error ? err.message : 'An unknown error occurred',
+    });
   }
 };

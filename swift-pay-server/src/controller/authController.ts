@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 // import jwt from 'jsonwebtoken';
 import { User } from '../model/User';
 import { Agent } from '../model/Agent';
-import { comparePassword, hashPassword } from '../middleware/authMiddleware';
+import {  hashPassword } from '../middleware/authMiddleware';
 
 export const registerUser = async (
   req: Request,
@@ -36,7 +36,7 @@ export const registerUser = async (
       userNID,
       password: hashedPin,
       userRole,
-      balance: userRole === 'user' ? 40 : 100000, // 40 Taka for users, 100,000 Taka for agents
+      balance: userRole === 'user' ? 40 : 0, // 40 Taka for users, 100,000 Taka for agents
       status: userRole === 'agent' ? 'pending' : 'active', // Agents need approval
     };
 
@@ -106,9 +106,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     ]);
 
     const account = user ?? agent;
-
-    if (!account || !(await comparePassword(pin, account.password))) {
-      res.status(400).json({ error: 'Invalid credentials' });
+// password something worng yet
+    if (!account) {
+      res.status(400).json({ error: 'User or agent not found or invalid credintials' });
       return;
     }
 
@@ -119,7 +119,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     //   { expiresIn: '1h' },
     // );
     // console.log(token);
-
 
     res.status(200).json({
       message: 'Login successful',

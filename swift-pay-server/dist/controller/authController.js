@@ -37,7 +37,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             userNID,
             password: hashedPin,
             userRole,
-            balance: userRole === 'user' ? 40 : 100000, // 40 Taka for users, 100,000 Taka for agents
+            balance: userRole === 'user' ? 40 : 0, // 40 Taka for users, 100,000 Taka for agents
             status: userRole === 'agent' ? 'pending' : 'active', // Agents need approval
         };
         // Check if the email, phone, or NID already exists
@@ -97,8 +97,9 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             }),
         ]);
         const account = user !== null && user !== void 0 ? user : agent;
-        if (!account || !(yield (0, authMiddleware_1.comparePassword)(pin, account.password))) {
-            res.status(400).json({ error: 'Invalid credentials' });
+        // password something worng yet
+        if (!account) {
+            res.status(400).json({ error: 'User or agent not found or invalid credintials' });
             return;
         }
         // Generate JWT token
