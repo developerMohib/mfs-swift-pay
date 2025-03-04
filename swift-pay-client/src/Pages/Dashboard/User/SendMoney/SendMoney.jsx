@@ -1,9 +1,14 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import { UserContext } from "../../../../AuthProvider/AuthProvider";
+import ShowHidePass from "../../../../Features/ShowHidePass/ShowHidePass";
 
 const SendMoney = () => {
+
+  const [open, setOpen] = useState(false)
+  const [showPass, setShowPass] = useState(false);
+  const [rotating, setRotating] = useState(false);
   const axiosPublic = useAxiosPublic()
   const { user } = useContext(UserContext);
 
@@ -29,7 +34,15 @@ const SendMoney = () => {
       console.log(error.response?.data?.message || "Transaction failed.");
     }
   };
+  const handleShowHidePass = () => {
+    setShowPass(!showPass);
+    setRotating(true);
 
+    // Set a timeout to stop rotating after 400ms
+    setTimeout(() => {
+      setRotating(false);
+    }, 400);
+  };
 
   return (
     <div className="w-full flex justify-center items-center mt-10">
@@ -66,17 +79,24 @@ const SendMoney = () => {
             required
           />
         </div>
-        <div className="form-control">
+        <div className="form-control relative">
           <label className="label">
             <span className="label-text">Password</span>
           </label>
           <input
             name="password"
-            type="password"
+            type={showPass ? "text" : "password"}
             placeholder="password"
-            className="focus:outline-none px-4 py-3 bg-bg  rounded-lg "
+            className="focus:outline-none px-4 py-3 bg-bg rounded-lg "
             required
+            onChange={(e) => setOpen(e.target.value)}
           />
+          {open && <ShowHidePass
+            showPass={showPass}
+            handleShowHidePass={handleShowHidePass}
+            rotating={rotating}
+          />}
+
         </div>
         <div className="mt-5 flex justify-center w-full">
           <input

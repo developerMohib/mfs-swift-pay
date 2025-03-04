@@ -2,8 +2,13 @@ import { toast } from "react-toastify";
 import Loader from "../../../../Components/Loader/Loader";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import useLoginUser from "../../../../Hooks/useSingleUser";
+import { useState } from "react";
+import ShowHidePass from "../../../../Features/ShowHidePass/ShowHidePass";
 
 const CashOut = () => {
+  const [open, setOpen] = useState(false)
+  const [showPass, setShowPass] = useState(false);
+  const [rotating, setRotating] = useState(false);
   const data = localStorage.getItem("user");
   const user = JSON.parse(data);
   const id = user?._id
@@ -18,9 +23,7 @@ const CashOut = () => {
     const receiverId = form.receiver.value;
     const amount = Number(form.amount.value);
     const password = form.password.value;
-    // const transactionType = transactionTypes.CASH_OUT
 
-    // const data = { senderId, receiverId, amount, password };
     try {
       const response = await axiosPublic.put("/user/cash-out", {
         senderId,
@@ -28,13 +31,23 @@ const CashOut = () => {
         amount,
         password
       });
-      console.log("Transaction Successful:", response.data);
       if (response?.data?.message) {
         toast.success(response?.data?.message);
       }
     } catch (error) {
       console.log(error.response?.data?.message || "Transaction failed.");
     }
+  };
+
+  
+  const handleShowHidePass = () => {
+    setShowPass(!showPass);
+    setRotating(true);
+
+    // Set a timeout to stop rotating after 400ms
+    setTimeout(() => {
+      setRotating(false);
+    }, 400);
   };
 
   if (isLoading) return <Loader />;
@@ -71,17 +84,25 @@ const CashOut = () => {
             required
           />
         </div>
-        <div className="form-control">
+
+        <div className="form-control relative">
           <label className="label">
             <span className="label-text">Password</span>
           </label>
           <input
             name="password"
-            type="password"
+            type={showPass ? "text" : "password"}
             placeholder="password"
-            className="focus:outline-none px-4 py-3 bg-bg  rounded-lg "
+            className="focus:outline-none px-4 py-3 bg-bg rounded-lg "
             required
+            onChange={(e) => setOpen(e.target.value)}
           />
+          {open && <ShowHidePass
+            showPass={showPass}
+            handleShowHidePass={handleShowHidePass}
+            rotating={rotating}
+          />}
+
         </div>
         <div className="mt-5 flex justify-center w-full">
           <input

@@ -1,28 +1,6 @@
 
 const HomeUser = () => {
-    const services = [
-        {
-            title: "পেমেন্ট",
-            description: "সারা দেশে অনলাইন এবং QR স্ক্যান করে, সবচেয়ে দ্রুত পেমেন্ট করুন বিকাশ-এ",
-            image: "https://www.bkash.com/uploaded_contents/services/home_images/04-payment_1675164341242.webp", // Replace with actual image path
-        },
-        {
-            title: "মোবাইল রিচার্জ",
-            description: "রিচার্জ করুন যেকোনো নাম্বারে, সেরা অফারের সাথে",
-            image: "https://www.bkash.com/uploaded_contents/services/home_images/02-MR_1675164134643.webp", // Replace with actual image path
-        },
-        {
-            title: "সেন্ড মানি",
-            description: "টাকা পাঠান বিকাশ থেকে যেকোনো নাম্বারে, মুহূর্তেই",
-            image: "https://www.bkash.com/uploaded_contents/services/home_images/01-send-money_1675164089657.webp", // Replace with actual image path
-        },
-        {
-            title: "ক্যাশ আউট",
-            description: "টাকা তুলুন দেশের সবচেয়ে বড় এজেন্ট এবং এটিএম নেটওয়ার্কে",
-            image: "https://www.bkash.com/uploaded_contents/services/home_images/03-cashout_1675164155438.webp", // Replace with actual image path
-        },
-    ];
-console.log(services)
+
     return (
         <div className="bg-pink-50 py-10">
             <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">

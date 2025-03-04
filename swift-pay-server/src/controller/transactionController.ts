@@ -108,6 +108,87 @@ export const sendMoney = async (req: Request, res: Response) => {
   }
 };
 
+export const cashDeposit = async (req: Request, res: Response) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const { senderId, receiverId, amount } = req.body;
+    
+    // Validate input minimum 50
+    if (!senderId || !receiverId || !amount || amount < 50) {
+      await session.abortTransaction();
+      res.status(400).json({ error: 'Invalid input' });
+      return;
+    }
+
+    // Find sender and receiver
+    const sender = await Agent.findOne({ _id: new Object(senderId) }).session(
+      session,
+    );
+    const receiver = await User.findOne({ userPhone: receiverId }).session(
+      session,
+    );
+console.log('sender',sender)
+console.log('receiver',receiver)
+    if (!sender || !receiver) {
+      await session.abortTransaction();
+      res.status(404).json({ error: 'Sender or receiver not found' });
+      return;
+    }
+    // Check sender balance
+
+    if (sender.balance < amount) {
+      await session.abortTransaction();
+      res.status(400).json({ error: 'Insufficient balance' });
+      return;
+    }
+
+    // Deduct amount + fee from sender
+    sender.balance = sender.balance - amount;
+    await sender.save({ session });
+
+    // Add amount to receiver
+    receiver.balance = receiver.balance + amount;
+    await receiver.save({ session });
+
+    // Record transaction
+    const transaction = new Transaction({
+      sender: sender._id,
+      receiver: receiver._id,
+      amount,
+      type: 'cash-in', // Set transaction type
+      status: 'success', // Set transaction status
+    });
+    await transaction.save({ session });
+
+    // Update sender and receiver transaction history
+    sender.transactions.push(
+      transaction._id as unknown as mongoose.Schema.Types.ObjectId,
+    );
+    receiver.transactions.push(
+      transaction._id as unknown as mongoose.Schema.Types.ObjectId,
+    );
+
+    await sender.save({ session });
+    await receiver.save({ session });
+    await session.commitTransaction();
+
+    res.status(200).json({
+      message: 'Money deposit successfully',
+      transaction,
+      remainingBalance: sender.balance,
+    });
+  } catch (err) {
+    await session.abortTransaction();
+    res.status(500).json({
+      error: 'Registration failed',
+      details: err instanceof Error ? err.message : 'An unknown error occurred',
+    });
+  } finally {
+    session.endSession();
+  }
+};
+
 export const cashInFromAgent = async (req: Request, res: Response) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -126,7 +207,7 @@ export const cashInFromAgent = async (req: Request, res: Response) => {
     const receiver = await Agent.findOne({ userPhone: receiverId }).session(
       session,
     );
-    console.log('receiver', receiver);
+    
     if (!sender || !receiver) {
       await session.abortTransaction();
       res.status(404).json({ error: 'Sender or receiver not found' });
@@ -159,7 +240,7 @@ export const cashInFromAgent = async (req: Request, res: Response) => {
     await session.commitTransaction();
 
     res.status(200).json({
-      message: 'Cash In successfully',
+      message: 'Cash In Request successfully',
       transaction,
       remainingBalance: sender.balance,
     });
@@ -199,7 +280,7 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
     }
 
     const isMatch = await comparePassword(password, sender.password);
-
+console.log('is cash out ',isMatch)
     if (!isMatch) {
       res
         .status(400)
@@ -216,6 +297,7 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
       res.status(404).json({ error: 'Receiver not found' });
       return;
     }
+    console.log('receiver',receiver)
 
     // Fee Calculation
     const totalFee = amount * (1.5 / 100); // 1.5% of amount
@@ -243,7 +325,7 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
 
     // Update balances
     sender.balance -= amount; // Deduct full amount from user
-    receiver.balance += agentFee; // Add final amount to agent
+    receiver.balance += finalAmount; // Add final amount to agent
     receiver.income += agentFee; // Update agent's income
 
     // Save changes

@@ -7,7 +7,7 @@ import useCashinRequst from "../../../../Hooks/useCashinRequst";
 const CashInRequ = () => {
     const { cashIn, isLoading, refetch } = useCashinRequst();
     const data = cashIn?.data;
-    console.log('cash is', data)
+
     const axiosPublic = useAxiosPublic()
     const role = 'agent'
     const handleApproved = async (id) => {

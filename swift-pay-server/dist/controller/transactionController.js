@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.allTransaction = exports.cashOutFromAgent = exports.cashInFromAgent = exports.sendMoney = void 0;
+exports.allTransaction = exports.cashOutFromAgent = exports.cashInFromAgent = exports.cashDeposit = exports.sendMoney = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const User_1 = require("../model/User");
 const Transaction_1 = require("../model/Transaction");
@@ -99,6 +99,72 @@ const sendMoney = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.sendMoney = sendMoney;
+const cashDeposit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const session = yield mongoose_1.default.startSession();
+    session.startTransaction();
+    try {
+        const { senderId, receiverId, amount } = req.body;
+        // Validate input minimum 50
+        if (!senderId || !receiverId || !amount || amount < 50) {
+            yield session.abortTransaction();
+            res.status(400).json({ error: 'Invalid input' });
+            return;
+        }
+        // Find sender and receiver
+        const sender = yield Agent_1.Agent.findOne({ _id: new Object(senderId) }).session(session);
+        const receiver = yield User_1.User.findOne({ userPhone: receiverId }).session(session);
+        console.log('sender', sender);
+        console.log('receiver', receiver);
+        if (!sender || !receiver) {
+            yield session.abortTransaction();
+            res.status(404).json({ error: 'Sender or receiver not found' });
+            return;
+        }
+        // Check sender balance
+        if (sender.balance < amount) {
+            yield session.abortTransaction();
+            res.status(400).json({ error: 'Insufficient balance' });
+            return;
+        }
+        // Deduct amount + fee from sender
+        sender.balance = sender.balance - amount;
+        yield sender.save({ session });
+        // Add amount to receiver
+        receiver.balance = receiver.balance + amount;
+        yield receiver.save({ session });
+        // Record transaction
+        const transaction = new Transaction_1.Transaction({
+            sender: sender._id,
+            receiver: receiver._id,
+            amount,
+            type: 'cash-in', // Set transaction type
+            status: 'success', // Set transaction status
+        });
+        yield transaction.save({ session });
+        // Update sender and receiver transaction history
+        sender.transactions.push(transaction._id);
+        receiver.transactions.push(transaction._id);
+        yield sender.save({ session });
+        yield receiver.save({ session });
+        yield session.commitTransaction();
+        res.status(200).json({
+            message: 'Money deposit successfully',
+            transaction,
+            remainingBalance: sender.balance,
+        });
+    }
+    catch (err) {
+        yield session.abortTransaction();
+        res.status(500).json({
+            error: 'Registration failed',
+            details: err instanceof Error ? err.message : 'An unknown error occurred',
+        });
+    }
+    finally {
+        session.endSession();
+    }
+});
+exports.cashDeposit = cashDeposit;
 const cashInFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const session = yield mongoose_1.default.startSession();
     session.startTransaction();
@@ -113,7 +179,6 @@ const cashInFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, function
         // Find sender and receiver
         const sender = yield User_1.User.findOne({ _id: new Object(senderId) }).session(session);
         const receiver = yield Agent_1.Agent.findOne({ userPhone: receiverId }).session(session);
-        console.log('receiver', receiver);
         if (!sender || !receiver) {
             yield session.abortTransaction();
             res.status(404).json({ error: 'Sender or receiver not found' });
@@ -137,7 +202,7 @@ const cashInFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, function
         yield receiver.save({ session });
         yield session.commitTransaction();
         res.status(200).json({
-            message: 'Cash In successfully',
+            message: 'Cash In Request successfully',
             transaction,
             remainingBalance: sender.balance,
         });
@@ -173,6 +238,7 @@ const cashOutFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, functio
             return;
         }
         const isMatch = yield (0, authMiddleware_1.comparePassword)(password, sender.password);
+        console.log('is cash out ', isMatch);
         if (!isMatch) {
             res
                 .status(400)
@@ -186,6 +252,7 @@ const cashOutFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, functio
             res.status(404).json({ error: 'Receiver not found' });
             return;
         }
+        console.log('receiver', receiver);
         // Fee Calculation
         const totalFee = amount * (1.5 / 100); // 1.5% of amount
         const agentFee = amount * (1 / 100); // 1% to agent
@@ -207,7 +274,7 @@ const cashOutFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, functio
         }
         // Update balances
         sender.balance -= amount; // Deduct full amount from user
-        receiver.balance += agentFee; // Add final amount to agent
+        receiver.balance += finalAmount; // Add final amount to agent
         receiver.income += agentFee; // Update agent's income
         // Save changes
         yield sender.save();

@@ -34,6 +34,7 @@ app.use('/agent', agentRouter);
 app.use('/approved', agentRouter);
 app.use('/rejected', agentRouter);
 
+app.use('/all', transectionRouter);
 app.use('/user', transectionRouter);
 
 // server static files
