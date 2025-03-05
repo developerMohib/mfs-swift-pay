@@ -25,6 +25,7 @@ app.use((0, cors_1.default)({
     credentials: true,
 }));
 app.use('/admin', adminRoutes_1.adnminRouter);
+app.use('/agent', adminRoutes_1.adnminRouter);
 // my routes
 app.use('/user', authRoutes_1.authRouter);
 app.use('/all', userRoutes_1.userRouter);
@@ -34,7 +35,7 @@ app.use('/agent', agentRoutes_1.agentRouter);
 app.use('/approved', agentRoutes_1.agentRouter);
 app.use('/rejected', agentRoutes_1.agentRouter);
 app.use('/all', transactionRoutes_1.transectionRouter);
-app.use('/user', transactionRoutes_1.transectionRouter);
+app.use('/user', transactionRoutes_1.transectionRouter); // user/cash-out
 // server static files
 app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
 app.get('/', (req, res) => {

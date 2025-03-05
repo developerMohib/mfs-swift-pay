@@ -113,7 +113,7 @@ export const cashDeposit = async (req: Request, res: Response) => {
   session.startTransaction();
   try {
     const { senderId, receiverId, amount } = req.body;
-    
+
     // Validate input minimum 50
     if (!senderId || !receiverId || !amount || amount < 50) {
       await session.abortTransaction();
@@ -128,8 +128,8 @@ export const cashDeposit = async (req: Request, res: Response) => {
     const receiver = await User.findOne({ userPhone: receiverId }).session(
       session,
     );
-console.log('sender',sender)
-console.log('receiver',receiver)
+    console.log('sender', sender);
+    console.log('receiver', receiver);
     if (!sender || !receiver) {
       await session.abortTransaction();
       res.status(404).json({ error: 'Sender or receiver not found' });
@@ -207,7 +207,7 @@ export const cashInFromAgent = async (req: Request, res: Response) => {
     const receiver = await Agent.findOne({ userPhone: receiverId }).session(
       session,
     );
-    
+
     if (!sender || !receiver) {
       await session.abortTransaction();
       res.status(404).json({ error: 'Sender or receiver not found' });
@@ -280,7 +280,6 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
     }
 
     const isMatch = await comparePassword(password, sender.password);
-console.log('is cash out ',isMatch)
     if (!isMatch) {
       res
         .status(400)
@@ -297,14 +296,15 @@ console.log('is cash out ',isMatch)
       res.status(404).json({ error: 'Receiver not found' });
       return;
     }
-    console.log('receiver',receiver)
+    console.log('receiver', receiver);
 
     // Fee Calculation
     const totalFee = amount * (1.5 / 100); // 1.5% of amount
     const agentFee = amount * (1 / 100); // 1% to agent
     const adminFee = amount * (0.5 / 100); // 0.5% to admin
     const finalAmount = amount - totalFee; // Amount user receives from agent
-    console.log('final amount', finalAmount);
+    const income = totalFee - adminFee;
+    console.log('final income agent', income);
 
     // find Admin
     const adminId = process.env.ADMIN_ID; // mongose object id
@@ -374,8 +374,8 @@ console.log('is cash out ',isMatch)
 export const allTransaction = async (req: Request, res: Response) => {
   try {
     const result = await Transaction.find()
-    .populate('sender', 'userName userPhone userEmail userRole') // Fetch sender details
-    .populate('receiver', 'userName userPhone userEmail userRole');
+      .populate('sender', 'userName userPhone userEmail userRole') // Fetch sender details
+      .populate('receiver', 'userName userPhone userEmail userRole');
 
     res.status(200).json({
       message: 'All transaction retrive successfully',

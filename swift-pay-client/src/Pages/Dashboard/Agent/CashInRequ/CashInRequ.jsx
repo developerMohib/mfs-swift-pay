@@ -5,12 +5,13 @@ import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import { UserContext } from "../../../../AuthProvider/AuthProvider";
 import Loader from "../../../../Components/Loader/Loader";
 import ShowHidePass from "../../../../Features/ShowHidePass/ShowHidePass";
+import useAdmin from "../../../../Hooks/useAdmin";
 
 const CashInRequ = () => {
     const [open, setOpen] = useState(false)
     const [showPass, setShowPass] = useState(false);
     const [rotating, setRotating] = useState(false);
-
+    const { admin, isLoading } = useAdmin()
     const axiosPublic = useAxiosPublic()
     const { user, loading } = useContext(UserContext);
 
@@ -22,14 +23,14 @@ const CashInRequ = () => {
         const amount = Number(form.amount.value);
         const password = form.password.value;
         // const transactionType = transactionTypes.CASH_IN
-
         try {
-            const response = await axiosPublic.put("/user/cash-in", {
+            const response = await axiosPublic.put("/agent/cash-in", {
                 senderId: user._id,
                 receiverId: receiver,
                 amount,
                 password
             });
+            console.log('33', response?.data)
 
             if (response?.data?.message) {
                 toast.success(response?.data?.message);
@@ -48,7 +49,7 @@ const CashInRequ = () => {
         }, 400);
     };
 
-    if (loading) return <Loader />
+    if (isLoading || loading) return <Loader />
     return (
         <div className="w-full flex justify-center items-center mt-10">
             <form
@@ -66,9 +67,9 @@ const CashInRequ = () => {
                     <input
                         name="receiver"
                         type="text"
-                        placeholder="phone number"
+                        value={admin?.userPhone}
+                        readOnly
                         className="focus:outline-none px-4 py-3 bg-bg rounded-lg"
-                        required
                     />
                 </div>
                 <div className="form-control">
@@ -77,10 +78,9 @@ const CashInRequ = () => {
                     </label>
                     <input
                         name="amount"
-                        type="number"
-                        placeholder="Enter amount"
+                        value="100000"
                         className="focus:outline-none px-4 py-3 bg-bg  rounded-lg "
-                        required
+                        readOnly
                     />
                 </div>
                 <div className="form-control relative">

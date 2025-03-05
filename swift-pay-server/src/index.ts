@@ -23,6 +23,7 @@ app.use(
 );
 
 app.use('/admin', adnminRouter);
+app.use('/agent', adnminRouter);
 // my routes
 app.use('/user', authRouter);
 
@@ -35,7 +36,7 @@ app.use('/approved', agentRouter);
 app.use('/rejected', agentRouter);
 
 app.use('/all', transectionRouter);
-app.use('/user', transectionRouter);
+app.use('/user', transectionRouter); // user/cash-out
 
 // server static files
 app.use(express.static(path.join(__dirname, '../public')));

@@ -238,7 +238,6 @@ const cashOutFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, functio
             return;
         }
         const isMatch = yield (0, authMiddleware_1.comparePassword)(password, sender.password);
-        console.log('is cash out ', isMatch);
         if (!isMatch) {
             res
                 .status(400)
@@ -258,7 +257,8 @@ const cashOutFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const agentFee = amount * (1 / 100); // 1% to agent
         const adminFee = amount * (0.5 / 100); // 0.5% to admin
         const finalAmount = amount - totalFee; // Amount user receives from agent
-        console.log('final amount', finalAmount);
+        const income = totalFee - adminFee;
+        console.log('final income agent', income);
         // find Admin
         const adminId = process.env.ADMIN_ID; // mongose object id
         // Add fee to admin's balance

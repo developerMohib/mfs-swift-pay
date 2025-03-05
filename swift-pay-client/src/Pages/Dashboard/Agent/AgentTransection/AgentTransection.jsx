@@ -8,6 +8,7 @@ const AgentTransection = () => {
     const { cashIn, isLoading, refetch } = useCashinRequst();
     const data = cashIn?.data;
 
+console.log('data',data)
     const axiosPublic = useAxiosPublic()
     const role = 'agent'
     const handleApproved = async (id) => {

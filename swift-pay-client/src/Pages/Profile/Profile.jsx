@@ -42,18 +42,23 @@ const Profile = () => {
           <div className="bg-bg px-7 py-3 text-center mt-5 ">
             <p className=""> Account Balance</p>
             <h1 className="text-3xl">
-            <span className="cursor-pointer hover:text-secondary" onClick={() => handleSeeBalance(loginUser._id)}> {showBalance === loginUser._id ? `${loginUser.balance} BDT` : "Tap to see balance"} </span>
-              </h1>
+              <span className="cursor-pointer hover:text-secondary" onClick={() => handleSeeBalance(loginUser._id)}> {showBalance === loginUser._id ? `${loginUser.balance} BDT` : "Tap to see balance"} </span>
+            </h1>
           </div>
 
-          {loginUser.userRole === 'admin' && (
-            <div className="bg-bg px-7 py-3 text-center mt-5">
-              <p>Total System Balance</p>
+          {loginUser.userRole === 'admin' ? (
+            <div>
+              <p className="mt-4">Total System Balance</p>
               <h1 className="text-3xl">{loginUser?.totalMoneyInSystem}</h1>
             </div>
-          )}
-
-
+          ) : loginUser.userRole === 'agent' ? (
+            <div>
+              <p className="mt-4">Agent Income</p>
+              <h1 className="text-3xl">
+                {loginUser.income} BDT
+              </h1>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
