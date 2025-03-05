@@ -3,6 +3,7 @@ import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
 import { UserContext } from "../../../../AuthProvider/AuthProvider";
 import { toast } from "react-toastify";
 import ShowHidePass from "../../../../Features/ShowHidePass/ShowHidePass";
+import Loader from "../../../../Components/Loader/Loader";
 
 const CashInto = () => {
   const [open, setOpen] = useState(false)
@@ -10,7 +11,7 @@ const CashInto = () => {
   const [rotating, setRotating] = useState(false);
 
   const axiosPublic = useAxiosPublic()
-  const { user } = useContext(UserContext);
+  const { user,loading } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,6 +47,7 @@ const CashInto = () => {
     }, 400);
   };
 
+  if (loading) return <Loader />
   return (
     <div className="w-full flex justify-center items-center mt-10">
       <form

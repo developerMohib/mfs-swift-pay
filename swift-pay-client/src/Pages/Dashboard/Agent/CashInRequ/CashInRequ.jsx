@@ -1,103 +1,115 @@
+
 import { toast } from "react-toastify";
-import Loader from "../../../../Components/Loader/Loader";
-import TransitionHeader from "../../../../Components/Transition/TransitionHeader";
+import { useContext, useState } from "react";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import useCashinRequst from "../../../../Hooks/useCashinRequst";
+import { UserContext } from "../../../../AuthProvider/AuthProvider";
+import Loader from "../../../../Components/Loader/Loader";
+import ShowHidePass from "../../../../Features/ShowHidePass/ShowHidePass";
 
 const CashInRequ = () => {
-    const { cashIn, isLoading, refetch } = useCashinRequst();
-    const data = cashIn?.data;
+    const [open, setOpen] = useState(false)
+    const [showPass, setShowPass] = useState(false);
+    const [rotating, setRotating] = useState(false);
 
     const axiosPublic = useAxiosPublic()
-    const role = 'agent'
-    const handleApproved = async (id) => {
-        const status = 'approved'
-        try {
-            const response = await axiosPublic.put(`/approved/request/${id}`, { status });
+    const { user, loading } = useContext(UserContext);
 
-            if (response.status === 200) {
-                toast.success(`Cash in Request is now ${status}`);
-                refetch()
-            } else {
-                toast.error("Failed to update status");
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+
+        const receiver = form.receiver.value;
+        const amount = Number(form.amount.value);
+        const password = form.password.value;
+        // const transactionType = transactionTypes.CASH_IN
+
+        try {
+            const response = await axiosPublic.put("/user/cash-in", {
+                senderId: user._id,
+                receiverId: receiver,
+                amount,
+                password
+            });
+
+            if (response?.data?.message) {
+                toast.success(response?.data?.message);
             }
         } catch (error) {
-            console.error("Error updating status:", error);
-            toast.error("Error updating status");
+            console.log(error.response?.data?.message || "Transaction failed.");
         }
+    };
+    const handleShowHidePass = () => {
+        setShowPass(!showPass);
+        setRotating(true);
 
-    }
-    const handleRejected = async (id) => {
-        const status = 'rejected'
-        try {
-            const response = await axiosPublic.put(`/rejected/request/${id}`, { status });
-            if (response.status === 200) {
-                toast.success(`Cash in request is now ${status}`);
-                refetch()
-            } else {
-                toast.error("Failed to update status");
-            }
-        } catch (error) {
-            console.error("Error updating status:", error);
-            toast.error("Error updating status");
-        }
-    }
+        // Set a timeout to stop rotating after 400ms
+        setTimeout(() => {
+            setRotating(false);
+        }, 400);
+    };
 
-    if (isLoading) return <Loader />
+    if (loading) return <Loader />
     return (
-        <div className="overflow-x-auto text-center w-full px-2 py-5">
-            <h3 className='text-xl mb-3'>Manage <span className="text-primary">User Cashin</span> </h3>
-            <table className="table table-zebra outline outline-[1px] outline-base-200 shadow">
-                <TransitionHeader />
-                <tbody>
-                    {data?.length > 0 ? (
-                        data?.map((item, index) => (
-                            <tr key={item._id}>
-                                <th>{index + 1}</th>
-                                <td>
-                                    <h4>{item.sender?.userName || "N/A"}</h4>
-                                    <p>{item.sender?.phone || "N/A"}</p>
-                                </td>
+        <div className="w-full flex justify-center items-center mt-10">
+            <form
+                onSubmit={handleSubmit}
+                className="md:w-1/2 bg-bg px-20 py-8 rounded-lg"
+            >
+                <h3 className="text-3xl text-center ">
+                    <span className="text-primary"> Cash In </span>{" "} Request
+                </h3>
+                <p className="text-center">From Admin Only</p>
+                <div className="form-control mt-5">
+                    <label className="label">
+                        <span className="label-text text-lg">Admin Number</span>
+                    </label>
+                    <input
+                        name="receiver"
+                        type="text"
+                        placeholder="phone number"
+                        className="focus:outline-none px-4 py-3 bg-bg rounded-lg"
+                        required
+                    />
+                </div>
+                <div className="form-control">
+                    <label className="label">
+                        <span className="label-text text-lg">Amount</span>
+                    </label>
+                    <input
+                        name="amount"
+                        type="number"
+                        placeholder="Enter amount"
+                        className="focus:outline-none px-4 py-3 bg-bg  rounded-lg "
+                        required
+                    />
+                </div>
+                <div className="form-control relative">
+                    <label className="label">
+                        <span className="label-text">Password</span>
+                    </label>
+                    <input
+                        name="password"
+                        type={showPass ? "text" : "password"}
+                        placeholder="password"
+                        className="focus:outline-none px-4 py-3 bg-bg rounded-lg "
+                        required
+                        onChange={(e) => setOpen(e.target.value)}
+                    />
+                    {open && <ShowHidePass
+                        showPass={showPass}
+                        handleShowHidePass={handleShowHidePass}
+                        rotating={rotating}
+                    />}
 
-                                <td>{item.amount || "N/A"}</td>
-                                <td>{item.type || "Cashin"}</td>
-                                <td>
-                                    <button
-                                        className={`px-2 rounded-full capitalize
-                                        ${item.status === "pending" ? "bg-base-200" :
-                                                item.status === "approved" ? "bg-green-100 text-green-500" :
-                                                    item.status === "rejected" ? "bg-red-50 text-red-500" : ""}`}
-                                    >
-                                        {item.status}
-                                    </button>
-                                </td>
-                                {role === "agent" && (
-                                    <td className="flex gap-2 items-center">
-                                        <button
-                                            onClick={() => handleApproved(item._id)}
-                                            className="px-2 py-1 rounded-lg bg-blue-100 text-blue-500"
-                                        >
-                                            Approved
-                                        </button>
-                                        <button
-                                            onClick={() => handleRejected(item._id)}
-                                            className="px-2 py-1 rounded-lg bg-red-100 text-red-500"
-                                        >
-                                            Rejected
-                                        </button>
-                                    </td>
-                                )}
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="7" className="text-center py-4">
-                                No Cashin Requests Found
-                            </td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
+                </div>
+                <div className="mt-5 flex justify-center w-full">
+                    <input
+                        type="submit"
+                        className="w-fit cursor-pointer focus:outline-none px-4 py-3 bg-secondary hover:bg-primary text-bg rounded-lg"
+                        value={"Cash in Request"}
+                    />
+                </div>
+            </form>
         </div>
     );
 };
