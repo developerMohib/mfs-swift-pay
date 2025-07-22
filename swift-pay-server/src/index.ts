@@ -17,7 +17,7 @@ app.use(bodyParser.json())
 // http://localhost:5173
 app.use(
   cors({
-    origin:'https://swift-pay-client-theta.vercel.app',
+    origin:'http://localhost:5173',
     credentials: true,
   }),
 );

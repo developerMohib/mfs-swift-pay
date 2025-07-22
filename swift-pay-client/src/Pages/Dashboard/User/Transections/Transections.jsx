@@ -17,7 +17,7 @@ const Transections = () => {
         transaction.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         transaction.mobile.includes(searchQuery)
     );
-    console.log('transaction', transaction)
+    
     if (isLoading) return <Loader />;
     return (
         <div className="overflow-x-auto w-full px-2 py-5">

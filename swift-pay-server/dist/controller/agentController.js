@@ -65,6 +65,8 @@ const updateStatusAgent = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.updateStatusAgent = updateStatusAgent;
 const getPendingCashInRequests = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const agentId = req;
+        console.log('71', agentId);
         const pendingRequests = yield Transaction_1.Transaction.find({
             status: 'pending',
             type: 'cash-in',

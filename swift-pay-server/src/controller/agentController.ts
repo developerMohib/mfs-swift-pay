@@ -67,6 +67,10 @@ export const getPendingCashInRequests = async (
   res: Response,
 ): Promise<void> => {
   try {
+    const agentId = req;
+    console.log('71', agentId)
+
+
     const pendingRequests = await Transaction.find({
       status: 'pending',
       type: 'cash-in',

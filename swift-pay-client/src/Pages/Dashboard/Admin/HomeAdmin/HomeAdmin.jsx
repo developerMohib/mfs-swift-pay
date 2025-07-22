@@ -1,27 +1,14 @@
 import { toast } from "react-toastify";
-import Loader from "../../../../Components/Loader/Loader";
-import TransitionHeader from "../../../../Components/Transition/TransitionHeader";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+import TransitionHeader from "../../../../Components/Transition/TransitionHeader";
 import useCashinRequst from "../../../../Hooks/useCashinRequst";
-import { useContext } from "react";
-import { UserContext } from "../../../../AuthProvider/AuthProvider";
-import useLoginUser from "../../../../Hooks/useSingleUser";
+import Loader from "../../../../Components/Loader/Loader";
 
-const AgentTransection = () => {
-    const { user } = useContext(UserContext)
-    const { cashIn, isLoading, refetch } = useCashinRequst();
+const HomeAdmin = () => {
+    const axiosPublic = useAxiosPublic();
+    const { cashIn, isLoading } = useCashinRequst();
     const data = cashIn?.data;
-    const id = user?._id
-    const { loginUser } = useLoginUser({ id })
-    const senderId = loginUser?._id;
-
-    const admintId = senderId === id;
-    console.log('user', user?._id)
-    console.log('data', data)
-    console.log('sender ', admintId)
-
-    const axiosPublic = useAxiosPublic()
-    const role = 'agent'
+    const role = 'admin';
 
     const handleApproved = async (id) => {
         const status = 'approved'
@@ -30,7 +17,7 @@ const AgentTransection = () => {
 
             if (response.status === 200) {
                 toast.success(`Cash in Request is now ${status}`);
-                refetch()
+                // refetch()
             } else {
                 toast.error("Failed to update status");
             }
@@ -46,7 +33,7 @@ const AgentTransection = () => {
             const response = await axiosPublic.put(`/rejected/request/${id}`, { status });
             if (response.status === 200) {
                 toast.success(`Cash in request is now ${status}`);
-                refetch()
+                // refetch()
             } else {
                 toast.error("Failed to update status");
             }
@@ -59,7 +46,7 @@ const AgentTransection = () => {
     if (isLoading) return <Loader />
     return (
         <div className="overflow-x-auto text-center w-full px-2 py-5">
-            <h3 className='text-xl mb-3'>Manage <span className="text-primary">User Cashin</span> </h3>
+            <h3 className='text-xl mb-3'>Manage <span className="text-primary">Agent Cashin</span> </h3>
             <table className="table table-zebra outline outline-[1px] outline-base-200 shadow">
                 <TransitionHeader />
                 <tbody>
@@ -84,7 +71,7 @@ const AgentTransection = () => {
                                         {item.status}
                                     </button>
                                 </td>
-                                {role === "agent" && (
+                                {role === "admin" && (
                                     <td className="flex gap-2 items-center">
                                         <button
                                             onClick={() => handleApproved(item._id)}
@@ -115,4 +102,4 @@ const AgentTransection = () => {
     );
 };
 
-export default AgentTransection;
+export default HomeAdmin;

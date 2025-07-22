@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import { UserContext } from "../../AuthProvider/AuthProvider";
 import Hero from "../../Components/Hero/Hero";
-import HomeAdmin from "../../Components/HomeAdmin/HomeAdmin";
-import HomeAgent from "../../Components/HomeAgent/HomeAgent";
-import HomeUser from "../../Components/HomeUser/HomeUser";
 import ServiceCardSlider from "../../Components/ServiceCardSlider/ServiceCardSlider";
+import HomeUser from "../Dashboard/User/HomeUser/HomeUser";
+import HomeAgent from "../Dashboard/Agent/HomeAgent/HomeAgent";
+import HomeAdmin from "../Dashboard/Admin/HomeAdmin/HomeAdmin";
 
 const Home = () => {
   const { user, loading } = useContext(UserContext);
@@ -21,7 +21,7 @@ const Home = () => {
         ) : role === "admin" ? (
           <HomeAdmin />
         ) : (
-          <> </>
+          <p> No Route Found For This User </p>
         )
       ) : (
         <>
