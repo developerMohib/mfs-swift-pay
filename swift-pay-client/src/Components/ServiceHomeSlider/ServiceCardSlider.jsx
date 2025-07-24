@@ -12,7 +12,7 @@ const ServiceCardSlider = () => {
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    speed: 2500,
+    speed: 3000,
     autoplaySpeed: 5000,
     cssEase: "linear",
     responsive: [
@@ -53,27 +53,34 @@ const ServiceCardSlider = () => {
   return (
     <div className="slider-container w-full mx-auto p-4 md:p-4 lg:p-8">
       <div className="text-center my-10">
-        <h1 className="text-2xl md:text-4xl font-semibold text-tarnary">Our Services</h1>
+        <h1 className="text-2xl md:text-4xl font-semibold text-tarnary">Our Providing Services</h1>
         <p className="text-base md:text-lg text-tarnary" >3 easy steps to use your swiftPay Account</p>
       </div>
       <Slider {...settings}>
         {servicesData?.map((service) => (
-          <div key={service.id}>
+          <div key={service.id} className="h-full">
             {/* Each slide content */}
-            <div className="bg-bg md:mx-2 md:mt-5">
-              <div className="px-4 py-6 mx-2 border-2 border-tarnary rounded-md">
-                <h1 className="text-2xl md:text-4xl font-semibold text-tarnary mb-6">
-               {service.service}
-                </h1>
-                <p className="text-base md:text-lg font-normal text-tarnary mb-6">
-                  {service.Title}
-                </p>
-                <div className="flex justify-center">
+            <div className="bg-bg md:mx-2 md:mt-5 h-full">
+              <div className="h-full flex flex-col justify-between px-4 py-6 mx-2 border-2 border-tarnary rounded-md">
+                {/* Top Section */}
+                <div>
+                  <h1 className="text-2xl md:text-3xl font-semibold text-tarnary mb-6">
+                    {service.service}
+                  </h1>
+                  <p className="text-base md:text-lg font-normal text-tarnary mb-6">
+                    {service.Title}
+                  </p>
+                </div>
+
+                {/* Button */}
+                <div className="flex justify-center mt-auto">
                   <span className="bg-secondary rounded-lg text-tarnary font-medium text-base md:text-lg py-3 px-8 md:px-12 hover:bg-primary transition-all duration-150 ease-in-out cursor-pointer">
                     {service.service_name}
                   </span>
                 </div>
-                <p className="text-sm md:text-base font-normal text-tarnary mt-2">
+
+                {/* Bottom Text */}
+                <p className="text-sm md:text-base font-normal text-tarnary mt-4">
                   Cash In refers to the process of depositing an amount into a
                   swiftPay account from swiftpay-authorized Uddokta Point.
                   {service.description}
