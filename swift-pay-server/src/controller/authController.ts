@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 // import jwt from 'jsonwebtoken';
 import { User } from '../model/User';
 import { Agent } from '../model/Agent';
-import {  hashPassword } from '../middleware/authMiddleware';
+import { comparePassword, hashPassword } from '../middleware/authMiddleware';
 
 export const registerUser = async (
   req: Request,
@@ -92,7 +92,9 @@ export const registerUser = async (
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { phoneOrEmail, pin } = req.body;
   if (!phoneOrEmail || !pin) {
-    res.status(400).json({ error: 'Missing phone Email or pin' });
+    res
+      .status(400)
+      .json({ success: false, message: 'Missing phone Email or pin' });
     return;
   }
   try {
@@ -106,9 +108,24 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     ]);
 
     const account = user ?? agent;
-// password something worng yet
+    // password something worng yet
     if (!account) {
-      res.status(400).json({ error: 'User or agent not found or invalid credintials' });
+      res.status(400).json({
+        success: false,
+        message: `Your account not found`,
+      });
+      return;
+    }
+
+    const isMatch = account
+      ? await comparePassword(pin, account.password)
+      : false;
+
+    if (!isMatch) {
+      res.status(400).json({
+        success: false,
+        message: `Your credintials invalid password`,
+      });
       return;
     }
 
@@ -121,8 +138,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     // console.log(token);
 
     res.status(200).json({
+      success: true,
       message: 'Login successful',
-      user: account, // Send userRole to frontend
+      user: account,
     });
   } catch (err) {
     if (err instanceof Error) {

@@ -23,10 +23,10 @@ const Login = () => {
     try {
       // Make the POST request to the server
       const response = await axiosPublic.post("/user/login", userData);
-
+console.log('login response', response.data);
       // Check if the response is successful
       if (response?.status === 200) {
-        toast.success("Log in successfully!");
+        toast.success(response.data.message );
         const user = response.data.user || null;
         const token = response.data.token || null;
 
@@ -60,7 +60,7 @@ const Login = () => {
       if (error.response && error.response.status === 401) {
         toast.error("Invalid credentials! Please try again.");
       } else {
-        toast.error("An error occurred. Please try again.");
+        toast.error(error.response?.data?.message );
       }
       console.error(error);
     }

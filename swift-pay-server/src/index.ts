@@ -17,10 +17,12 @@ app.use(bodyParser.json())
 // http://localhost:5173
 app.use(
   cors({
-    origin:'http://localhost:5173',
+    origin:['http://localhost:5173', 'https://swift-pay-client-theta.vercel.app', 'http://localhost:8000' ],
     credentials: true,
   }),
 );
+
+// routes
 
 app.use('/admin', adnminRouter);
 app.use('/agent', adnminRouter);

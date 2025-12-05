@@ -22,8 +22,8 @@ const AdminLogin = () => {
 
     try {
       const response = await axiosPublic.post("/admin/login", adminData);
-      
-      if (response?.status=== 200) {
+
+      if (response?.status === 200) {
         console.log(response);
         toast.success("Log in successfully!");
         const user = response.data.admin || null;
@@ -37,19 +37,19 @@ const AdminLogin = () => {
 
         console.log("From backend:", user);
 
-        localStorage.setItem("token",token );
+        localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
 
         login(user);
         e.target.reset();
-        navigate("/admin/profile", { replace: true }); 
+        navigate("/admin/profile", { replace: true });
       }
     } catch (error) {
       // Handle errors (e.g., invalid credentials, server error)
       if (error.response && error.response.status === 401) {
-        toast.error("Invalid credentials! Please try again.");
+        toast.error(error.response?.data?.message);
       } else {
-        toast.error("An error occurred. Please try again.");
+        toast.error(error.response?.data?.message);
       }
       console.error(error);
     }
