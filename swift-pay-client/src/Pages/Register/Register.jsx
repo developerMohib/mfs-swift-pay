@@ -30,27 +30,28 @@ const Register = () => {
       password,
     };
     try {
-      let apiURL = "/user/register"
+      let apiURL = "/user/register" ;
       
       // create user
       const response = await axiosPublic.post(apiURL, userData);
-
-      if (response?.data?.message) {
-        toast.success("Account created successfully!");
-
+      
+      if (response?.data?.success) {
+        toast.success(response.data.message);
         // Delay the warning toast by 1 second (1000 ms)
-        if(response.data.user.userRole === "agent"){
+        setTimeout(() => {
+          if(response.data.user.userRole === "agent"){
           toast.warn("Wait for admin approval!");
         }
+        }, 1000);
         form.reset();
-
         navigate("/sign-in")
+
       }
     } catch (error) {
-      if (error.response && error.response.data.error) {
-        toast.error(`Error: ${error.response.data.error}`); // Display backend error message (e.g., "Email already in use")
+      if (error.response.data.success === false) {
+        toast.error(error.response.data.message);
       } else {
-        toast.error("Something went wrong. Please try again."); // General error message
+        toast.error("Maybe Network Issue, Try Again"); // General error message
       }
     }
   };
