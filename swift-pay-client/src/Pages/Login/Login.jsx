@@ -25,23 +25,21 @@ const Login = () => {
       const response = await axiosPublic.post("/user/login", userData);
 console.log('login response', response.data);
       // Check if the response is successful
-      if (response?.status === 200) {
+      if (response?.data.success) {
         toast.success(response.data.message );
-        const user = response.data.user || null;
-        const token = response.data.token || null;
-
+        const user = response.data.data.user;
         if (!user ) {
           toast.error("Invalid response from server!");
           return;
         }
         
-        localStorage.setItem("token", token);
+        // localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
 
         // Call login function to set user state
         login(user);
 
-        setLoading(true);
+        setLoading(false);
         form.reset();
 
         // Navigate user based on role
@@ -56,9 +54,10 @@ console.log('login response', response.data);
         setLoading(false);
       }
     } catch (error) {
+      console.log('login error', error);
       // Handle errors (e.g., invalid credentials, server error)
       if (error.response && error.response.status === 401) {
-        toast.error("Invalid credentials! Please try again.");
+        toast.error(error.response.data.message);
       } else {
         toast.error(error.response?.data?.message );
       }

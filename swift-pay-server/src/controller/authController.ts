@@ -7,6 +7,9 @@ import {
   validateRegistrationFields,
   findExistingRecords,
 } from '../validators/register.validator';
+import { validateLogin } from '../validators/login.validator';
+
+
 export const registerUser = async (
   req: Request,
   res: Response,
@@ -120,121 +123,86 @@ export const registerUser = async (
 };
 
 export const login = async (req: Request, res: Response): Promise<void> => {
-  const { phoneOrEmail, pin } = req.body;
+  const { phoneOrEmail, pin } = req.body ;
 
   try {
-    const trimmedInput = phoneOrEmail?.trim();
-    const trimmedPin = pin?.trim();
-
-    if (!trimmedInput || !trimmedPin) {
-      res.status(400).json({
-        success: false,
-        message: 'Phone/Email and PIN are required',
-      });
+    // 1. Validate input
+    const validationError = validateLogin({ identifier: phoneOrEmail, password: pin });
+    if (validationError) {
+      res.status(400).json({ success: false, message: validationError });
       return;
     }
 
-    // Validate PIN length
-    if (trimmedPin.length <= 5 || trimmedPin.length >= 17) {
-      res.status(400).json({
-        success: false,
-        message: 'PIN must be 4-6 digits',
-      });
-      return;
-    }
-
+    // 2. Normalize input
+    const trimmedInput = phoneOrEmail.trim();
     const normalizedInput = trimmedInput.toLowerCase();
+    const cleanPhone = trimmedInput.replace(/\D/g, ''); // Clean phone number
     const isEmail = normalizedInput.includes('@');
 
-    // Optimize query based on input type
+    // 3. Build optimized query
     const query = isEmail
       ? { userEmail: normalizedInput }
-      : {
-          $or: [
-            { userEmail: normalizedInput },
-            { userPhone: trimmedInput.replace(/\D/g, '') }, // Remove non-digits for phone
-          ],
-        };
+      : { $or: [{ userPhone: cleanPhone }, { userEmail: normalizedInput }] };
+
+    // 4. Find user or agent
     const [user, agent] = await Promise.all([
-      User.findOne(query).select('+password'), // Explicitly include password field
+      User.findOne(query).select('+password'),
       Agent.findOne(query).select('+password'),
     ]);
 
     const account = user || agent;
-
     if (!account) {
-      // For security, don't specify whether it was phone or email that wasn't found
-      res.status(401).json({
-        success: false,
-        message: 'Invalid credentials',
-      });
+      res.status(401).json({ success: false, message: 'Invalid credentials' });
       return;
     }
 
-    /* -------------------- 3. Check Account Status -------------------- */
+    // 5. Check account status
     if (account.status !== 'active') {
-      const statusMessage =
-        account.status === 'pending'
-          ? 'Account pending approval'
-          : 'Account is suspended';
-
-      res.status(403).json({
-        success: false,
-        message: statusMessage,
-      });
+      const statusMessage = account.status === 'pending' 
+        ? 'Account pending approval' 
+        : 'Account is suspended';
+      
+      res.status(403).json({ success: false, message: statusMessage });
       return;
     }
 
-    const isPinValid = await comparePassword(trimmedPin, account.password);
-
+    // 6. Verify password
+    const isPinValid = await comparePassword(pin.trim(), account.password);
     if (!isPinValid) {
-      // Log failed attempt (you could implement rate limiting here)
       console.warn(`Failed login attempt for: ${normalizedInput}`);
+      res.status(401).json({ success: false, message: 'Invalid credentials' });
+      return;
+    }
 
-      res.status(401).json({
-        success: false,
-        message: 'Invalid credentials',
-      });
+    // 7. Generate JWT
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      console.error('JWT_SECRET is not configured');
+      res.status(500).json({ success: false, message: 'Server configuration error' });
       return;
     }
 
     const tokenPayload = {
       id: account._id.toString(),
       role: account.userRole,
-      ...(account.status && { status: account.status }),
+      status: account.status,
     };
 
-    const jwtSecret = process.env.JWT_SECRET;
-    if (!jwtSecret) {
-      console.error('JWT_SECRET is not configured');
-      res.status(500).json({
-        success: false,
-        message: 'Authentication service error',
-      });
-      return;
-    }
+    const expiresIn = process.env.JWT_EXPIRES_IN;
+    const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn } as jwt.SignOptions);
 
-    const expiresIn = process.env.JWT_EXPIRES_IN || '24h';
-
-    const token = jwt.sign(
-      tokenPayload,
-      jwtSecret,
-      { expiresIn } as jwt.SignOptions, // Type assertion if needed
-    );
-
-    const { ...safeUserData } = account.toObject();
-
+    // 8. Prepare safe user response (EXPLICIT fields only)
     const userResponse = {
-      id: safeUserData._id,
-      userName: safeUserData.userName,
-      userEmail: safeUserData.userEmail,
-      userPhone: safeUserData.userPhone,
-      userRole: safeUserData.userRole,
-      status: safeUserData.status,
-      balance: safeUserData.balance,
+      id: account._id,
+      userName: account.userName,
+      userEmail: account.userEmail,
+      userPhone: account.userPhone,
+      userRole: account.userRole,
+      status: account.status,
+      balance: account.balance,
     };
 
-    // For enhanced security, consider setting token in HTTP-only cookie
+    // 9. Set secure cookie + response
     res.cookie('auth_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -245,24 +213,16 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.status(200).json({
       success: true,
       message: 'Login successful',
-      data: {
-        token, // Still include in response for mobile clients if needed
-        user: userResponse,
-      },
+      data: { token, user: userResponse },
     });
-  } catch (err) {
-    if (err instanceof Error) {
-      if (err.name === 'JsonWebTokenError') {
-        res.status(500).json({
-          success: false,
-          message: 'Authentication configuration error',
-        });
-        return;
-      }
-    } else {
-      res
-        .status(400)
-        .json({ error: 'Login failed', details: 'Network something wrong' });
-    }
+
+  } catch (error) {
+    console.error('Login error:', error);
+    
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      ...(process.env.NODE_ENV === 'development' && { error: error instanceof Error ? error.message : 'Unknown error' }),
+    });
   }
 };
