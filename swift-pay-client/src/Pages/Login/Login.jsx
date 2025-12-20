@@ -23,16 +23,16 @@ const Login = () => {
     try {
       // Make the POST request to the server
       const response = await axiosPublic.post("/user/login", userData);
-console.log('login response', response.data);
+      console.log('login response', response.data);
       // Check if the response is successful
       if (response?.data.success) {
-        toast.success(response.data.message );
+        toast.success(response.data.message);
         const user = response.data.data.user;
-        if (!user ) {
+        if (!user) {
           toast.error("Invalid response from server!");
           return;
         }
-        
+
         // localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
 
@@ -59,7 +59,7 @@ console.log('login response', response.data);
       if (error.response && error.response.status === 401) {
         toast.error(error.response.data.message);
       } else {
-        toast.error(error.response?.data?.message );
+        toast.error(error.response?.data?.message);
       }
       console.error(error);
     }
