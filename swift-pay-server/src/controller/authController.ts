@@ -4,10 +4,9 @@ import { User } from '../model/User';
 import { Agent } from '../model/Agent';
 import { comparePassword, hashPassword } from '../middleware/authMiddleware';
 import {
-  findExistingRecords,
   validateRegistrationFields,
-} from '../middleware/registration.data.validation';
-
+  findExistingRecords,
+} from '../validators/register.validator';
 export const registerUser = async (
   req: Request,
   res: Response,
@@ -70,10 +69,19 @@ export const registerUser = async (
     // Create and save user
     const Model = userRole === 'user' ? User : Agent;
     const newUser = new Model(userData);
-    // await newUser.save();
+    await newUser.save();
 
     // Remove sensitive data from response
-    const { ...userResponse } = newUser.toObject();
+    const userResponse = {
+      id: newUser._id,
+      userName: newUser.userName,
+      userEmail: newUser.userEmail,
+      userPhone: newUser.userPhone,
+      userNID: newUser.userNID,
+      userRole: newUser.userRole,
+      balance: newUser.balance,
+      status: newUser.status,
+    };
 
     res.status(201).json({
       success: true,
@@ -189,7 +197,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       });
       return;
     }
-  
+
     const tokenPayload = {
       id: account._id.toString(),
       role: account.userRole,
@@ -206,12 +214,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-     const expiresIn = process.env.JWT_EXPIRES_IN || '24h';
-    
+    const expiresIn = process.env.JWT_EXPIRES_IN || '24h';
+
     const token = jwt.sign(
-      tokenPayload, 
-      jwtSecret, 
-      { expiresIn } as jwt.SignOptions // Type assertion if needed
+      tokenPayload,
+      jwtSecret,
+      { expiresIn } as jwt.SignOptions, // Type assertion if needed
     );
 
     const { ...safeUserData } = account.toObject();

@@ -34,12 +34,12 @@ const Register = () => {
       
       // create user
       const response = await axiosPublic.post(apiURL, userData);
-      
+      console.log("Registration Response:", response.data);
       if (response?.data?.success) {
         toast.success(response.data.message);
         // Delay the warning toast by 1 second (1000 ms)
         setTimeout(() => {
-          if(response.data.user.userRole === "agent"){
+          if(response.data.data.userRole === "agent"){
           toast.warn("Wait for admin approval!");
         }
         }, 1000);
