@@ -11,7 +11,24 @@ const Login = () => {
   const [open, setOpen] = useState(false)
   const [showPass, setShowPass] = useState(false);
   const [rotating, setRotating] = useState(false);
+  const [demoCredentials, setDemoCredentials] = useState({
+    phoneNumber: '',
+    password: ''
+  });
   const axiosPublic = useAxiosPublic();
+
+  const handleDemoUserLogin = () => {
+    setDemoCredentials({
+      phoneNumber: 'demo@user.com',
+      password: '12345'
+    });
+  }
+  const handleDemoAdminLogin = () => {
+    setDemoCredentials({
+      phoneNumber: 'demo@admin.com',
+      password: '12345'
+    });
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -50,7 +67,6 @@ const Login = () => {
         } else {
           navigate("/user/profile"); // Default route
         }
-
         setLoading(false);
       }
     } catch (error) {
@@ -107,7 +123,7 @@ const Login = () => {
           </div>
 
           {/* Login section here */}
-          <div className=" w-full max-w-xl ">
+          <div className="w-full max-w-xl mx-auto">
             {/* title */}
             <div>
               <p className="md:text-4xl text-2xl md:my-0 mt-8 font-semibold">
@@ -126,6 +142,11 @@ const Login = () => {
                   placeholder="phone number or email"
                   className="input input-bordered"
                   required
+                  value={demoCredentials.phoneNumber}
+                  onChange={(e) => setDemoCredentials({
+                    ...demoCredentials,
+                    phoneNumber: e.target.value
+                  })}
                 />
               </div>
               <div className="form-control relative">
@@ -138,21 +159,42 @@ const Login = () => {
                   placeholder="password"
                   className="input input-bordered"
                   required
-                  onChange={(e) => setOpen(e.target.value)}
+                  value={demoCredentials.password}
+                  onChange={(e) => {
+                    setDemoCredentials({
+                      ...demoCredentials,
+                      password: e.target.value
+                    });
+                    setOpen(e.target.value);
+                  }}
                 />
                 {open && <ShowHidePass
                   showPass={showPass}
                   handleShowHidePass={handleShowHidePass}
                   rotating={rotating}
                 />}
-
               </div>
+
               <div className="form-control mt-6">
                 <button className="btn bg-primary hover:bg-secondary text-lg border-none text-black w-full">
                   Log in
                 </button>
               </div>
             </form>
+            <div className="mt-6 w-full">
+              <button
+                className="btn bg-primary hover:bg-secondary text-lg border-none text-black w-1/2"
+                onClick={handleDemoUserLogin}
+              >
+                Demo User Login
+              </button>
+              <button
+                className="btn bg-primary hover:bg-secondary text-lg border-none text-black w-1/2"
+                onClick={handleDemoAdminLogin}
+              >
+                Demo Agent Log in
+              </button>
+            </div>
           </div>
         </div>
       </div>

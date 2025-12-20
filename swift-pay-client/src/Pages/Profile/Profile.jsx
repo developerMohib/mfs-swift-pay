@@ -4,9 +4,9 @@ import useLoginUser from "../../Hooks/useSingleUser";
 
 const Profile = () => {
   const data = localStorage.getItem("user");
-  const [showBalance, setShowBalance] = useState(null);
   const user = JSON.parse(data);
-  const id = user?._id
+  const [showBalance, setShowBalance] = useState(null);
+  const id = user?.id
   const { loginUser, isLoading } = useLoginUser({ id })
 
   const handleSeeBalance = (id) => {
@@ -15,8 +15,8 @@ const Profile = () => {
       setShowBalance(null);
     }, 1000);
   }
-
   if (isLoading) return <Loader />;
+
   return (
     <div className="flex justify-center items-center mt-20">
       <div className="w-full bg-bg rounded-lg">
