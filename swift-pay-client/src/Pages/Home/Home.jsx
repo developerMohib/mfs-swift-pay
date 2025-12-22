@@ -1,10 +1,10 @@
 import { useContext } from "react";
-import { UserContext } from "../../AuthProvider/AuthProvider";
-import Hero from "../../Components/Hero/Hero";
-import ServiceCardSlider from "../../Components/ServiceHomeSlider/ServiceCardSlider";
+import { UserContext } from "../../authProvider/AuthProvider";
 import HomeUser from "../Dashboard/User/HomeUser/HomeUser";
 import HomeAgent from "../Dashboard/Agent/HomeAgent/HomeAgent";
 import HomeAdmin from "../Dashboard/Admin/HomeAdmin/HomeAdmin";
+import Hero from "../../components/Hero";
+import ServiceCardSlider from "../../components/ServiceCardSlider";
 
 const Home = () => {
   const { user, loading } = useContext(UserContext);

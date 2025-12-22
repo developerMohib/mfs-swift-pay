@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
-import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import { UserContext } from "../../../../AuthProvider/AuthProvider";
 import { toast } from "react-toastify";
-import ShowHidePass from "../../../../Features/ShowHidePass/ShowHidePass";
-import Loader from "../../../../Components/Loader/Loader";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+import { UserContext } from "../../../../authProvider/AuthProvider";
+import Loader from "../../../../components/common/Loader";
+import ShowHidePass from "../../../../Features/ShowHidePass";
 
 const CashInto = () => {
   const [open, setOpen] = useState(false)

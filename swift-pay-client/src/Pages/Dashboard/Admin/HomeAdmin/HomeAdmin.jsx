@@ -1,8 +1,8 @@
 import { toast } from "react-toastify";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import TransitionHeader from "../../../../Components/Transition/TransitionHeader";
 import useCashinRequst from "../../../../Hooks/useCashinRequst";
-import Loader from "../../../../Components/Loader/Loader";
+import TransitionHeader from "../../../../components/TransitionHeader";
+import Loader from "../../../../components/common/Loader";
 
 const HomeAdmin = () => {
     const axiosPublic = useAxiosPublic();

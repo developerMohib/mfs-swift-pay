@@ -1,8 +1,7 @@
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import { UserContext } from "../../../../AuthProvider/AuthProvider";
-import ShowHidePass from "../../../../Features/ShowHidePass/ShowHidePass";
+import { UserContext } from "../../../../authProvider/AuthProvider";
 
 const CashDeposit = () => {
 

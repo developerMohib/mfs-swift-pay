@@ -1,6 +1,5 @@
-import { use } from "react";
-import useLoginUser from "../../Hooks/useSingleUser";
-import Loader from "../Loader/Loader";
+import useLoginUser from "../Hooks/useSingleUser";
+import Loader from "./common/Loader";
 
 const TransitionHeader = () => {
     const data = localStorage.getItem("user");

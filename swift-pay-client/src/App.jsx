@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "./Components/Navbar/Navbar";
-import Footer from "./Components/Footer/Footer";
 import { ToastContainer, Slide } from "react-toastify";
-import BottomTop from "./Features/BottomTop/BottomTop";
+import Footer from "./components/common/footer/Footer";
+import BottomTop from "./Features/BottomTop";
+import Navbar from "./components/common/navbar/Navbar";
 
 function App() {
   return (

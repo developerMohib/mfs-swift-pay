@@ -7,18 +7,18 @@ import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import Login from "../Pages/Login/Login";
 import Register from "../Pages/Register/Register";
 import Profile from "../Pages/Profile/Profile";
+
 import CashInto from "../Pages/Dashboard/User/CashInto/CashInto";
 import CashOut from "../Pages/Dashboard/User/CashOut/CashOut";
 import SendMoney from "../Pages/Dashboard/User/SendMoney/SendMoney";
-import Transections from "../Pages/Dashboard/User/Transections/Transections";
-import AllTransition from "../Pages/Dashboard/Admin/AllTransition/AllTransition";
-import AgentManage from "../Pages/Dashboard/Admin/AgentManage/AgentManage";
-import UserManage from "../Pages/Dashboard/Admin/UserManage/UserManage";
-import AgentTransection from "../Pages/Dashboard/Agent/AgentTransection/AgentTransection";
-import CashOutRequ from "../Pages/Dashboard/Agent/CashOutRequ/CashOutRequ";
-import CashInRequ from "../Pages/Dashboard/Agent/CashInRequ/CashInRequ";
+import UserTransactions from "../Pages/Dashboard/User/Transections/Transections";
+import AdminTransactions from "../Pages/Dashboard/Admin/AllTransition/AllTransition";
+import AgentManagement from "../Pages/Dashboard/Admin/AgentManage/AgentManage";
+import UserManagement from "../Pages/Dashboard/Admin/UserManage/UserManage";
+import AgentTransactions from "../Pages/Dashboard/Agent/AgentTransection/AgentTransection";
+import CashOutRequests from "../Pages/Dashboard/Agent/CashOutRequ/CashOutRequ";
+import CashInRequests from "../Pages/Dashboard/Agent/CashInRequ/CashInRequ";
 import AdminLogin from "../Pages/AdminLogin/AdminLogin";
-import AlTransactions from "../Pages/alTransactions/AlTransactions";
 import CashDeposit from "../Pages/Dashboard/Agent/CashDeposit/CashDeposit";
 
 export const router = createBrowserRouter([
@@ -27,116 +27,114 @@ export const router = createBrowserRouter([
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
+      // ===== PUBLIC ROUTES =====
       {
-        path: "/",
+        index: true,
         element: <Home />,
       },
       {
-        path: "/about",
+        path: "about",
         element: <About />,
       },
       {
-        path: "/services",
+        path: "services",
         element: <Services />,
       },
       {
-        path: "/sign-in",
+        path: "sign-in",
         element: <Login />,
       },
       {
-        path: "/sign-up",
+        path: "sign-up",
         element: <Register />,
       },
-      {
-        path: "/user/profile",
-        element: <Profile />,
-      },
-      {
-        path: "/all-transactions/:role/:id",
-        element: <AlTransactions />,
-      },
 
-      // Here User route added
-      // Here User route added
+      // ===== USER DASHBOARD ROUTES =====
       {
-        path: "user",
+        path: "dashboard/user",
         children: [
+          {
+            index: true,
+            element: <Profile />,
+          },
           {
             path: "cash-in",
             element: <CashInto />,
-          },
-          {
-            path: "cash-out",
-            element: <CashOut />,
           },
           {
             path: "send-money",
             element: <SendMoney />,
           },
           {
-            path: "transaction",
-            element: <Transections />,
+            path: "cash-out",
+            element: <CashOut />,
+          },
+          {
+            path: "transactions",
+            element: <UserTransactions />,
           },
         ],
       },
 
-      // Here Agent route added
-      // Here Agent route added
+      // ===== AGENT DASHBOARD ROUTES =====
       {
-        path: "agent",
+        path: "dashboard/agent",
         children: [
           {
-            path: "transaction",
-            element: <AgentTransection />,
+            index: true,
+            element: <Profile />,
           },
           {
-            path: "cashin",
-            element: <CashInRequ />,
+            path: "transactions",
+            element: <AgentTransactions />,
           },
           {
-            path: "cashout",
-            element: <CashOutRequ />,
+            path: "cash-in-requests",
+            element: <CashInRequests />,
+          },
+          {
+            path: "cash-out-requests",
+            element: <CashOutRequests />,
           },
           {
             path: "cash-deposit",
             element: <CashDeposit />,
           },
-          {
-            path: "profile",
-            element: <Profile />,
-          },
         ],
       },
 
-      // Here Admin route added
-      // Here Admin route added
+      // ===== ADMIN DASHBOARD ROUTES =====
       {
-        path: "admin",
+        path: "dashboard/admin",
         children: [
           {
-            path: "transaction",
-            element: <AllTransition />,
+            index: true,
+            element: <AdminTransactions />,
+          },
+          {
+            path: "transactions",
+            element: <AdminTransactions />,
           },
           {
             path: "manage-agents",
-            element: <AgentManage />,
+            element: <AgentManagement />,
           },
           {
             path: "manage-users",
-            element: <UserManage />,
-          },
-          {
-            path: "profile",
-            element: <Profile />,
+            element: <UserManagement />,
           },
         ],
       },
     ],
   },
+
+  // ===== STANDALONE ROUTES (Outside Main Layout) =====
   {
-    path: "/wp-admin",
+    path: "/admin/login",
     element: <AdminLogin />,
   },
+
+  // ===== ERROR ROUTES =====
   {
     path: "*",
     element: <ErrorPage />,

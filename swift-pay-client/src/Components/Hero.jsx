@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import SlideHome from "../SlideHome/SlideHome";
+import SlideHome from "./slideHome/SlideHome";
 
 const Hero = () => {
   return (

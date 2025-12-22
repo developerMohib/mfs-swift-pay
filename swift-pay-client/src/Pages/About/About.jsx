@@ -1,6 +1,6 @@
 import axios from "axios";
-import Loader from "../../Components/Loader/Loader";
 import { useQuery } from "@tanstack/react-query";
+import Loader from "../../components/common/Loader";
 
 const About = () => {
   const { data: aboutData, isLoading } = useQuery({

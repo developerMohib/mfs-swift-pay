@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
-import TransitionHeader from "../../../../Components/Transition/TransitionHeader";
-import TransitionRow from "../../../../Components/Transition/TransitionRow";
-import { UserContext } from "../../../../AuthProvider/AuthProvider";
 import useTransaction from "../../../../Hooks/useTransaction";
-import Loader from "../../../../Components/Loader/Loader";
+import { UserContext } from "../../../../authProvider/AuthProvider";
+import TransitionHeader from "../../../../components/TransitionHeader";
+import TransitionRow from "../../../../components/TransitionRow";
+import Loader from "../../../../components/common/Loader";
 
 const Transections = () => {
     const [searchQuery, setSearchQuery] = useState("");

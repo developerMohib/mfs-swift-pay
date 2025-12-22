@@ -8,8 +8,8 @@ import { toast } from "react-toastify";
 import logo from "/swift-pay-logo.png";
 
 // Local imports
-import { UserContext } from "../../AuthProvider/AuthProvider";
-import ThemeChanger from "../../Features/ThemeChanger/ThemeChanger";
+import { UserContext } from "../../../authProvider/AuthProvider";
+import ThemeChanger from "../../../Features/ThemeChanger";
 import "./navbar.css";
 
 const Navbar = () => {
@@ -74,10 +74,10 @@ const Navbar = () => {
           <NavLink to="/">Home</NavLink>
           {role === "user" && (
             <>
-              <NavLink to="user/cash-in">Cash In</NavLink>
-              <NavLink to="user/cash-out">Cash Out</NavLink>
-              <NavLink to="user/send-money">Send Money</NavLink>
-              <NavLink to="user/transaction">Transactions</NavLink>
+              <NavLink to="dashboard/user/cash-in">Cash In Request</NavLink>
+              <NavLink to="dashboard/user/send-money">Send Money</NavLink>
+              <NavLink to="dashboard/user/cash-out">Cash Out</NavLink>
+              <NavLink to="dashboard/user/transactions">Transactions</NavLink>
             </>
           )}
           {role === "admin" && (

@@ -1,9 +1,9 @@
 import { toast } from "react-toastify";
-import Loader from "../../../../Components/Loader/Loader";
-import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import useLoginUser from "../../../../Hooks/useSingleUser";
 import { useState } from "react";
-import ShowHidePass from "../../../../Features/ShowHidePass/ShowHidePass";
+import useLoginUser from "../../../../Hooks/useSingleUser";
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+import Loader from "../../../../components/common/Loader";
+import ShowHidePass from "../../../../Features/ShowHidePass";
 
 const CashOut = () => {
   const [open, setOpen] = useState(false)

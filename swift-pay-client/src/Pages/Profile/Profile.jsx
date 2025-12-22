@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Loader from "../../Components/Loader/Loader";
 import useLoginUser from "../../Hooks/useSingleUser";
+import Loader from "../../components/common/Loader";
 
 const Profile = () => {
   const data = localStorage.getItem("user");

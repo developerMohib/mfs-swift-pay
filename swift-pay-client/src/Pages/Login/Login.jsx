@@ -2,8 +2,8 @@ import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
-import ShowHidePass from "../../Features/ShowHidePass/ShowHidePass";
-import { UserContext } from "../../AuthProvider/AuthProvider";
+import { UserContext } from "../../authProvider/AuthProvider";
+import ShowHidePass from "../../Features/ShowHidePass";
 
 const Login = () => {
   const { login, setLoading } = useContext(UserContext);
@@ -61,11 +61,11 @@ const Login = () => {
 
         // Navigate user based on role
         if (user.userRole === "admin") {
-          navigate("/admin/dashboard");
+          navigate("/dashboard/admin");
         } else if (user.userRole === "agent") {
-          navigate("/agent/profile");
+          navigate("/dashboard/agent");
         } else {
-          navigate("/user/profile"); // Default route
+          navigate("/dashboard/user"); // Default route
         }
         setLoading(false);
       }
@@ -93,7 +93,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex justify-center items-center">
-      <div className="bg-base-200 shadow-lg h-1/2 py-20 rounded-xl">
+      <div className="h-1/2 py-20 rounded-xl">
         <div className="md:flex gap-5 flex-row-reverse px-10 ">
           {/* Login about here */}
           <div className="text-center lg:text-left max-w-2xl mt-5">

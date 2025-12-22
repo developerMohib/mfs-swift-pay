@@ -1,5 +1,5 @@
-import TransitionHeader from "../../../../Components/Transition/TransitionHeader";
-import TransitionRow from "../../../../Components/Transition/TransitionRow";
+import TransitionHeader from "../../../../components/TransitionHeader";
+import TransitionRow from "../../../../components/TransitionRow";
 
 const CashOutRequ = () => {
     return (

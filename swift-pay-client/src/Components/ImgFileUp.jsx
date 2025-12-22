@@ -1,8 +1,8 @@
 import { toast } from "react-toastify";
 import { useContext, useRef, useState } from "react";
 import { ImSpinner9 } from "react-icons/im";
-import { UserContext } from "../../AuthProvider/AuthProvider";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
+import { UserContext } from "../AuthProvider/AuthProvider";
 
 const ImgFileUp = () => {
   const [selectedFile, setSelectedFile] = useState(null);

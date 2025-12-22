@@ -1,9 +1,9 @@
+import { toast } from "react-toastify";
 import { useState } from "react";
 import useAgent from "../../../../Hooks/useAgent";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import { toast } from "react-toastify";
-import Loader from "../../../../Components/Loader/Loader";
 import { Link } from "react-router-dom";
+import Loader from "../../../../components/common/Loader";
 
 const AgentManage = () => {
     const { agent, isLoading, refetch } = useAgent()

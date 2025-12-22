@@ -1,12 +1,11 @@
-import { toast } from "react-toastify";
-import Loader from "../../../../Components/Loader/Loader";
-import TransitionHeader from "../../../../Components/Transition/TransitionHeader";
-import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import useCashinRequst from "../../../../Hooks/useCashinRequst";
 import { useContext } from "react";
-import { UserContext } from "../../../../AuthProvider/AuthProvider";
+import { toast } from "react-toastify";
+import { UserContext } from "../../../../authProvider/AuthProvider";
+import useCashinRequst from "../../../../Hooks/useCashinRequst";
 import useLoginUser from "../../../../Hooks/useSingleUser";
-
+import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
+import TransitionHeader from "../../../../components/TransitionHeader";
+import Loader from "../../../../components/common/Loader";
 const AgentTransection = () => {
     const { user } = useContext(UserContext)
     const { cashIn, isLoading, refetch } = useCashinRequst();

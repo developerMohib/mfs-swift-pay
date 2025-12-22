@@ -1,7 +1,6 @@
 import { useState } from "react";
 import useGetAllTransaction from "../../../../Hooks/useGetAllTransac";
-import Loader from "../../../../Components/Loader/Loader";
-
+import Loader from "../../../../components/common/Loader";
 const AllTransition = () => {
     const { allTransaction, isLoading } = useGetAllTransaction()
     const data = allTransaction?.data;

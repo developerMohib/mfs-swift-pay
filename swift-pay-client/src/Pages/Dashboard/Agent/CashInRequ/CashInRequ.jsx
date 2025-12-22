@@ -2,10 +2,10 @@
 import { toast } from "react-toastify";
 import { useContext, useState } from "react";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import { UserContext } from "../../../../AuthProvider/AuthProvider";
-import Loader from "../../../../Components/Loader/Loader";
-import ShowHidePass from "../../../../Features/ShowHidePass/ShowHidePass";
+import { UserContext } from "../../../../authProvider/AuthProvider";
 import useAdmin from "../../../../Hooks/useAdmin";
+import Loader from "../../../../components/common/Loader";
+import ShowHidePass from "../../../../Features/ShowHidePass";
 
 const CashInRequ = () => {
     const [open, setOpen] = useState(false)

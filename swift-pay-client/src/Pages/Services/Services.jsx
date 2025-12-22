@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import Loader from "../../Components/Loader/Loader";
+import Loader from "../../components/common/Loader";
 const logos = [
   {
     id: 1,

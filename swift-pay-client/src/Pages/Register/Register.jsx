@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
-import ShowHidePass from "../../Features/ShowHidePass/ShowHidePass";
+import ShowHidePass from "../../Features/ShowHidePass";
 
 const Register = () => {
   const [open, setOpen] = useState(false)

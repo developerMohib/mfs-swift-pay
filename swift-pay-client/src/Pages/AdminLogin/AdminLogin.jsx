@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
-import ShowHidePass from "../../Features/ShowHidePass/ShowHidePass";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { toast } from "react-toastify";
-import { UserContext } from "../../AuthProvider/AuthProvider";
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import ShowHidePass from "../../Features/ShowHidePass";
+import { UserContext } from "../../authProvider/AuthProvider";
+
 
 const AdminLogin = () => {
   const [showPass, setShowPass] = useState(false);

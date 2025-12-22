@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import useUsers from "../../../../Hooks/useUsers";
 import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import Loader from "../../../../Components/Loader/Loader";
+import Loader from "../../../../components/common/Loader";
 
 const UserManage = () => {
     const { user, isLoading, refetch } = useUsers()

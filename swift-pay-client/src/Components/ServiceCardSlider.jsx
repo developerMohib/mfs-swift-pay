@@ -3,8 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useQuery } from "@tanstack/react-query";
-
-import Loader from "../Loader/Loader";
+import Loader from "./common/Loader";
 
 const ServiceCardSlider = () => {
   const settings = {
