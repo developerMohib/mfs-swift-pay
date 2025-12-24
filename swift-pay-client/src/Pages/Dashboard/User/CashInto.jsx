@@ -1,36 +1,35 @@
+import { useContext, useState } from "react";
 import { toast } from "react-toastify";
-import { useState } from "react";
-import useLoginUser from "../../../../Hooks/useSingleUser";
-import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import Loader from "../../../../components/common/Loader";
-import ShowHidePass from "../../../../Features/ShowHidePass";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import { UserContext } from "../../../authProvider/AuthProvider";
+import Loader from "../../../components/common/Loader";
+import ShowHidePass from "../../../Features/ShowHidePass";
 
-const CashOut = () => {
+const CashInto = () => {
   const [open, setOpen] = useState(false)
   const [showPass, setShowPass] = useState(false);
   const [rotating, setRotating] = useState(false);
-  const data = localStorage.getItem("user");
-  const user = JSON.parse(data);
-  const id = user?._id
-  const { loginUser, isLoading } = useLoginUser({ id })
-  const senderId = loginUser?._id;
-  const axiosPublic = useAxiosPublic();
+
+  const axiosPublic = useAxiosPublic()
+  const { user,loading } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
 
-    const receiverId = form.receiver.value;
+    const receiver = form.receiver.value;
     const amount = Number(form.amount.value);
     const password = form.password.value;
+    // const transactionType = transactionTypes.CASH_IN
 
     try {
-      const response = await axiosPublic.put("/user/cash-out", {
-        senderId,
-        receiverId,
+      const response = await axiosPublic.put("/user/cash-in", {
+        senderId: user._id,
+        receiverId: receiver,
         amount,
         password
       });
+
       if (response?.data?.message) {
         toast.success(response?.data?.message);
       }
@@ -38,8 +37,6 @@ const CashOut = () => {
       console.log(error.response?.data?.message || "Transaction failed.");
     }
   };
-
-  
   const handleShowHidePass = () => {
     setShowPass(!showPass);
     setRotating(true);
@@ -50,7 +47,7 @@ const CashOut = () => {
     }, 400);
   };
 
-  if (isLoading) return <Loader />;
+  if (loading) return <Loader />
   return (
     <div className="w-full flex justify-center items-center mt-10">
       <form
@@ -58,7 +55,7 @@ const CashOut = () => {
         className="md:w-1/2 bg-bg px-20 py-8 rounded-lg"
       >
         <h3 className="text-3xl text-center ">
-          User <span className="text-primary">Cash Out </span>
+          <span className="text-primary"> Cash In </span>{" "} Request
         </h3>
         <div className="form-control mt-5">
           <label className="label">
@@ -84,7 +81,6 @@ const CashOut = () => {
             required
           />
         </div>
-
         <div className="form-control relative">
           <label className="label">
             <span className="label-text">Password</span>
@@ -108,7 +104,7 @@ const CashOut = () => {
           <input
             type="submit"
             className="w-fit cursor-pointer focus:outline-none px-4 py-3 bg-secondary hover:bg-primary text-bg rounded-lg"
-            value={"Cash out Request"}
+            value={"Cash in Request"}
           />
         </div>
       </form>
@@ -116,4 +112,4 @@ const CashOut = () => {
   );
 };
 
-export default CashOut;
+export default CashInto;

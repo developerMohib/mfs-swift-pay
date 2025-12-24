@@ -148,7 +148,7 @@ const Navbar = () => {
 
         {user ? (
           <>
-            <Link to="/user/profile">
+            <Link to="/dashboard/user">
               {" "}
               <img
                 title={user?.userName}

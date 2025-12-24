@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { UserContext } from "../../authProvider/AuthProvider";
-import HomeUser from "../Dashboard/User/HomeUser/HomeUser";
+import HomeUser from "../Dashboard/User/HomeUser";
 import HomeAgent from "../Dashboard/Agent/HomeAgent/HomeAgent";
 import HomeAdmin from "../Dashboard/Admin/HomeAdmin/HomeAdmin";
 import Hero from "../../components/Hero";

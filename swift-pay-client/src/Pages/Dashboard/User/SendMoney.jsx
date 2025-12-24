@@ -1,7 +1,8 @@
 import { useContext, useState } from "react";
 import { toast } from "react-toastify"; import Swal from 'sweetalert2'
-import useAxiosPublic from "../../../../Hooks/useAxiosPublic";
-import { UserContext } from "../../../../authProvider/AuthProvider";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import { UserContext } from "../../../authProvider/AuthProvider";
+import Loader from "../../../components/common/Loader";
 
 const SendMoney = () => {
   const [recipientPhone, setRecipientPhone] = useState("");
@@ -10,7 +11,8 @@ const SendMoney = () => {
   const [loading, setLoading] = useState(false);
 
   const axiosPublic = useAxiosPublic();
-  const { user } = useContext(UserContext);
+  const { user ,loading: userLoading} = useContext(UserContext);
+
   console.log('user in send money', user);
 
   const fee = amount > 100 ? 5 : 0;
@@ -60,10 +62,10 @@ const SendMoney = () => {
     }
   };
   const isDisabled = loading || !pin || !amount || amount < 50;
-
+if (userLoading) return <Loader />;
   return (
-    <div className="flex items-center justify-center bg-gray-50 py-10">
-      <div className="w-full max-w-lg bg-white rounded-xl shadow-lg p-8">
+    <div className="flex items-center justify-center py-10">
+      <div className="w-full max-w-lg rounded-xl shadow-lg p-8">
         <h2 className="text-3xl font-bold text-center text-primary mb-2">
           Send Money
         </h2>
@@ -72,7 +74,7 @@ const SendMoney = () => {
         </p>
 
         {/* Fee Info */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-sm">
+        <div className="border border-blue-200 rounded-lg p-4 mb-6 text-sm">
           <p className="font-medium text-blue-800">
             Transaction Fee: {fee > 0 ? "৳5.00 (for amount > ৳100)" : "Free (≤ ৳100)"}
           </p>
@@ -84,7 +86,7 @@ const SendMoney = () => {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Recipient Phone */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium mb-1">
               Receiver Mobile Number
             </label>
             <input
@@ -99,7 +101,7 @@ const SendMoney = () => {
 
           {/* Amount */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium mb-1">
               Amount (৳)
             </label>
             <input
@@ -115,7 +117,7 @@ const SendMoney = () => {
 
           {/* PIN */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium mb-1">
               Your 5-Digit PIN
             </label>
             <input
@@ -137,7 +139,7 @@ const SendMoney = () => {
               {/* Left: Fixed Value */}
               <div className="w-1/2 bg-red-100 rounded-lg p-4 text-center">
                 <p className="text-sm text-gray-600">My Balance</p>
-                <p className="text-2xl font-bold text-red-600">৳ 100</p>
+                <p className="text-2xl font-bold text-red-600">৳ {user?.balance}</p>
               </div>
 
               {/* Right: Dynamic Value */}

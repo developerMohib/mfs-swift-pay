@@ -8,10 +8,6 @@ import Login from "../Pages/Login/Login";
 import Register from "../Pages/Register/Register";
 import Profile from "../Pages/Profile/Profile";
 
-import CashInto from "../Pages/Dashboard/User/CashInto/CashInto";
-import CashOut from "../Pages/Dashboard/User/CashOut/CashOut";
-import SendMoney from "../Pages/Dashboard/User/SendMoney/SendMoney";
-import UserTransactions from "../Pages/Dashboard/User/Transections/Transections";
 import AdminTransactions from "../Pages/Dashboard/Admin/AllTransition/AllTransition";
 import AgentManagement from "../Pages/Dashboard/Admin/AgentManage/AgentManage";
 import UserManagement from "../Pages/Dashboard/Admin/UserManage/UserManage";
@@ -20,6 +16,10 @@ import CashOutRequests from "../Pages/Dashboard/Agent/CashOutRequ/CashOutRequ";
 import CashInRequests from "../Pages/Dashboard/Agent/CashInRequ/CashInRequ";
 import AdminLogin from "../Pages/AdminLogin/AdminLogin";
 import CashDeposit from "../Pages/Dashboard/Agent/CashDeposit/CashDeposit";
+import CashInto from "../Pages/Dashboard/User/CashInto";
+import SendMoney from "../Pages/Dashboard/User/SendMoney";
+import CashOut from "../Pages/Dashboard/User/CashOut";
+import UserTransections from "../Pages/Dashboard/User/Transections";
 
 export const router = createBrowserRouter([
   {
@@ -71,7 +71,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "transactions",
-            element: <UserTransactions />,
+            element: <UserTransections />,
           },
         ],
       },

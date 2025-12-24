@@ -1,15 +1,15 @@
 import { useContext, useState } from "react";
-import useTransaction from "../../../../Hooks/useTransaction";
-import { UserContext } from "../../../../authProvider/AuthProvider";
-import TransitionHeader from "../../../../components/TransitionHeader";
-import TransitionRow from "../../../../components/TransitionRow";
-import Loader from "../../../../components/common/Loader";
+import useGetAllTransaction from "../../../Hooks/useGetAllTransac";
+import { UserContext } from "../../../authProvider/AuthProvider";
+import TransitionHeader from "../../../components/TransitionHeader";
+import TransitionRow from "../../../components/TransitionRow";
+import Loader from "../../../components/common/Loader";
 
-const Transections = () => {
+const UserTransections = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const { user } = useContext(UserContext);
     const userId = user?._id
-    const { transaction, isLoading } = useTransaction({ userId })
+    const { transaction, isLoading } = useGetAllTransaction({ userId })
 
 
     // Filter transactions by user name or mobile number
@@ -80,4 +80,4 @@ const Transections = () => {
     );
 };
 
-export default Transections;
+export default UserTransections;
