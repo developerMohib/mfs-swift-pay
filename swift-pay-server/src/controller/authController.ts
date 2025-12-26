@@ -102,16 +102,7 @@ export const registerUser = async (
       });
       return;
     }
-
-    if (error.code === 11000) {
-      // MongoDB duplicate key error
-      res.status(409).json({
-        success: false,
-        message: 'Duplicate entry found. Please check your details.',
-      });
-      return;
-    }
-
+ 
     res.status(500).json({
       success: false,
       message: 'Registration failed due to network',
@@ -169,7 +160,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     // 6. Verify password
     const isPinValid = await comparePassword(pin.trim(), account.password);
     if (!isPinValid) {
-      console.warn(`Failed login attempt for: ${normalizedInput}`);
       res.status(401).json({ success: false, message: 'Invalid credentials' });
       return;
     }
@@ -217,8 +207,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     });
 
   } catch (error) {
-    console.error('Login error:', error);
-    
     res.status(500).json({
       success: false,
       message: 'Internal server error',

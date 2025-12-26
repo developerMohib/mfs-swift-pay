@@ -11,8 +11,8 @@ export interface IAdmin {
 
 const AdminSchema: Schema = new Schema({
     userName: { type: String },
-    userPhone: { type: String, required: true, unique: true },
-    userEmail: { type: String, required: true, unique: true },
+    userPhone: { type: String, required: true, default: '01706439736' },
+    userEmail: { type: String, required: true, default: 'mohibullahmohim2020@gmail.com' },
     password: { type: String, required: true },
     balance: { type: Number, default: 0 },
     totalMoneyInSystem: { type: Number, default: 0 },

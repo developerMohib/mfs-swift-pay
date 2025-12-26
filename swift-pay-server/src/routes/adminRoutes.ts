@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { agentCashInRequests, getAdmin, loginAdmin } from '../controller/adminController';
 
 const router = Router();
-router.post('/login',loginAdmin);
+router.put('/login',loginAdmin);
 
 // Get admin balance
 router.get('/balance');

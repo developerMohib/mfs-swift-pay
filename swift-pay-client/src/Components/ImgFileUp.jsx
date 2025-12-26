@@ -27,7 +27,6 @@ const ImgFileUp = () => {
         });
         if (response.data) {
           toast.success(response.data.message);
-          // console.log('img',response.data)
           // const imgUrl = response.data.fileUrl;
           // localStorage.setItem('uploadedImage', imgUrl);
         }
@@ -38,7 +37,7 @@ const ImgFileUp = () => {
         setLoading(false); // Remove loading state
       }
     } else {
-      console.log("No file selected");
+      toast.error("No file selected");
     }
   };
 

@@ -1,25 +1,42 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import Home from "../Pages/Home/Home";
-import About from "../Pages/About/About";
-import Services from "../Pages/Services/Services";
-import ErrorPage from "../Pages/ErrorPage/ErrorPage";
-import Login from "../Pages/Login/Login";
-import Register from "../Pages/Register/Register";
-import Profile from "../Pages/Profile/Profile";
 
-import AdminTransactions from "../Pages/Dashboard/Admin/AllTransition/AllTransition";
-import AgentManagement from "../Pages/Dashboard/Admin/AgentManage/AgentManage";
-import UserManagement from "../Pages/Dashboard/Admin/UserManage/UserManage";
-import AgentTransactions from "../Pages/Dashboard/Agent/AgentTransection/AgentTransection";
-import CashOutRequests from "../Pages/Dashboard/Agent/CashOutRequ/CashOutRequ";
-import CashInRequests from "../Pages/Dashboard/Agent/CashInRequ/CashInRequ";
-import AdminLogin from "../Pages/AdminLogin/AdminLogin";
-import CashDeposit from "../Pages/Dashboard/Agent/CashDeposit/CashDeposit";
-import CashInto from "../Pages/Dashboard/User/CashInto";
-import SendMoney from "../Pages/Dashboard/User/SendMoney";
-import CashOut from "../Pages/Dashboard/User/CashOut";
-import UserTransections from "../Pages/Dashboard/User/Transections";
+// Layouts
+import UserLayout from "../layouts/UserLayout";
+import AgentLayout from "../layouts/AgentLayout";
+import AdminLayout from "../layouts/AdminLayout";
+
+// Standalone public pages 
+import Home from "../Pages/common/Home";
+import About from "../Pages/common/About";
+import Services from "../Pages/common/Services";
+import Register from "../Pages/common/Register";
+import ErrorPage from "../Pages/common/ErrorPage";
+import Login from "../Pages/common/Login";
+
+// admin manage page
+import AgentManage from "../Pages/admin/AgentManage";
+import UserManage from "../Pages/admin/UserManage";
+import HomeAdmin from "../Pages/admin/HomeAdmin";
+
+// agent pages
+import CashInRequ from "../Pages/agent/CashInRequ";
+import CashDeposit from "../Pages/agent/CashDeposit";
+import HomeAgent from "../Pages/agent/HomeAgent";
+import AgentTransections from "../Pages/agent/AgentTransection";
+
+// user pages
+import CashInto from "../Pages/user/CashInto";
+import SendMoney from "../Pages/user/SendMoney";
+import CashOut from "../Pages/user/CashOut";
+import UserTransections from "../Pages/user/Transections";
+import HomeUser from "../Pages/user/HomeUser";
+import UserProfile from "../Pages/user/UserProfile";
+import AdminLogin from "../Pages/admin/AdminLogin";
+import AllTransitions from "../Pages/admin/AllTransition";
+//
+
+// import Profile from "../Pages/common/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -27,116 +44,54 @@ export const router = createBrowserRouter([
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
-      // ===== PUBLIC ROUTES =====
-      {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: "about",
-        element: <About />,
-      },
-      {
-        path: "services",
-        element: <Services />,
-      },
-      {
-        path: "sign-in",
-        element: <Login />,
-      },
-      {
-        path: "sign-up",
-        element: <Register />,
-      },
-
-      // ===== USER DASHBOARD ROUTES =====
+      // ===== USER DASHBOARD =====
       {
         path: "dashboard/user",
+        element: <UserLayout />,
         children: [
-          {
-            index: true,
-            element: <Profile />,
-          },
-          {
-            path: "cash-in",
-            element: <CashInto />,
-          },
-          {
-            path: "send-money",
-            element: <SendMoney />,
-          },
-          {
-            path: "cash-out",
-            element: <CashOut />,
-          },
-          {
-            path: "transactions",
-            element: <UserTransections />,
-          },
+          { index: true, element: <HomeUser /> },
+          { path: "profile", element: <UserProfile /> },
+          { path: "cash-in", element: <CashInto /> },
+          { path: "send-money", element: <SendMoney /> },
+          { path: "cash-out", element: <CashOut /> },
+          { path: "transactions", element: <UserTransections /> },
+          // add more user routes
         ],
       },
-
-      // ===== AGENT DASHBOARD ROUTES =====
+      // ===== AGENT DASHBOARD =====
       {
         path: "dashboard/agent",
+        element: <AgentLayout />,
         children: [
-          {
-            index: true,
-            element: <Profile />,
-          },
-          {
-            path: "transactions",
-            element: <AgentTransactions />,
-          },
-          {
-            path: "cash-in-requests",
-            element: <CashInRequests />,
-          },
-          {
-            path: "cash-out-requests",
-            element: <CashOutRequests />,
-          },
-          {
-            path: "cash-deposit",
-            element: <CashDeposit />,
-          },
+          { index: true, element: <HomeAgent /> },
+          { path: "cash-in-requests", element: <CashInRequ /> },
+          { path: "cash-out-requests", element: <CashDeposit /> },
+          { path: "cash-deposit", element: <CashDeposit /> },
+          { path: "transactions", element: <AgentTransections /> },
+          // add more
         ],
       },
-
-      // ===== ADMIN DASHBOARD ROUTES =====
+      // ===== ADMIN DASHBOARD =====
       {
         path: "dashboard/admin",
+        element: <AdminLayout />,
         children: [
-          {
-            index: true,
-            element: <AdminTransactions />,
-          },
-          {
-            path: "transactions",
-            element: <AdminTransactions />,
-          },
-          {
-            path: "manage-agents",
-            element: <AgentManagement />,
-          },
-          {
-            path: "manage-users",
-            element: <UserManagement />,
-          },
+          { index: true, element: <HomeAdmin /> },
+          { path: "manage-agents", element: <AgentManage />, },
+          { path: "manage-users", element: <UserManage />, },
+          { path: "transactions", element: <AllTransitions /> },
         ],
       },
+
+      // Other public routes
+      { index: true, element: <Home /> },
+      { path: "about", element: <About /> },
+      { path: "services", element: <Services /> },
+      { path: "sign-in", element: <Login /> },
+      { path: "sign-up", element: <Register /> },
+      { path: "admin/login", element: <AdminLogin /> },
+      //   error route
+      { path: "*", element: <ErrorPage /> },
     ],
-  },
-
-  // ===== STANDALONE ROUTES (Outside Main Layout) =====
-  {
-    path: "/admin/login",
-    element: <AdminLogin />,
-  },
-
-  // ===== ERROR ROUTES =====
-  {
-    path: "*",
-    element: <ErrorPage />,
   },
 ]);

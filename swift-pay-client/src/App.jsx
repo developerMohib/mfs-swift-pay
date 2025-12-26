@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { ToastContainer, Slide } from "react-toastify";
 import Footer from "./components/common/footer/Footer";
-import BottomTop from "./Features/BottomTop";
+import BottomTop from "./features/BottomTop";
 import Navbar from "./components/common/navbar/Navbar";
 
 function App() {

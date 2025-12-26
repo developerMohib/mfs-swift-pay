@@ -11,8 +11,14 @@ export const allUser = async (
   next: NextFunction,
 ) => {
   try {
-    const users = await User.find(); // Fetch all users
-    res.status(200).json(users); // Send the users back as a JSON response
+    const users = await User.find();
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: 'Users fetched successfully',
+        users,
+      });
   } catch (error) {
     console.error('Error fetching users:', error);
     res
@@ -106,7 +112,6 @@ export const updateStatus = async (
 export const userTransaction = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    console.log('user id', userId);
     // Fetch last 100 transactions for the user (sorted by latest)
     const transactions = await Transaction.find({ userId })
       .sort({ createdAt: -1 }) // Sort by most recent

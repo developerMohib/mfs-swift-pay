@@ -9,7 +9,7 @@ import logo from "/swift-pay-logo.png";
 
 // Local imports
 import { UserContext } from "../../../authProvider/AuthProvider";
-import ThemeChanger from "../../../Features/ThemeChanger";
+import ThemeChanger from "../../../features/ThemeChanger";
 import "./navbar.css";
 
 const Navbar = () => {

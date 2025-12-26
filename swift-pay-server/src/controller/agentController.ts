@@ -67,10 +67,8 @@ export const getPendingCashInRequests = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const agentId = req;
-    console.log('71', agentId)
-
-
+    // const agentId = req;user?.id;
+    
     const pendingRequests = await Transaction.find({
       status: 'pending',
       type: 'cash-in',
@@ -100,7 +98,6 @@ export const cashInOkayAgent = async (
   try {
     const { id } = req.params;
     const { status } = req.body;
-    console.log(91, id, status);
     if (!id || !status) {
       res
         .status(400)
@@ -109,7 +106,6 @@ export const cashInOkayAgent = async (
     }
 
     const transaction = await Transaction.findById(id);
-    console.log('transaction', transaction);
     if (!transaction) {
       res.status(404).json({ message: 'Transaction not found' });
       return;
