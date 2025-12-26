@@ -6,9 +6,8 @@ const useAgents = () => {
     const { data: agents = [], isLoading ,refetch } = useQuery({
         queryKey: ["agent"],
         queryFn: async () => {
-            // To Do - get specific agent
           const res = await axiosPublic.get("/all/agents");
-          return res?.data;
+          return res?.data.data;
         },
       });
 

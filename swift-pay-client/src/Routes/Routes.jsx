@@ -34,6 +34,7 @@ import HomeUser from "../Pages/user/HomeUser";
 import UserProfile from "../Pages/user/UserProfile";
 import AdminLogin from "../Pages/admin/AdminLogin";
 import AllTransitions from "../Pages/admin/AllTransition";
+import PublicLayout from "../layouts/PublicLayout";
 //
 
 // import Profile from "../Pages/common/Profile";
@@ -77,21 +78,28 @@ export const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { index: true, element: <HomeAdmin /> },
-          { path: "manage-agents", element: <AgentManage />, },
           { path: "manage-users", element: <UserManage />, },
+          { path: "manage-agents", element: <AgentManage />, },
           { path: "transactions", element: <AllTransitions /> },
         ],
       },
 
       // Other public routes
-      { index: true, element: <Home /> },
-      { path: "about", element: <About /> },
-      { path: "services", element: <Services /> },
-      { path: "sign-in", element: <Login /> },
-      { path: "sign-up", element: <Register /> },
-      { path: "admin/login", element: <AdminLogin /> },
-      //   error route
-      { path: "*", element: <ErrorPage /> },
+
+      {
+        path: "",
+        element: <PublicLayout />,
+        children: [
+          { index: true, element: <Home /> },
+          { path: "about", element: <About /> },
+          { path: "services", element: <Services /> },
+          { path: "sign-in", element: <Login /> },
+          { path: "sign-up", element: <Register /> },
+          { path: "admin/login", element: <AdminLogin /> },
+          //   error route
+          { path: "*", element: <ErrorPage /> },
+        ],
+      },
     ],
   },
 ]);

@@ -9,7 +9,7 @@ const AgentManage = () => {
     const { agents, isLoading, refetch } = useAgents()
     const [showBalance, setShowBalance] = useState(null);
     const axiosPublic = useAxiosPublic();
-console.log('agents data:', agents);    
+    console.log('agents data:', agents);
     const handleSeeBalance = (id) => {
         setShowBalance(id);
         setTimeout(() => {

@@ -17,7 +17,7 @@ export const allUser = async (
       .json({
         success: true,
         message: 'Users fetched successfully',
-        users,
+        data: users,
       });
   } catch (error) {
     console.error('Error fetching users:', error);

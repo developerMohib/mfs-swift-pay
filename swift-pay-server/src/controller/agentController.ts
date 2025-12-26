@@ -9,10 +9,38 @@ export const allAgent = async (
   next: NextFunction,
 ) => {
   try {
-    const users = await Agent.find(); // Fetch all users
-    res.send(users); // Send the users back as a JSON response
+    const agents = await Agent.find(); // Fetch all agents
+    res.status(200).json({
+      success: true,
+      message: 'Agents fetched successfully',
+      data: agents,
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching users', error });
+    res.status(500).json({ message: 'Error fetching agents', error });
+    next(error);
+  }
+};
+
+export const pendingApprovedBlockAgent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const status = req?.params.status;
+    const agents = await Agent.find({ status })
+      .select('-password')
+      .sort({ createdAt: -1 }); // Optional: newest first
+
+    res.status(200).json({
+      success: true,
+      message: `${status} agents fetched successfully`,
+      data: agents,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: 'Error fetching agents', error });
     next(error);
   }
 };
@@ -31,34 +59,39 @@ export const updateStatusAgent = async (
     }
     // Find the agent by ID
     const agent = await Agent.findById(id);
-
     if (!agent) {
       res.status(404).json({ message: 'Agent not found' });
       return;
     }
-
-    // Check if the agent is new and status is being updated to "approved"
-    let bonusAdded = false;
-    if (agent.status === 'pending' && status === 'active') {
-      agent.balance = (agent.balance || 0) + 100000; // Add first-time bonus
-      bonusAdded = true;
+    if (agent.status === status) {
+      res.status(400).json({ message: `Agent is already ${status}` });
+      return;
     }
-
-    // Update agent status
+    const shouldAddBonus = agent.status === 'pending' && status === 'active';
+    if (shouldAddBonus) {
+      agent.balance = (agent.balance || 0) + 100000;
+    }
     agent.status = status;
     await agent.save();
 
     // Send success response
     res.status(200).json({
+      success: true,
       message: `Agent status updated to ${status}`,
-      bonusAdded: bonusAdded ? 100000 : 0, // Indicate if bonus was added
-      user: agent,
+      data: {
+        id: agent._id,
+        userName: agent.userName,
+        userPhone: agent.userPhone,
+        status: agent.status,
+        balance: agent.balance,
+      },
     });
   } catch (error) {
     console.error('Error updating user status:', error);
-    res
-      .status(500)
-      .json({ message: 'Server error', error: (error as Error).message });
+    res.status(500).json({
+      message: 'Error updating user status',
+      error: (error as Error).message,
+    });
   }
 };
 
@@ -68,7 +101,7 @@ export const getPendingCashInRequests = async (
 ): Promise<void> => {
   try {
     // const agentId = req;user?.id;
-    
+
     const pendingRequests = await Transaction.find({
       status: 'pending',
       type: 'cash-in',
