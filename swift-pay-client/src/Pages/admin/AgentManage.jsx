@@ -1,15 +1,15 @@
-import { toast } from "react-toastify";
 import { useState } from "react";
 import useAgents from "../../Hooks/useAgents";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { Link } from "react-router-dom";
 import Loader from "../../components/common/Loader";
+import { handleApprovedStatus } from "../../utils/updateAgentStatus";
 
 const AgentManage = () => {
     const { agents, isLoading, refetch } = useAgents()
     const [showBalance, setShowBalance] = useState(null);
     const axiosPublic = useAxiosPublic();
-    console.log('agents data:', agents);
+    
     const handleSeeBalance = (id) => {
         setShowBalance(id);
         setTimeout(() => {
@@ -17,22 +17,10 @@ const AgentManage = () => {
         }, 1000);
     }
 
-    const handleStatusChange = async (userId, newStatus) => {
-        try {
-            const response = await axiosPublic.put(`/agent/status/${userId}`, { status: newStatus });
-            console.log('agent status update response:', response);
-            if (response.status === 200) {
-                toast.success(`Agent is now ${newStatus}`);
-                refetch()
-            } else {
-                toast.error("Failed to update status");
-            }
-        } catch (error) {
-            console.error("Error updating status:", error);
-            toast.error("Error updating status");
-        }
-    };
-
+      const handleApproved = async (  id, status) => {
+        await handleApprovedStatus(axiosPublic, `/approved/status`, id, status, refetch);
+        await refetch();
+      };
 
     if (isLoading) return <Loader />;
     return (
@@ -73,7 +61,7 @@ const AgentManage = () => {
                                             }`}
                                         value={u.status}
                                         disabled={u.status === "block" || u.status === "active"}
-                                        onChange={(e) => handleStatusChange(u._id, e.target.value)}
+                                        onChange={(e) => handleApproved(u._id, e.target.value)}
                                     >
                                         <option value="pending">Pending</option>
                                         <option value="active">Active</option>

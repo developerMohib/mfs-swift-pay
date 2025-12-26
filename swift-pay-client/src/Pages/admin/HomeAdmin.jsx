@@ -1,4 +1,3 @@
-import { toast } from "react-toastify";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import Loader from "../../components/common/Loader";
 import { useState } from "react";
@@ -21,46 +20,26 @@ import {
 import useUsers from "../../Hooks/useUsers";
 import useApprovedBlockAgent from "../../Hooks/useApprovedBlockAgent";
 import usePendingAgents from "../../Hooks/usePendingAgents";
+import { handleApprovedStatus } from "../../utils/updateAgentStatus";
 
 const HomeAdmin = () => {
   const axiosPublic = useAxiosPublic();
   const [activeTab, setActiveTab] = useState('active');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { filteredAgent, isLoading: filteredAgentLoading } = useApprovedBlockAgent({ status: activeTab });
+  const { filteredAgent, isLoading: filteredAgentLoading, refetch } = useApprovedBlockAgent({ status: activeTab });
   const { pendingAgents, isLoading: pendingAgentsLoading, refetch: pendingAgentsRefetch } = usePendingAgents({ status: 'pending' });
   const { users, isLoading: usersLoading } = useUsers();
 
+  const activeStatus = 'active';
+  const blockStatus = 'block';
 
-  const handleApproved = async (id) => {
-    const status = 'active';
-    try {
-      const response = await axiosPublic.put(`/approved/status/${id}`, { status });
-      if (response?.data.success) {
-        toast.success(response?.data.message);
-        pendingAgentsRefetch();
-      } else {
-        toast.error("Failed to update status");
-      }
-    } catch (error) {
-      toast.warn(error.response?.data.message);
-    }
+  const handleApproved = async (id, status) => {
+    await handleApprovedStatus(axiosPublic, `/approved/status`, id, status, pendingAgentsRefetch);
+    await refetch();
   };
 
-  const handleRejected = async (id) => {
-    const status = 'block';
-    try {
-      const response = await axiosPublic.put(`/approved/status/${id}`, { status });
-      if (response?.data.success) {
-        toast.warn(response?.data.message);
-        pendingAgentsRefetch();
-      } else {
-        toast.error("Failed to update status");
-      }
-    } catch (error) {
-      toast.warn(error.response?.data.message);
-    }
-  };
+
 
   // Recent transaction data
   const recentTransactions = [
@@ -258,14 +237,14 @@ const HomeAdmin = () => {
 
                           <div className="flex gap-2">
                             <button
-                              onClick={() => handleApproved(request._id)}
+                              onClick={() => handleApproved(request._id, activeStatus)}
                               className="flex-1 bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-1"
                             >
                               <IoCheckmarkCircle className="w-4 h-4" />
                               Approve
                             </button>
                             <button
-                              onClick={() => handleRejected(request._id)}
+                              onClick={() => handleApproved(request._id, blockStatus)}
                               className="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-1"
                             >
                               <IoCloseCircle className="w-4 h-4" />

@@ -35,6 +35,7 @@ import UserProfile from "../Pages/user/UserProfile";
 import AdminLogin from "../Pages/admin/AdminLogin";
 import AllTransitions from "../Pages/admin/AllTransition";
 import PublicLayout from "../layouts/PublicLayout";
+import UpdateForm from "../Pages/common/UpdateForm";
 //
 
 // import Profile from "../Pages/common/Profile";
@@ -81,6 +82,7 @@ export const router = createBrowserRouter([
           { path: "manage-users", element: <UserManage />, },
           { path: "manage-agents", element: <AgentManage />, },
           { path: "transactions", element: <AllTransitions /> },
+          { path: "settings", element: <UpdateForm /> },
         ],
       },
 

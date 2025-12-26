@@ -12,13 +12,11 @@ export const allUser = async (
 ) => {
   try {
     const users = await User.find();
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: 'Users fetched successfully',
-        data: users,
-      });
+    res.status(200).json({
+      success: true,
+      message: 'Users fetched successfully',
+      data: users,
+    });
   } catch (error) {
     console.error('Error fetching users:', error);
     res
@@ -98,8 +96,17 @@ export const updateStatus = async (
 
     // Send success response
     res.status(200).json({
+      success: true,
       message: `User status updated to ${status}`,
-      user: updatedUser,
+      // data: updatedUser,
+
+      data: {
+        id: updatedUser._id,
+        userName: updatedUser.userName,
+        userPhone: updatedUser.userPhone,
+        status: updatedUser.status,
+        balance: updatedUser.balance,
+      },
     });
   } catch (error) {
     console.error('Error updating user status:', error);

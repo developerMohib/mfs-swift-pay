@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 import useUsers from "../../Hooks/useUsers";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import Loader from "../../components/common/Loader";
+import { handleApprovedStatus } from "../../utils/updateAgentStatus";
 
 const UserManage = () => {
-    const { user, isLoading, refetch } = useUsers()
+    const { users, isLoading, refetch } = useUsers()
     const axiosPublic = useAxiosPublic();
     const [showBalance, setShowBalance] = useState(null);
     const handleSeeBalance = (id) => {
@@ -15,21 +15,10 @@ const UserManage = () => {
             setShowBalance(null);
         }, 1000);
     }
-
-    const handleStatusChange = async (userId, newStatus) => {
-        try {
-            const response = await axiosPublic.put(`/user/status/${userId}`, { status: newStatus });
-
-            if (response.status === 200) {
-                toast.success(`User is now ${newStatus}`);
-                refetch()
-            } else {
-                toast.error("Failed to update status");
-            }
-        } catch (error) {
-            console.error("Error updating status:", error);
-            toast.error("Error updating status");
-        }
+   
+    const handleApproved = async (id, status) => {
+        await handleApprovedStatus(axiosPublic, `/user/status`, id, status, refetch);
+        await refetch();
     };
 
     if (isLoading) return <Loader />;
@@ -50,7 +39,7 @@ const UserManage = () => {
                 </thead>
                 <tbody>
                     {
-                        user && user?.map((u, id) => (
+                        users && users?.map((u, id) => (
                             <tr key={id}>
                                 <th>{id + 1}</th>
                                 <td><Link to={`/all-transactions/${u.userRole}/${u._id}`}>{u.userName}</Link></td>
@@ -64,7 +53,7 @@ const UserManage = () => {
                                         name="accountType"
                                         className="p-2 border border-primary rounded-md"
                                         value={u.status}
-                                        onChange={(e) => handleStatusChange(u._id, e.target.value)}
+                                        onChange={(e) => handleApproved(u._id, e.target.value)}
                                     >
                                         <option value="active">Active</option>
                                         <option value="block">Block</option>
