@@ -1,11 +1,13 @@
 import Proptypes from "prop-types";
 import { createContext, useEffect, useState } from "react";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
 
 export const UserContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+const axiosPublic = useAxiosPublic();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -26,9 +28,17 @@ const AuthProvider = ({ children }) => {
   };
 
   // Function to log out and remove user data from localStorage
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
+  const logout = async () => {
+    try {
+      setLoading(true);
+      await axiosPublic.post('/api/auth/logout', {}, { withCredentials: true });
+      setUser(null);
+    } catch (error) {
+      console.error('Logout failed:', error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const userInfo = { user, setUser, login, logout, loading, setLoading };

@@ -30,7 +30,6 @@ import CashInto from "../Pages/user/CashInto";
 import SendMoney from "../Pages/user/SendMoney";
 import CashOut from "../Pages/user/CashOut";
 import UserTransections from "../Pages/user/Transections";
-import HomeUser from "../Pages/user/HomeUser";
 import UserProfile from "../Pages/user/UserProfile";
 import AdminLogin from "../Pages/admin/AdminLogin";
 import AllTransitions from "../Pages/admin/AllTransition";
@@ -51,8 +50,7 @@ export const router = createBrowserRouter([
         path: "dashboard/user",
         element: <UserLayout />,
         children: [
-          { index: true, element: <HomeUser /> },
-          { path: "profile", element: <UserProfile /> },
+          { index: true, element: <UserProfile /> },
           { path: "cash-in", element: <CashInto /> },
           { path: "send-money", element: <SendMoney /> },
           { path: "cash-out", element: <CashOut /> },

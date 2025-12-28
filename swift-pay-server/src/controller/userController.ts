@@ -131,3 +131,56 @@ export const userTransaction = async (req: Request, res: Response) => {
       .json({ message: 'Server error', error: (error as Error).message });
   }
 };
+
+export const userDetails = async (req: Request, res: Response) => {
+  try {
+    // Check if req.user exists (it should be set by authenticate middleware)
+    if (!req.user) {
+      res.status(401).json({
+        success: false,
+        message: 'Unauthorized: User not authenticated',
+      });
+      return 
+    }
+
+    // Safely access req.user.id — now TypeScript knows it's defined
+    const user = await User.findById(req.user.id).select('-password -pin');
+
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+      return 
+    }
+
+    // Return only safe fields
+    const userResponse = {
+      id: user._id,
+      userName: user.userName,
+      userEmail: user.userEmail,
+      userPhone: user.userPhone,
+      userRole: user.userRole,
+      status: user.status,
+      balance: user.balance,
+      userNID: user.userNID,
+      userPhoto: user.userPhoto,
+    };
+
+    res.status(200).json({
+      success: true,
+      message: 'User details fetched successfully',
+      data: userResponse,
+    });
+    return ;
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      ...(process.env.NODE_ENV === 'development' && {
+        error: error instanceof Error ? error.message : 'Unknown error',
+      }),
+    });
+    return ;
+  }
+};

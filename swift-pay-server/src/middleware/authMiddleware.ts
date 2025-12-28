@@ -16,3 +16,4 @@ const comparePassword = async (plainPass :string, hashPassword : string) => {
 };
 
 export { hashPassword, comparePassword };
+

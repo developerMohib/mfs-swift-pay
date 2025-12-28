@@ -6,7 +6,7 @@ import { UserContext } from "../../authProvider/AuthProvider";
 import ShowHidePass from "../../features/ShowHidePass";
 
 const Login = () => {
-  const { login, setLoading } = useContext(UserContext);
+  const { setLoading } = useContext(UserContext);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false)
   const [showPass, setShowPass] = useState(false);
@@ -39,22 +39,15 @@ const Login = () => {
 
     try {
       // Make the POST request to the server
-      const response = await axiosPublic.post("/user/login", userData);
+      const response = await axiosPublic.post("/api/auth/login", userData);
       // Check if the response is successful
       if (response?.data.success) {
         toast.success(response.data.message);
         const user = response.data.data.user;
         if (!user) {
-          toast.error("Invalid response from server!");
+          toast.error(response?.data?.message || "Login failed. Please try again.");
           return;
         }
-
-        // localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
-
-        // Call login function to set user state
-        login(user);
-
         setLoading(false);
         form.reset();
 
@@ -63,8 +56,11 @@ const Login = () => {
           navigate("/dashboard/admin");
         } else if (user.userRole === "agent") {
           navigate("/dashboard/agent");
-        } else {
+        } else if (user.userRole === "user") {
           navigate("/dashboard/user"); // Default route
+        } else {
+          navigate("/");
+          toast.error("Invalid user role");
         }
         setLoading(false);
       }

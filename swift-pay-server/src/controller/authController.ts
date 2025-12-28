@@ -9,7 +9,6 @@ import {
 } from '../validators/register.validator';
 import { validateLogin } from '../validators/login.validator';
 
-
 export const registerUser = async (
   req: Request,
   res: Response,
@@ -102,7 +101,7 @@ export const registerUser = async (
       });
       return;
     }
- 
+
     res.status(500).json({
       success: false,
       message: 'Registration failed due to network',
@@ -114,11 +113,13 @@ export const registerUser = async (
 };
 
 export const login = async (req: Request, res: Response): Promise<void> => {
-  const { phoneOrEmail, pin } = req.body ;
-
+  const { phoneOrEmail, pin } = req.body;
   try {
     // 1. Validate input
-    const validationError = validateLogin({ identifier: phoneOrEmail, password: pin });
+    const validationError = validateLogin({
+      identifier: phoneOrEmail,
+      password: pin,
+    });
     if (validationError) {
       res.status(400).json({ success: false, message: validationError });
       return;
@@ -149,10 +150,11 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     // 5. Check account status
     if (account.status !== 'active') {
-      const statusMessage = account.status === 'pending' 
-        ? 'Account pending approval' 
-        : 'Account is suspended';
-      
+      const statusMessage =
+        account.status === 'pending'
+          ? 'Account pending approval'
+          : 'Account is suspended';
+
       res.status(403).json({ success: false, message: statusMessage });
       return;
     }
@@ -168,7 +170,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
       console.error('JWT_SECRET is not configured');
-      res.status(500).json({ success: false, message: 'Server configuration error' });
+      res
+        .status(500)
+        .json({ success: false, message: 'Server configuration error' });
       return;
     }
 
@@ -179,8 +183,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     };
 
     const expiresIn = process.env.JWT_EXPIRES_IN;
-    const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn } as jwt.SignOptions);
-
+    const token = jwt.sign(tokenPayload, jwtSecret, {
+      expiresIn,
+    } as jwt.SignOptions);
     // 8. Prepare safe user response (EXPLICIT fields only)
     const userResponse = {
       id: account._id,
@@ -190,6 +195,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       userRole: account.userRole,
       status: account.status,
       balance: account.balance,
+      photo: account.userPhoto,
     };
 
     // 9. Set secure cookie + response
@@ -205,12 +211,34 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       message: 'Login successful',
       data: { token, user: userResponse },
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
       message: 'Internal server error',
-      ...(process.env.NODE_ENV === 'development' && { error: error instanceof Error ? error.message : 'Unknown error' }),
+      ...(process.env.NODE_ENV === 'development' && {
+        error: error instanceof Error ? error.message : 'Unknown error',
+      }),
+    });
+  }
+};
+
+export const logout = async (req: Request, res: Response): Promise<void> => {
+  try {
+    res.clearCookie('auth_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      path: '/',
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Logged out successfully',
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 };

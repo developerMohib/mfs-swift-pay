@@ -1,13 +1,10 @@
 import { useState } from "react";
-import useLoginUser from "../../Hooks/useSingleUser";
 import Loader from "../../components/common/Loader";
+import useUserDetails from "../../Hooks/useLoginUserdetails";
 
 const UserProfile = () => {
-  const data = localStorage.getItem("user");
-  const user = JSON.parse(data);
   const [showBalance, setShowBalance] = useState(null);
-  const id = user?.id
-  const { loginUser, isLoading } = useLoginUser({ id })
+  const { loginUser, isLoading } = useUserDetails();
 
   const handleSeeBalance = (id) => {
     setShowBalance(id);

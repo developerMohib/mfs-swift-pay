@@ -10,6 +10,7 @@ export interface IUser {
   userRole: 'user' | 'agent' | 'admin';
   status: 'active' | 'block' | 'pending';
   transactions: Schema.Types.ObjectId[];
+  userPhoto?: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -20,6 +21,7 @@ const userSchema = new Schema<IUser>({
   password: { type: String, required: true },
   balance: { type: Number, default: 40 },
   userRole: { type: String, enum: ['user', 'agent', 'admin'], default: 'user' },
+  userPhoto: { type: String , default: 'https://avatars.githubusercontent.com/u/92154638?v=4'},
   status: {
     type: String,
     enum: ['active', 'block', 'pending'],
