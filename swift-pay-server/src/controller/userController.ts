@@ -11,8 +11,12 @@ export const allUser = async (
   next: NextFunction,
 ) => {
   try {
-    const users = await User.find(); // Fetch all users
-    res.status(200).json(users); // Send the users back as a JSON response
+    const users = await User.find();
+    res.status(200).json({
+      success: true,
+      message: 'Users fetched successfully',
+      data: users,
+    });
   } catch (error) {
     console.error('Error fetching users:', error);
     res
@@ -92,8 +96,17 @@ export const updateStatus = async (
 
     // Send success response
     res.status(200).json({
+      success: true,
       message: `User status updated to ${status}`,
-      user: updatedUser,
+      // data: updatedUser,
+
+      data: {
+        id: updatedUser._id,
+        userName: updatedUser.userName,
+        userPhone: updatedUser.userPhone,
+        status: updatedUser.status,
+        balance: updatedUser.balance,
+      },
     });
   } catch (error) {
     console.error('Error updating user status:', error);
@@ -106,7 +119,6 @@ export const updateStatus = async (
 export const userTransaction = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    console.log('user id', userId);
     // Fetch last 100 transactions for the user (sorted by latest)
     const transactions = await Transaction.find({ userId })
       .sort({ createdAt: -1 }) // Sort by most recent
@@ -117,5 +129,58 @@ export const userTransaction = async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ message: 'Server error', error: (error as Error).message });
+  }
+};
+
+export const userDetails = async (req: Request, res: Response) => {
+  try {
+    // Check if req.user exists (it should be set by authenticate middleware)
+    if (!req.user) {
+      res.status(401).json({
+        success: false,
+        message: 'Unauthorized: User not authenticated',
+      });
+      return 
+    }
+
+    // Safely access req.user.id — now TypeScript knows it's defined
+    const user = await User.findById(req.user.id).select('-password -pin');
+
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+      return 
+    }
+
+    // Return only safe fields
+    const userResponse = {
+      id: user._id,
+      userName: user.userName,
+      userEmail: user.userEmail,
+      userPhone: user.userPhone,
+      userRole: user.userRole,
+      status: user.status,
+      balance: user.balance,
+      userNID: user.userNID,
+      userPhoto: user.userPhoto,
+    };
+
+    res.status(200).json({
+      success: true,
+      message: 'User details fetched successfully',
+      data: userResponse,
+    });
+    return ;
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      ...(process.env.NODE_ENV === 'development' && {
+        error: error instanceof Error ? error.message : 'Unknown error',
+      }),
+    });
+    return ;
   }
 };

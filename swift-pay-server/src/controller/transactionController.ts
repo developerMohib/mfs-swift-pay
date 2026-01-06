@@ -9,61 +9,79 @@ import { Agent } from '../model/Agent';
 export const sendMoney = async (req: Request, res: Response) => {
   const session = await mongoose.startSession();
   session.startTransaction();
+
+  const { senderId, recipientPhone, amount, pin } = req.body;
+
   try {
-    const { senderId, receiverId, amount } = req.body;
-    // Validate input minimum 50
-    if (!senderId || !receiverId || !amount || amount < 50) {
+    // Validate required fields and amount
+    if (
+      !senderId ||
+      !recipientPhone ||
+      !pin ||
+      !amount ||
+      isNaN(amount) ||
+      amount < 50
+    ) {
       await session.abortTransaction();
-      res.status(400).json({ error: 'Invalid input' });
+      res.status(400).json({
+        success: false,
+        error: 'Invalid input: amount must be ≥ 50 and all fields required',
+      });
       return;
     }
 
-    // Find sender and receiver
-    const sender = await User.findOne({ _id: new Object(senderId) }).session(
-      session,
-    );
-    const receiver = await User.findOne({ userPhone: receiverId }).session(
-      session,
-    );
+    // Find sender and receiver in parallel
+    const [sender, receiver] = await Promise.all([
+      User.findById(senderId).session(session),
+      User.findOne({ userPhone: recipientPhone }).session(session),
+    ]);
 
-    if (!sender || !receiver) {
+    if (!sender) {
       await session.abortTransaction();
-      res.status(404).json({ error: 'Sender or receiver not found' });
+      res.status(404).json({ error: 'Sender not found' });
       return;
     }
 
-    // Calculate fee (5 Taka if amount > 100)
-    const fee = amount > 100 ? 5 : 0;
-    const totalAmount = amount + fee;
+    if (!receiver) {
+      await session.abortTransaction();
+      res.status(404).json({ error: 'Receiver not found' });
+      return;
+    }
+
+    if (sender._id.toString() === receiver._id.toString()) {
+      await session.abortTransaction();
+      res.status(400).json({ error: 'Cannot send money to yourself' });
+      return;
+    }
+
+    // Calculate fee and total deduction
+    const fee = amount >= 100 ? 5 : 0;
+    const totalDeduction = amount + fee;
 
     // Check sender balance
-
-    if (sender.balance < totalAmount) {
+    if (sender.balance < totalDeduction) {
       await session.abortTransaction();
       res.status(400).json({ error: 'Insufficient balance' });
       return;
     }
 
-    // Deduct amount + fee from sender
-    sender.balance = sender.balance - totalAmount;
-    await sender.save({ session });
+    // Update balances
+    sender.balance -= totalDeduction;
+    receiver.balance += amount;
 
-    // Add amount to receiver
-    receiver.balance = receiver.balance + amount;
-    await receiver.save({ session });
-
-    // Record transaction
+    // Create transaction record
     const transaction = new Transaction({
       sender: sender._id,
       receiver: receiver._id,
       amount,
       fee,
-      type: 'send-money', // Set transaction type
-      status: 'success', // Set transaction status
+      type: 'send-money',
+      status: 'success',
     });
+
+    // Save transaction and update user transaction histories
     await transaction.save({ session });
 
-    // Update sender and receiver transaction history
     sender.transactions.push(
       transaction._id as unknown as mongoose.Schema.Types.ObjectId,
     );
@@ -71,36 +89,37 @@ export const sendMoney = async (req: Request, res: Response) => {
       transaction._id as unknown as mongoose.Schema.Types.ObjectId,
     );
 
-    await sender.save({ session });
-    await receiver.save({ session });
+    // Save sender and receiver (balances + transaction history)
+    await Promise.all([sender.save({ session }), receiver.save({ session })]);
 
-    const adminId = process.env.ADMIN_ID; // mongose object id
-    // Add fee to admin's balance
-    if (adminId) {
-      const admin = await Admin.findOne({ _id: new Object(adminId) }).session(
-        session,
-      );
-      if (!admin) {
-        await session.abortTransaction();
-        res.status(404).json({ error: 'Admin not found' });
+    // Add fee to admin balance if configured
+    const adminId = process.env.ADMIN_ID;
+    if (fee >= 0 && adminId) {
+      const admin = await Admin.findById(adminId).session(session);
+      if (admin) {
+        admin.balance += fee;
+        await admin.save({ session });
+      } else {
+        res
+          .status(404)
+          .json({
+            success: false,
+            error: 'Admin not found for fee allocation',
+          });
         return;
       }
-
-      admin.balance += fee;
-      await admin.save({ session });
     }
-
     await session.commitTransaction();
-
-    res.status(200).json({
-      message: 'Money sent successfully',
+    return res.status(200).json({
+      message: 'Send Money successfully',
       transaction,
       remainingBalance: sender.balance,
     });
   } catch (err) {
     await session.abortTransaction();
-    res.status(500).json({
-      error: 'Registration failed',
+    console.error('Send money failed:', err); // Optional logging
+    return res.status(500).json({
+      error: 'Send money failed',
       details: err instanceof Error ? err.message : 'An unknown error occurred',
     });
   } finally {
@@ -128,8 +147,6 @@ export const cashDeposit = async (req: Request, res: Response) => {
     const receiver = await User.findOne({ userPhone: receiverId }).session(
       session,
     );
-    console.log('sender', sender);
-    console.log('receiver', receiver);
     if (!sender || !receiver) {
       await session.abortTransaction();
       res.status(404).json({ error: 'Sender or receiver not found' });
@@ -215,7 +232,12 @@ export const cashInFromAgent = async (req: Request, res: Response) => {
     }
 
     const isMatch = await comparePassword(password, sender.password);
-    console.log('is match', isMatch);
+    if (!isMatch) {
+      res
+        .status(400)
+        .json({ success: false, message: 'Invalid PIN not found' });
+      return;
+    }
     // Record transaction
     const transaction = new Transaction({
       sender: sender._id,
@@ -296,16 +318,14 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
       res.status(404).json({ error: 'Receiver not found' });
       return;
     }
-    console.log('receiver', receiver);
 
     // Fee Calculation
     const totalFee = amount * (1.5 / 100); // 1.5% of amount
     const agentFee = amount * (1 / 100); // 1% to agent
     const adminFee = amount * (0.5 / 100); // 0.5% to admin
     const finalAmount = amount - totalFee; // Amount user receives from agent
-    const income = totalFee - adminFee;
-    console.log('final income agent', income);
-
+    // const income = totalFee - adminFee;
+    // Check sender balance
     // find Admin
     const adminId = process.env.ADMIN_ID; // mongose object id
     // Add fee to admin's balance
