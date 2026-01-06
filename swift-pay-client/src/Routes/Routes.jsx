@@ -35,6 +35,7 @@ import AdminLogin from "../Pages/admin/AdminLogin";
 import AllTransitions from "../Pages/admin/AllTransition";
 import PublicLayout from "../layouts/PublicLayout";
 import UpdateForm from "../Pages/common/UpdateForm";
+import ProtectedRoute from "./ProtectedRoute";
 //
 
 // import Profile from "../Pages/common/Profile";
@@ -48,7 +49,7 @@ export const router = createBrowserRouter([
       // ===== USER DASHBOARD =====
       {
         path: "dashboard/user",
-        element: <UserLayout />,
+        element: <ProtectedRoute><UserLayout /></ProtectedRoute>,
         children: [
           { index: true, element: <UserProfile /> },
           { path: "cash-in", element: <CashInto /> },

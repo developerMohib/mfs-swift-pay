@@ -228,7 +228,7 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      path: '/',
+      path: '/sign-in',
     });
 
     res.status(200).json({

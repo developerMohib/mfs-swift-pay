@@ -7,19 +7,26 @@ export const UserContext = createContext();
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-const axiosPublic = useAxiosPublic();
+  const axiosPublic = useAxiosPublic();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
+    const fetchUser = async () => {
       try {
-        setUser(JSON.parse(storedUser));
+        const res = await axiosPublic.get(`/user/details`);
+        console.log("AuthProvider - fetched user:", res.data);
+        if (res.data.success) {
+          setUser(res.data.user);
+        }
       } catch (error) {
-        console.error("Error parsing stored user:", error);
-        localStorage.removeItem("user"); // Remove invalid data from localStorage
+        console.log("No user logged in or token expired");
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
-    }
-  }, []);
+    };
+
+    fetchUser();
+  }, [axiosPublic]);
 
   // Function to log in and store user data in localStorage
   const login = (userData) => {

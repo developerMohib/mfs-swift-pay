@@ -14,11 +14,11 @@ const UserLayout = () => {
     const { logout } = useContext(UserContext);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { loginUser, isLoading } = useUserDetails();
-
+console.log("UserLayout - loginUser:", loginUser);
     const handleLogout = async() => {
       await logout();
         toast.success("Logged out successfully");
-        navigate("/");
+        navigate("/login");
     };
 
     if (isLoading) return <Loader />;

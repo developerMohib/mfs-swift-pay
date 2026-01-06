@@ -1,7 +1,7 @@
 import axios from "axios";
 const useAxiosPublic = () => {
   const axiosPublic = axios.create({
-    baseURL:"http://localhost:8000",
+    baseURL:"https://swift-pay-server-mu.vercel.app",
      timeout: 10000,
      withCredentials: true,
     headers: {
