@@ -1,12 +1,12 @@
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { UserContext } from "../../authProvider/AuthProvider";
 import ShowHidePass from "../../features/ShowHidePass";
 
 const Login = () => {
-  const { setLoading } = useContext(UserContext);
+  const { setLoading} = useContext(UserContext);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false)
   const [showPass, setShowPass] = useState(false);
@@ -38,14 +38,12 @@ const Login = () => {
     const userData = { phoneOrEmail, pin };
 
     try {
-      // Make the POST request to the server
-      const response = await axiosPublic.post("/api/auth/login", userData);
-      // Check if the response is successful
+      const response = await axiosPublic.post("/auth/login", userData,{ withCredentials: true });
       if (response?.data.success) {
         toast.success(response.data.message);
         const user = response.data.data.user;
         if (!user) {
-          toast.error(response?.data?.message || "Login failed. Please try again.");
+          toast.error(response?.data?.message);
           return;
         }
         setLoading(false);
@@ -57,7 +55,7 @@ const Login = () => {
         } else if (user.userRole === "agent") {
           navigate("/dashboard/agent");
         } else if (user.userRole === "user") {
-          navigate("/dashboard/user"); // Default route
+          navigate("/dashboard/user");
         } else {
           navigate("/");
           toast.error("Invalid user role");
@@ -65,7 +63,6 @@ const Login = () => {
         setLoading(false);
       }
     } catch (error) {
-      // Handle errors (e.g., invalid credentials, server error)
       if (error.response && error.response.status === 401) {
         toast.error(error.response.data.message);
       } else {

@@ -134,24 +134,22 @@ export const userTransaction = async (req: Request, res: Response) => {
 
 export const userDetails = async (req: Request, res: Response) => {
   try {
-    // Check if req.user exists (it should be set by authenticate middleware)
     if (!req.user) {
       res.status(401).json({
         success: false,
         message: 'Unauthorized: User not authenticated',
       });
-      return 
+      return;
     }
 
     // Safely access req.user.id — now TypeScript knows it's defined
     const user = await User.findById(req.user.id).select('-password -pin');
-
     if (!user) {
       res.status(404).json({
         success: false,
         message: 'User not found',
       });
-      return 
+      return;
     }
 
     // Return only safe fields
@@ -172,7 +170,7 @@ export const userDetails = async (req: Request, res: Response) => {
       message: 'User details fetched successfully',
       data: userResponse,
     });
-    return ;
+    return;
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -181,6 +179,6 @@ export const userDetails = async (req: Request, res: Response) => {
         error: error instanceof Error ? error.message : 'Unknown error',
       }),
     });
-    return ;
+    return;
   }
 };

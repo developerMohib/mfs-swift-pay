@@ -2,7 +2,7 @@ import { LoginDTO } from '../constants/auth.types';
 
 export const validateLogin = (data: LoginDTO): string | null => {
   const { identifier, password } = data;
-
+  
   // Trim inputs early
   const trimmedIdentifier = identifier?.trim();
   const trimmedPassword = password?.trim();

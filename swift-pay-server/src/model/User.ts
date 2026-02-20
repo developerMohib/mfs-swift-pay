@@ -28,6 +28,6 @@ const userSchema = new Schema<IUser>({
     default: 'active',
   },
   transactions: [{ type: Schema.Types.ObjectId, ref: 'Transaction' }],
-});
+}, { timestamps: true });
 
 export const User = model<IUser>('User', userSchema);

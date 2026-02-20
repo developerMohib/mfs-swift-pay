@@ -1,6 +1,6 @@
 import Proptypes from "prop-types";
-import { createContext, useEffect, useState } from "react";
-import useAxiosPublic from "../Hooks/useAxiosPublic";
+import { createContext, useState } from "react";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 export const UserContext = createContext();
 
@@ -8,32 +8,7 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const axiosPublic = useAxiosPublic();
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await axiosPublic.get(`/user/details`);
-        console.log("AuthProvider - fetched user:", res.data);
-        if (res.data.success) {
-          setUser(res.data.user);
-        }
-      } catch (error) {
-        console.log("No user logged in or token expired");
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, [axiosPublic]);
-
-  // Function to log in and store user data in localStorage
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData)); // Save user data in localStorage
-  };
-
+  
   // Function to log out and remove user data from localStorage
   const logout = async () => {
     try {
@@ -48,7 +23,7 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const userInfo = { user, setUser, login, logout, loading, setLoading };
+  const userInfo = { user, setUser,  logout, loading, setLoading };
   return (
     <UserContext.Provider value={userInfo}>{children}</UserContext.Provider>
   );
