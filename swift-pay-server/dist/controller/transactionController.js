@@ -22,77 +22,103 @@ const Agent_1 = require("../model/Agent");
 const sendMoney = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const session = yield mongoose_1.default.startSession();
     session.startTransaction();
+    const { senderId, recipientPhone, amount, pin } = req.body;
     try {
-        const { senderId, receiverId, amount } = req.body;
-        // Validate input minimum 50
-        if (!senderId || !receiverId || !amount || amount < 50) {
+        // Validate required fields and amount
+        if (!senderId ||
+            !recipientPhone ||
+            !pin ||
+            !amount ||
+            isNaN(amount) ||
+            amount < 50) {
             yield session.abortTransaction();
-            res.status(400).json({ error: 'Invalid input' });
+            res.status(400).json({
+                success: false,
+                error: 'Invalid input: amount must be ≥ 50 and all fields required',
+            });
             return;
         }
-        // Find sender and receiver
-        const sender = yield User_1.User.findOne({ _id: new Object(senderId) }).session(session);
-        const receiver = yield User_1.User.findOne({ userPhone: receiverId }).session(session);
-        if (!sender || !receiver) {
+        // Find sender and receiver in parallel
+        const [sender, receiver] = yield Promise.all([
+            User_1.User.findById(senderId).session(session),
+            User_1.User.findOne({ userPhone: recipientPhone }).session(session),
+        ]);
+        if (!sender) {
             yield session.abortTransaction();
-            res.status(404).json({ error: 'Sender or receiver not found' });
+            res.status(404).json({ error: 'Sender not found' });
             return;
         }
-        // Calculate fee (5 Taka if amount > 100)
-        const fee = amount > 100 ? 5 : 0;
-        const totalAmount = amount + fee;
+        if (!receiver) {
+            yield session.abortTransaction();
+            res.status(404).json({ error: 'Receiver not found' });
+            return;
+        }
+        if (sender._id.toString() === receiver._id.toString()) {
+            yield session.abortTransaction();
+            res.status(400).json({ error: 'Cannot send money to yourself' });
+            return;
+        }
+        // Calculate fee and total deduction
+        const fee = amount >= 100 ? 5 : 0;
+        const totalDeduction = amount + fee;
         // Check sender balance
-        if (sender.balance < totalAmount) {
+        if (sender.balance < totalDeduction) {
             yield session.abortTransaction();
             res.status(400).json({ error: 'Insufficient balance' });
             return;
         }
-        // Deduct amount + fee from sender
-        sender.balance = sender.balance - totalAmount;
-        yield sender.save({ session });
-        // Add amount to receiver
-        receiver.balance = receiver.balance + amount;
-        yield receiver.save({ session });
-        // Record transaction
+        // Update balances
+        sender.balance -= totalDeduction;
+        receiver.balance += amount;
+        // Create transaction record
         const transaction = new Transaction_1.Transaction({
             sender: sender._id,
             receiver: receiver._id,
             amount,
             fee,
-            type: 'send-money', // Set transaction type
-            status: 'success', // Set transaction status
+            type: 'send-money',
+            status: 'success',
         });
+        // Save transaction and update user transaction histories
         yield transaction.save({ session });
-        // Update sender and receiver transaction history
         sender.transactions.push(transaction._id);
         receiver.transactions.push(transaction._id);
-        yield sender.save({ session });
-        yield receiver.save({ session });
-        const adminId = process.env.ADMIN_ID; // mongose object id
-        // Add fee to admin's balance
-        if (adminId) {
-            const admin = yield Admin_1.Admin.findOne({ _id: new Object(adminId) }).session(session);
-            if (!admin) {
-                yield session.abortTransaction();
-                res.status(404).json({ error: 'Admin not found' });
+        // Save sender and receiver (balances + transaction history)
+        yield Promise.all([sender.save({ session }), receiver.save({ session })]);
+        // Add fee to admin balance if configured
+        const adminId = process.env.ADMIN_ID;
+        if (fee >= 0 && adminId) {
+            const admin = yield Admin_1.Admin.findById(adminId).session(session);
+            if (admin) {
+                admin.balance += fee;
+                yield admin.save({ session });
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                    success: false,
+                    error: 'Admin not found for fee allocation',
+                });
                 return;
             }
-            admin.balance += fee;
-            yield admin.save({ session });
         }
         yield session.commitTransaction();
         res.status(200).json({
-            message: 'Money sent successfully',
+            message: 'Send Money successfully',
             transaction,
             remainingBalance: sender.balance,
         });
+        return;
     }
     catch (err) {
         yield session.abortTransaction();
+        console.error('Send money failed:', err); // Optional logging
         res.status(500).json({
-            error: 'Registration failed',
+            error: 'Send money failed',
             details: err instanceof Error ? err.message : 'An unknown error occurred',
         });
+        return;
     }
     finally {
         session.endSession();
@@ -113,8 +139,6 @@ const cashDeposit = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         // Find sender and receiver
         const sender = yield Agent_1.Agent.findOne({ _id: new Object(senderId) }).session(session);
         const receiver = yield User_1.User.findOne({ userPhone: receiverId }).session(session);
-        console.log('sender', sender);
-        console.log('receiver', receiver);
         if (!sender || !receiver) {
             yield session.abortTransaction();
             res.status(404).json({ error: 'Sender or receiver not found' });
@@ -185,7 +209,12 @@ const cashInFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, function
             return;
         }
         const isMatch = yield (0, authMiddleware_1.comparePassword)(password, sender.password);
-        console.log('is match', isMatch);
+        if (!isMatch) {
+            res
+                .status(400)
+                .json({ success: false, message: 'Invalid PIN not found' });
+            return;
+        }
         // Record transaction
         const transaction = new Transaction_1.Transaction({
             sender: sender._id,
@@ -251,14 +280,13 @@ const cashOutFromAgent = (req, res) => __awaiter(void 0, void 0, void 0, functio
             res.status(404).json({ error: 'Receiver not found' });
             return;
         }
-        console.log('receiver', receiver);
         // Fee Calculation
         const totalFee = amount * (1.5 / 100); // 1.5% of amount
         const agentFee = amount * (1 / 100); // 1% to agent
         const adminFee = amount * (0.5 / 100); // 0.5% to admin
         const finalAmount = amount - totalFee; // Amount user receives from agent
-        const income = totalFee - adminFee;
-        console.log('final income agent', income);
+        // const income = totalFee - adminFee;
+        // Check sender balance
         // find Admin
         const adminId = process.env.ADMIN_ID; // mongose object id
         // Add fee to admin's balance

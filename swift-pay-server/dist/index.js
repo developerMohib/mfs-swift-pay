@@ -16,20 +16,24 @@ const adminRoutes_1 = require("./routes/adminRoutes");
 const transactionRoutes_1 = require("./routes/transactionRoutes");
 // parsers
 app.use(express_1.default.json());
-app.use((0, cookie_parser_1.default)());
 app.use(body_parser_1.default.json());
 // https://swift-pay-client-theta.vercel.app
 // http://localhost:5173
 app.use((0, cors_1.default)({
-    origin: 'http://localhost:5173',
+    origin: [
+        'http://localhost:5173',
+        'https://swift-pay-client-theta.vercel.app',
+        'http://localhost:8000',
+    ],
     credentials: true,
 }));
+app.use((0, cookie_parser_1.default)());
+// routes
+app.use('/auth', authRoutes_1.authRouter);
 app.use('/admin', adminRoutes_1.adnminRouter);
 app.use('/agent', adminRoutes_1.adnminRouter);
-// my routes
-app.use('/user', authRoutes_1.authRouter);
 app.use('/all', userRoutes_1.userRouter);
-app.use('/user', userRoutes_1.userRouter);
+app.use('/user', userRoutes_1.userRouter); // user/details
 app.use('/all', agentRoutes_1.agentRouter);
 app.use('/agent', agentRoutes_1.agentRouter);
 app.use('/approved', agentRoutes_1.agentRouter);
@@ -44,6 +48,10 @@ app.get('/', (req, res) => {
 // Home route
 app.get('/health', (req, res) => {
     res.status(200).send('swiftPay server is ready');
+});
+app.get('/api/test-cookie', (req, res) => {
+    console.log('Cookies received:', req.cookies);
+    res.json({ cookies: req.cookies });
 });
 // global route error handler
 app.all('*', (req, res) => {

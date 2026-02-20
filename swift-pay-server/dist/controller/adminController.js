@@ -16,22 +16,59 @@ const Agent_1 = require("../model/Agent");
 const Transaction_1 = require("../model/Transaction");
 const loginAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email, password } = req.body;
-        const admin = yield Admin_1.Admin.findOne({ userEmail: email });
+        const { name, email, password } = req.body;
+        let admin = yield Admin_1.Admin.findOne({ userEmail: email });
         if (!admin) {
             res.status(400).json({ message: 'Admin not found' });
             return;
         }
-        // Verify pin
-        const isMatch = yield (0, authMiddleware_1.comparePassword)(password, admin.password);
-        console.log(19, isMatch);
+        if (admin) {
+            const isMatch = yield (0, authMiddleware_1.comparePassword)(password, admin.password);
+            if (!isMatch) {
+                res.status(400).json({ message: 'Invalid password' });
+                return;
+            }
+            // Optional: Generate JWT token
+            // const token = jwt.sign(
+            //   { id: admin._id, role: "admin" },
+            //   process.env.JWT_SECRET as string,
+            //   { expiresIn: "1d" }
+            // );
+            res.status(200).json({
+                message: 'Login successful',
+                admin,
+                // token,
+            });
+            return;
+        }
+        else {
+            // Admin does not exist → Create new admin
+            const hashedPassword = yield (0, authMiddleware_1.hashPassword)(password);
+            admin = new Admin_1.Admin({
+                name,
+                userEmail: email,
+                password: hashedPassword,
+            });
+            yield admin.save();
+            // Optional: Generate JWT for new admin
+            // const token = jwt.sign(
+            //   { id: admin._id, role: "admin" },
+            //   process.env.JWT_SECRET as string,
+            //   { expiresIn: "1d" }
+            // );
+            res.status(201).json({
+                message: 'Admin created and logged in successfully',
+                admin,
+                // token,
+            });
+            return;
+        }
         // if (!isMatch) {
         //   res.status(400).json({ message: 'Invalid credentials' });
         //   return;
         // }
         // Generate JWT token
         // const token = jwt.sign({ id: admin._id, role: "admin" }, process.env.JWT_SECRET as string, { expiresIn: "1h" });
-        res.status(200).json({ message: 'Login successful', admin });
     }
     catch (error) {
         res.status(500).json({ message: 'Server error', error });
@@ -76,7 +113,10 @@ const agentCashInRequests = (req, res) => __awaiter(void 0, void 0, void 0, func
             return;
         }
         const isMatch = yield (0, authMiddleware_1.comparePassword)(password, agent.password);
-        console.log('is match', isMatch);
+        if (!isMatch) {
+            res.status(400).json({ message: 'Invalid password' });
+            return;
+        }
         const adminId = process.env.ADMIN_ID; // mongose object id
         // Add fee to admin's balance
         if (adminId) {
