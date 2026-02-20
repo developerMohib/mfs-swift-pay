@@ -2,7 +2,7 @@ import { Navigate} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import useAxiosPublic from '../hooks/useAxiosPublic';
-import useUserDetails from '../hooks/useLoginUserdetails';
+// import useUserDetails from '../hooks/useLoginUserdetails';
 
 const ProtectedRoute = ({children}) => {
      const [isAuth, setIsAuth] = useState(null);

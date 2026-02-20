@@ -110,18 +110,20 @@ export const sendMoney = async (req: Request, res: Response) => {
       }
     }
     await session.commitTransaction();
-    return res.status(200).json({
+    res.status(200).json({
       message: 'Send Money successfully',
       transaction,
       remainingBalance: sender.balance,
     });
+    return ;
   } catch (err) {
     await session.abortTransaction();
     console.error('Send money failed:', err); // Optional logging
-    return res.status(500).json({
+    res.status(500).json({
       error: 'Send money failed',
       details: err instanceof Error ? err.message : 'An unknown error occurred',
     });
+    return 
   } finally {
     session.endSession();
   }

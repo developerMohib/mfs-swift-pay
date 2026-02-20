@@ -4,7 +4,7 @@ exports.adnminRouter = void 0;
 const express_1 = require("express");
 const adminController_1 = require("../controller/adminController");
 const router = (0, express_1.Router)();
-router.post('/login', adminController_1.loginAdmin);
+router.put('/login', adminController_1.loginAdmin);
 // Get admin balance
 router.get('/balance');
 router.get('/find', adminController_1.getAdmin);
