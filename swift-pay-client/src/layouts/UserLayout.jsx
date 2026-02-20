@@ -1,26 +1,35 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { FcHome, FcMenu, FcSettings } from "react-icons/fc";
 import { ImUsers, ImXing } from "react-icons/im";
 import { IoLogOut } from "react-icons/io5";
 import { Outlet, Link, NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AiOutlineTransaction } from "react-icons/ai";
-import useUserDetails from "../Hooks/useLoginUserdetails";
+import useUserDetails from "../hooks/useLoginUserdetails";
 import Loader from "../components/common/Loader";
-import { UserContext } from "../authProvider/AuthProvider";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 const UserLayout = () => {
     const navigate = useNavigate();
-    const { logout } = useContext(UserContext);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { loginUser, isLoading } = useUserDetails();
-console.log("UserLayout - loginUser:", loginUser);
-    const handleLogout = async() => {
-      await logout();
-        toast.success("Logged out successfully");
-        navigate("/login");
-    };
+    const axiosPublic = useAxiosPublic();
 
+    const handleLogout = async () => {
+        try {
+            const res = await axiosPublic.post("/auth/logout");
+            if (res?.data?.success) {
+                toast.success(res.data.message);
+                navigate("/sign-in");
+            } else {
+                toast.error(res?.data?.message || "Logout failed");
+            }
+
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    };
+    
     if (isLoading) return <Loader />;
 
     return (

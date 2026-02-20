@@ -52,7 +52,7 @@ export const registerUser = async (
     }
 
     // Hash password
-    const hashedPassword = await hashPassword(password);
+    const hashedPassword = await hashPassword(password) ;
 
     // Prepare user data
     const userData = {
@@ -64,8 +64,6 @@ export const registerUser = async (
       userRole,
       balance: userRole === 'user' ? 40 : 0,
       status: userRole === 'agent' ? 'pending' : 'active',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
 
     // Create and save user
@@ -84,7 +82,6 @@ export const registerUser = async (
       balance: newUser.balance,
       status: newUser.status,
     };
-
     res.status(201).json({
       success: true,
       message: 'Registration successful',
@@ -148,7 +145,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // 5. Check account status
+    // 5. Check account status for agents only
     if (account.status !== 'active') {
       const statusMessage =
         account.status === 'pending'
@@ -186,7 +183,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const token = jwt.sign(tokenPayload, jwtSecret, {
       expiresIn,
     } as jwt.SignOptions);
-    // 8. Prepare safe user response (EXPLICIT fields only)
+    console.log('Generated JWT token:', token);
     const userResponse = {
       id: account._id,
       userName: account.userName,
@@ -202,7 +199,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.cookie('auth_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
 

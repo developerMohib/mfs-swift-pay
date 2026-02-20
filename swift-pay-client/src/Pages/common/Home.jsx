@@ -8,6 +8,7 @@ import ServiceCardSlider from "../../components/ServiceCardSlider";
 
 const Home = () => {
   const { user, loading } = useContext(UserContext);
+  console.log("User in Home component:", user);
   const role = user?.userRole || null;
   const isAuthenticated = role !== null; // If role is null, the user is not authenticated
   if (loading) return <p>Loading...</p>;

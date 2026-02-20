@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { toast } from "react-toastify"; import Swal from 'sweetalert2'
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 import Loader from "../../components/common/Loader";
 import { UserContext } from "../../authProvider/AuthProvider";
 

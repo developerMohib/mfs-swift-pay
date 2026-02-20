@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
-import useCashinRequst from "../../Hooks/useCashinRequst";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import useCashinRequst from "../../hooks/useCashinRequst";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 import TransitionHeader from "../../components/TransitionHeader";
 import Loader from "../../components/common/Loader";
 const AgentTransections = () => {

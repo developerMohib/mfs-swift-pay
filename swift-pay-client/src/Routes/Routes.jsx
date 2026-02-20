@@ -36,7 +36,7 @@ import AllTransitions from "../Pages/admin/AllTransition";
 import PublicLayout from "../layouts/PublicLayout";
 import UpdateForm from "../Pages/common/UpdateForm";
 import ProtectedRoute from "./ProtectedRoute";
-//
+
 
 // import Profile from "../Pages/common/Profile";
 

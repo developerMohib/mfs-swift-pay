@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import useUsers from "../../Hooks/useUsers";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import useUsers from "../../hooks/useUsers";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 import Loader from "../../components/common/Loader";
 import { handleApprovedStatus } from "../../utils/updateAgentStatus";
 

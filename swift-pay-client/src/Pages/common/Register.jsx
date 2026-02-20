@@ -1,8 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import ShowHidePass from "../../features/ShowHidePass";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const Register = () => {
   const [open, setOpen] = useState(false)
@@ -30,27 +30,22 @@ const Register = () => {
       password,
     };
     try {
-      let apiURL = "/user/register" ;
+      let apiURL = "/auth/register" ;
       
       // create user
       const response = await axiosPublic.post(apiURL, userData);
+      console.log('Registration response:', response.data);
       if (response?.data?.success) {
         toast.success(response.data.message);
         // Delay the warning toast by 1 second (1000 ms)
-        setTimeout(() => {
-          if(response.data.data.userRole === "agent"){
-          toast.warn("Wait for admin approval!");
-        }
-        }, 1000);
         form.reset();
         navigate("/sign-in")
-
       }
     } catch (error) {
       if (error.response.data.success === false) {
         toast.error(error.response.data.message);
       } else {
-        toast.error("Maybe Network Issue, Try Again"); // General error message
+        toast.error("Maybe Network Issue, Try Again");
       }
     }
   };

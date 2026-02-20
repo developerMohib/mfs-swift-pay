@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { UserContext } from "../../authProvider/AuthProvider";
 import ShowHidePass from "../../features/ShowHidePass";
 
