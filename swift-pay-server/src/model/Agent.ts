@@ -20,7 +20,7 @@ const agentSchema = new Schema<IAgent>(
     userPhone: { type: String, required: true, unique: true },
     userEmail: { type: String, required: true, unique: true },
     userNID: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: false },
     balance: { type: Number, default: 0 },
     income: { type: Number, default: 0 },
     userPhoto: {

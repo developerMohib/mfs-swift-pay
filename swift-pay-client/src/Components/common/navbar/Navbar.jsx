@@ -14,19 +14,16 @@ import "./navbar.css";
 
 const Navbar = () => {
   const menuRef = useRef(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { user, logout, loading } = useContext(UserContext);
   const role = user?.userRole || null;
   const isAuthenticated = role !== null;
   const [open, setOpen] = useState(false);
   const [rotating, setRotating] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
-  // const imgUrl = localStorage.getItem('uploadedImage');
-
 
   const handleMenu = () => {
     setRotating(true);
-
     setTimeout(() => {
       setOpen(!open);
       setRotating(false);
@@ -40,33 +37,27 @@ const Navbar = () => {
         setOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   // Handle sticky navbar on scroll
   useEffect(() => {
-    const handleScroll = () => {
-      setIsSticky(window.scrollY > 50);
-    };
+    const handleScroll = () => setIsSticky(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // log out
   const handleLogout = () => {
     logout();
     toast.success("Log out successfully!");
-    navigate('/')
+    navigate("/");
   };
+
   if (loading) {
-    return <p>Loading...</p>;
+    return <div className="h-16 border-b border-base-300" />;
   }
+
   const nav = (
     <>
       {isAuthenticated ? (
@@ -108,73 +99,61 @@ const Navbar = () => {
 
   return (
     <header
-      className={`px-4 py-1 text-tarnary shadow transition-all duration-500 ${
+      className={`px-4 py-2 transition-all duration-300 border-b border-base-300 ${
         isSticky
-          ? "sticky top-0 w-full z-50 bg-bg shadow-lg backdrop-blur-md"
-          : ""
+          ? "sticky top-0 w-full z-50 bg-base-100/90 backdrop-blur-md shadow-sm"
+          : "bg-base-100"
       }`}
     >
-      <div className="flex items-center md:gap-x-4 ">
-        <div className="flex justify-between items-center container mx-auto ">
-          <Link
-            rel="noopener noreferrer"
-            to="/"
-            aria-label="Back to homepage"
-            className="flex items-center font-bold md:text-4xl text-3xl p-2"
-          >
-            <img className="h-10 w-auto" src={logo} alt="swift pay logo" />
-            <span className="text-primary">swift</span>
-            <span className="text-secondary">Pay</span>
-          </Link>
-          {/* <div> <img src={imgUrl} alt="" /> </div> */}
-          <ul className="items-stretch hidden space-x-3 md:flex">{nav}</ul>
-          <button
-            ref={menuRef}
-            onClick={handleMenu}
-            className="flex justify-end p-4 md:hidden"
-          >
-            {/* Loading Spinner */}
+      <div className="flex items-center justify-between container-page">
+        <Link
+          rel="noopener noreferrer"
+          to="/"
+          aria-label="Back to homepage"
+          className="flex items-center font-bold md:text-3xl text-2xl py-2"
+        >
+          <img className="h-8 w-auto" src={logo} alt="swift pay logo" />
+          <span className="text-primary">swift</span>
+          <span className="text-secondary">Pay</span>
+        </Link>
+
+        <ul className="items-stretch hidden gap-5 text-sm font-medium md:flex">{nav}</ul>
+
+        <div className="flex items-center gap-3">
+          {user ? (
+            <>
+              <Link to="/dashboard/user">
+                <img
+                  title={user?.userName}
+                  className="h-8 w-8 rounded-full object-cover border border-base-300"
+                  src={user?.userPhoto ? user?.userPhoto : "https://avatars.githubusercontent.com/u/92154638?v=4"}
+                  alt={user?.userName}
+                />
+              </Link>
+              <button onClick={handleLogout} className="btn-outline-minimal btn-sm">
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link to="/sign-in" className="btn-primary-minimal btn-sm">
+              Login
+            </Link>
+          )}
+          <ThemeChanger />
+
+          <button ref={menuRef} onClick={handleMenu} className="flex justify-end p-2 md:hidden">
             {rotating ? (
               <ImSpinner2 className="text-2xl animate-spin" />
             ) : open ? (
-              /* Close Icon with animation */
               <IoCloseOutline className="text-2xl transition-transform transform rotate-0 hover:rotate-180 duration-300" />
             ) : (
-              /* Menu Icon with animation */
               <FcMenu className="text-2xl transition-transform transform rotate-0 hover:rotate-180 duration-300" />
             )}
           </button>
         </div>
-
-        {user ? (
-          <>
-            <Link to="/dashboard/user">
-              {" "}
-              <img
-                title={user?.userName}
-                className="h-8 rounded-full"
-                src={user?.userPhoto ? user?.userPhoto : "https://avatars.githubusercontent.com/u/92154638?v=4"}
-                alt={user?.userName}
-              />{" "}
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-bg font-medium transition-all duration-200"
-            >
-              {" "}
-              Logout
-            </button>
-          </>
-        ) : (
-          <button className="border px-2 py-1 rounded-md border-tarnary hover:bg-secondary hover:text-bg font-medium transition-all duration-200">
-            {" "}
-            <Link to="/sign-in">Login</Link>{" "}
-          </button>
-        )}
-        <ThemeChanger />
       </div>
 
-      {/* Navbar for mobile device, make it headless ui */}
+      {/* Mobile menu */}
       <Transition
         show={open}
         enter="transition-transform duration-300 ease-out"
@@ -184,12 +163,9 @@ const Navbar = () => {
         leaveFrom="translate-y-0"
         leaveTo="-translate-y-full"
       >
-        <div
-          className="md:hidden bg-tarnary absolute text-center w-full z-50 left-0 "
-          id="mobile-menu"
-        >
+        <div className="md:hidden bg-base-100 border-t border-base-300 absolute text-center w-full z-50 left-0" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <ul className="flex flex-col text-bg gap-4"> {nav} </ul>
+            <ul className="flex flex-col gap-4 text-sm font-medium">{nav}</ul>
           </div>
         </div>
       </Transition>

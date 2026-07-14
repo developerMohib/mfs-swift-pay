@@ -9,7 +9,7 @@ export const allAgent = async (
   next: NextFunction,
 ) => {
   try {
-    const agents = await Agent.find(); // Fetch all agents
+    const agents = await Agent.find().select('-password'); // Fetch all agents
     res.status(200).json({
       success: true,
       message: 'Agents fetched successfully',

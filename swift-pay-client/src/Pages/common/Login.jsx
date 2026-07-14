@@ -6,29 +6,11 @@ import { UserContext } from "../../authProvider/AuthProvider";
 import ShowHidePass from "../../features/ShowHidePass";
 
 const Login = () => {
-  const { setLoading} = useContext(UserContext);
+  const { login, setLoading } = useContext(UserContext);
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false)
   const [showPass, setShowPass] = useState(false);
-  const [rotating, setRotating] = useState(false);
-  const [demoCredentials, setDemoCredentials] = useState({
-    phoneNumber: '',
-    password: ''
-  });
+  const [submitting, setSubmitting] = useState(false);
   const axiosPublic = useAxiosPublic();
-
-  const handleDemoUserLogin = () => {
-    setDemoCredentials({
-      phoneNumber: 'demo@user.com',
-      password: '12345'
-    });
-  }
-  const handleDemoAdminLogin = () => {
-    setDemoCredentials({
-      phoneNumber: 'demo@admin.com',
-      password: '12345'
-    });
-  }
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -37,19 +19,22 @@ const Login = () => {
     const pin = form.password.value;
     const userData = { phoneOrEmail, pin };
 
+    setSubmitting(true);
     try {
-      const response = await axiosPublic.post("/auth/login", userData,{ withCredentials: true });
+      const response = await axiosPublic.post("/auth/login", userData);
       if (response?.data.success) {
-        toast.success(response.data.message);
         const user = response.data.data.user;
         if (!user) {
-          toast.error(response?.data?.message);
+          toast.error("Login failed - please try again");
           return;
         }
-        setLoading(false);
+
+        // Put the account into context immediately so the rest of the
+        // app (navbar, dashboards, balance checks) knows who's signed in.
+        login(user);
+        toast.success(response.data.message);
         form.reset();
 
-        // Navigate user based on role
         if (user.userRole === "admin") {
           navigate("/dashboard/admin");
         } else if (user.userRole === "agent") {
@@ -60,134 +45,75 @@ const Login = () => {
           navigate("/");
           toast.error("Invalid user role");
         }
-        setLoading(false);
       }
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error(error.response?.data?.message);
-      }
-      console.error(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    } finally {
+      setSubmitting(false);
+      setLoading(false);
     }
   };
 
-  const handleShowHidePass = () => {
-    setShowPass(!showPass);
-    setRotating(true);
-
-    // Set a timeout to stop rotating after 400ms
-    setTimeout(() => {
-      setRotating(false);
-    }, 400);
-  };
-
   return (
-    <div className="min-h-screen flex justify-center items-center">
-      <div className="h-1/2 py-20 rounded-xl">
-        <div className="md:flex gap-5 flex-row-reverse px-10 ">
-          {/* Login about here */}
-          <div className="text-center lg:text-left max-w-2xl mt-5">
-            <div>
-              <h1 className="md:text-5xl text-4xl font-bold mb-3">
-                <span className="text-primary">swift</span>
-                <span className="text-secondary">Pay</span>
-              </h1>
-              <h1 className="text-5xl font-bold">Login now!</h1>
-              <p className="py-6 text-left">
-                Provident cupiditate voluptatem et in. Quaerat fugiat ut
-                assumenda excepturi exercitationem quasi. In deleniti eaque aut
-                repudiandae et a id nisi.
-              </p>
-            </div>
-            <div>
-              <p>
-                Dont have any account ?{" "}
-                <Link
-                  className="text-primary font-medium hover:border-b border-tarnary "
-                  to={"/sign-up"}
-                >
-                  Register{" "}
-                </Link>{" "}
-              </p>
-            </div>
-          </div>
-
-          {/* Login section here */}
-          <div className="w-full max-w-xl mx-auto">
-            {/* title */}
-            <div>
-              <p className="md:text-4xl text-2xl md:my-0 mt-8 font-semibold">
-                Please !
-              </p>
-            </div>
-
-            <form className="" onSubmit={handleLogin}>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Phone Number / Email </span>
-                </label>
-                <input
-                  name="phoneNumber"
-                  type="text"
-                  placeholder="phone number or email"
-                  className="input input-bordered"
-                  required
-                  value={demoCredentials.phoneNumber}
-                  onChange={(e) => setDemoCredentials({
-                    ...demoCredentials,
-                    phoneNumber: e.target.value
-                  })}
-                />
-              </div>
-              <div className="form-control relative">
-                <label className="label">
-                  <span className="label-text">Password</span>
-                </label>
-                <input
-                  name="password"
-                  type={showPass ? "text" : "password"}
-                  placeholder="password"
-                  className="input input-bordered"
-                  required
-                  value={demoCredentials.password}
-                  onChange={(e) => {
-                    setDemoCredentials({
-                      ...demoCredentials,
-                      password: e.target.value
-                    });
-                    setOpen(e.target.value);
-                  }}
-                />
-                {open && <ShowHidePass
-                  showPass={showPass}
-                  handleShowHidePass={handleShowHidePass}
-                  rotating={rotating}
-                />}
-              </div>
-
-              <div className="form-control mt-6">
-                <button className="btn bg-primary hover:bg-secondary text-lg border-none text-black w-full">
-                  Log in
-                </button>
-              </div>
-            </form>
-            <div className="mt-6 w-full">
-              <button
-                className="btn bg-primary hover:bg-secondary text-lg border-none text-black w-1/2"
-                onClick={handleDemoUserLogin}
-              >
-                Demo User Login
-              </button>
-              <button
-                className="btn bg-primary hover:bg-secondary text-lg border-none text-black w-1/2"
-                onClick={handleDemoAdminLogin}
-              >
-                Demo Agent Log in
-              </button>
-            </div>
-          </div>
+    <div className="min-h-[80vh] flex items-center justify-center px-4 py-16">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold">
+            <span className="text-primary">swift</span>
+            <span className="text-secondary">Pay</span>
+          </h1>
+          <p className="page-subheading">Log in to your account</p>
         </div>
+
+        <form onSubmit={handleLogin} className="card-minimal space-y-4">
+          <div className="form-control">
+            <label className="label">
+              <span className="label-minimal">Phone number or email</span>
+            </label>
+            <input
+              name="phoneNumber"
+              type="text"
+              placeholder="e.g. 017XXXXXXXX or you@example.com"
+              className="input-minimal"
+              required
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-minimal">PIN / Password</span>
+            </label>
+            <div className="relative">
+              <input
+                name="password"
+                type={showPass ? "text" : "password"}
+                placeholder="Enter your PIN"
+                className="input-minimal pr-10"
+                required
+              />
+              <ShowHidePass
+                showPass={showPass}
+                handleShowHidePass={() => setShowPass(!showPass)}
+                rotating={false}
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="btn-primary-minimal w-full mt-2"
+          >
+            {submitting ? "Logging in..." : "Log in"}
+          </button>
+        </form>
+
+        <p className="text-center text-sm mt-6 text-base-content/70">
+          Don&apos;t have an account?{" "}
+          <Link className="text-primary font-medium hover:underline" to="/sign-up">
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   );

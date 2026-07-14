@@ -7,8 +7,8 @@ import bodyParser from 'body-parser';
 import { authRouter } from './routes/authRoutes';
 import { userRouter } from './routes/userRoutes';
 import { agentRouter } from './routes/agentRoutes';
-import { adnminRouter } from './routes/adminRoutes';
 import { transectionRouter } from './routes/transactionRoutes';
+import { adminRouter } from './routes/adminRoutes';
 
 // parsers
 app.use(express.json());
@@ -29,11 +29,13 @@ app.use(
 app.use(cookieParser());
 
 // routes
-
+console.log("authRouter");
+console.log(adminRouter);
+console.log(agentRouter);
 app.use('/auth', authRouter);
 
-app.use('/admin', adnminRouter);
-app.use('/agent', adnminRouter);
+app.use('/admin', adminRouter);
+app.use('/agent', agentRouter);
 
 app.use('/all', userRouter);
 app.use('/user', userRouter); // user/details
