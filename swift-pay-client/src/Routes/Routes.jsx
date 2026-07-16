@@ -21,7 +21,7 @@ import AdminLogin from "../Pages/AdminLogin/AdminLogin";
 import AlTransactions from "../Pages/alTransactions/AlTransactions";
 import CashDeposit from "../Pages/Dashboard/Agent/CashDeposit/CashDeposit";
 
-export const router = createBrowserRouter([
+export const appRouter = createBrowserRouter([
   {
     path: "/",
     element: <App />,
