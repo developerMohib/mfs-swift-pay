@@ -3,14 +3,18 @@ import mongoose from 'mongoose';
 import { User } from '../model/User';
 import { Transaction } from '../model/Transaction';
 import { Admin } from '../model/Admin';
-import { comparePassword } from '../middleware/authMiddleware';
 import { Agent } from '../model/Agent';
+import { comparePassword } from '../utils/password.utils';
 
 export const sendMoney = async (req: Request, res: Response) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
-  const { senderId, recipientPhone, amount, pin } = req.body;
+  const { recipientPhone, amount, pin } = req.body;
+  // Trust the authenticated session, not a client-supplied senderId -
+  // otherwise any logged-in user could pass someone else's id and
+  // drain their account.
+  const senderId = (req.user as { id?: string } | undefined)?.id;
 
   try {
     // Validate required fields and amount
@@ -32,7 +36,7 @@ export const sendMoney = async (req: Request, res: Response) => {
 
     // Find sender and receiver in parallel
     const [sender, receiver] = await Promise.all([
-      User.findById(senderId).session(session),
+      User.findById(senderId).select('+password').session(session),
       User.findOne({ userPhone: recipientPhone }).session(session),
     ]);
 
@@ -51,6 +55,15 @@ export const sendMoney = async (req: Request, res: Response) => {
     if (sender._id.toString() === receiver._id.toString()) {
       await session.abortTransaction();
       res.status(400).json({ error: 'Cannot send money to yourself' });
+      return;
+    }
+
+    // Verify PIN before moving any money - this check was previously
+    // missing, meaning any non-empty "pin" value was accepted.
+    const isPinValid = await comparePassword(pin, sender.password);
+    if (!isPinValid) {
+      await session.abortTransaction();
+      res.status(401).json({ success: false, error: 'Invalid PIN' });
       return;
     }
 
@@ -133,7 +146,10 @@ export const cashDeposit = async (req: Request, res: Response) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const { senderId, receiverId, amount } = req.body;
+    const { receiverId, amount } = req.body;
+    // Trust the authenticated agent's own id rather than a client-supplied
+    // senderId, which previously let any agent drain another agent's balance.
+    const senderId = (req.user as { id?: string } | undefined)?.id;
 
     // Validate input minimum 50
     if (!senderId || !receiverId || !amount || amount < 50) {
@@ -143,9 +159,7 @@ export const cashDeposit = async (req: Request, res: Response) => {
     }
 
     // Find sender and receiver
-    const sender = await Agent.findOne({ _id: new Object(senderId) }).session(
-      session,
-    );
+    const sender = await Agent.findById(senderId).session(session);
     const receiver = await User.findOne({ userPhone: receiverId }).session(
       session,
     );
@@ -162,13 +176,9 @@ export const cashDeposit = async (req: Request, res: Response) => {
       return;
     }
 
-    // Deduct amount + fee from sender
-    sender.balance = sender.balance - amount;
-    await sender.save({ session });
-
-    // Add amount to receiver
-    receiver.balance = receiver.balance + amount;
-    await receiver.save({ session });
+    // Deduct amount from sender, credit receiver
+    sender.balance -= amount;
+    receiver.balance += amount;
 
     // Record transaction
     const transaction = new Transaction({
@@ -180,7 +190,8 @@ export const cashDeposit = async (req: Request, res: Response) => {
     });
     await transaction.save({ session });
 
-    // Update sender and receiver transaction history
+    // Update sender and receiver transaction history, then save both
+    // balance + history changes exactly once, inside the transaction.
     sender.transactions.push(
       transaction._id as unknown as mongoose.Schema.Types.ObjectId,
     );
@@ -200,7 +211,7 @@ export const cashDeposit = async (req: Request, res: Response) => {
   } catch (err) {
     await session.abortTransaction();
     res.status(500).json({
-      error: 'Registration failed',
+      error: 'Cash deposit failed',
       details: err instanceof Error ? err.message : 'An unknown error occurred',
     });
   } finally {
@@ -211,7 +222,9 @@ export const cashDeposit = async (req: Request, res: Response) => {
 export const cashInFromAgent = async (req: Request, res: Response) => {
   const session = await mongoose.startSession();
   session.startTransaction();
-  const { senderId, receiverId, amount, password } = req.body;
+  const { receiverId, amount, password } = req.body;
+  // Trust the authenticated user's own id rather than a client-supplied senderId.
+  const senderId = (req.user as { id?: string } | undefined)?.id;
   // Validate input
   if (!senderId || !receiverId || !amount) {
     await session.abortTransaction();
@@ -220,9 +233,7 @@ export const cashInFromAgent = async (req: Request, res: Response) => {
   }
   try {
     // Find sender and receiver
-    const sender = await User.findOne({ _id: new Object(senderId) }).session(
-      session,
-    );
+    const sender = await User.findById(senderId).select('+password').session(session);
     const receiver = await Agent.findOne({ userPhone: receiverId }).session(
       session,
     );
@@ -235,11 +246,11 @@ export const cashInFromAgent = async (req: Request, res: Response) => {
 
     const isMatch = await comparePassword(password, sender.password);
     if (!isMatch) {
-      res
-        .status(400)
-        .json({ success: false, message: 'Invalid PIN not found' });
+      await session.abortTransaction();
+      res.status(401).json({ success: false, message: 'Invalid PIN' });
       return;
     }
+
     // Record transaction
     const transaction = new Transaction({
       sender: sender._id,
@@ -271,7 +282,7 @@ export const cashInFromAgent = async (req: Request, res: Response) => {
   } catch (err) {
     await session.abortTransaction();
     res.status(500).json({
-      error: 'Registration failed',
+      error: 'Cash-in request failed',
       details: err instanceof Error ? err.message : 'An unknown error occurred',
     });
   } finally {
@@ -283,7 +294,9 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const { senderId, receiverId, amount, password } = req.body;
+    const { receiverId, amount, password } = req.body;
+    // Trust the authenticated user's own id rather than a client-supplied senderId.
+    const senderId = (req.user as { id?: string } | undefined)?.id;
 
     // Validate input
     if (!senderId || !receiverId || !amount) {
@@ -292,10 +305,8 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
       return;
     }
 
-    // Find sender and receiver
-    const sender = await User.findOne({ _id: new Object(senderId) }).session(
-      session,
-    );
+    // Find sender
+    const sender = await User.findById(senderId).select('+password').session(session);
 
     if (!sender) {
       await session.abortTransaction();
@@ -305,9 +316,16 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
 
     const isMatch = await comparePassword(password, sender.password);
     if (!isMatch) {
+      await session.abortTransaction();
       res
-        .status(400)
-        .json({ success: false, message: 'Invalid PIN not found' });
+        .status(401)
+        .json({ success: false, message: 'Invalid PIN' });
+      return;
+    }
+
+    if (sender.balance < amount) {
+      await session.abortTransaction();
+      res.status(400).json({ error: 'Insufficient balance' });
       return;
     }
 
@@ -326,15 +344,10 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
     const agentFee = amount * (1 / 100); // 1% to agent
     const adminFee = amount * (0.5 / 100); // 0.5% to admin
     const finalAmount = amount - totalFee; // Amount user receives from agent
-    // const income = totalFee - adminFee;
-    // Check sender balance
-    // find Admin
-    const adminId = process.env.ADMIN_ID; // mongose object id
-    // Add fee to admin's balance
+
+    const adminId = process.env.ADMIN_ID;
     if (adminId) {
-      const admin = await Admin.findOne({ _id: new Object(adminId) }).session(
-        session,
-      );
+      const admin = await Admin.findById(adminId).session(session);
       if (!admin) {
         await session.abortTransaction();
         res.status(404).json({ error: 'Admin not found' });
@@ -350,10 +363,6 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
     receiver.balance += finalAmount; // Add final amount to agent
     receiver.income += agentFee; // Update agent's income
 
-    // Save changes
-    await sender.save();
-    await receiver.save();
-
     // Record transaction
     const transaction = new Transaction({
       sender: sender._id,
@@ -364,7 +373,10 @@ export const cashOutFromAgent = async (req: Request, res: Response) => {
     });
     await transaction.save({ session });
 
-    // Update sender and receiver transaction history
+    // Update sender and receiver transaction history, then persist
+    // balance + history changes exactly once, inside the transaction.
+    // (Previously sender/receiver were saved twice - once outside the
+    // session, breaking atomicity, then again inside it.)
     sender.transactions.push(
       transaction._id as unknown as mongoose.Schema.Types.ObjectId,
     );

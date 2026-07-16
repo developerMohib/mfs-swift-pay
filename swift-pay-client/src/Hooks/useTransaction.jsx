@@ -3,16 +3,16 @@ import useAxiosPublic from "./useAxiosPublic";
 
 const useTransaction = ({ userId }) => {
     const axiosPublic = useAxiosPublic();
-    const { data :transaction, isLoading, refetch } = useQuery({
-        queryKey: ["transition"],
+    const { data: transaction, isLoading, refetch } = useQuery({
+        queryKey: ["transition", userId],
+        enabled: !!userId,
         queryFn: async () => {
-            // To Do - get specific user
             const res = await axiosPublic.get(`/user/transactions/${userId}`);
-            return res?.data|| [];
+            return res?.data?.data || [];
         },
     });
 
-    return {transaction, isLoading, refetch };
+    return { transaction, isLoading, refetch };
 };
 
 export default useTransaction;

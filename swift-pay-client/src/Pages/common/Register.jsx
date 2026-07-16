@@ -31,10 +31,9 @@ const Register = () => {
     };
     try {
       let apiURL = "/auth/register" ;
-      
+
       // create user
       const response = await axiosPublic.post(apiURL, userData);
-      console.log('Registration response:', response.data);
       if (response?.data?.success) {
         toast.success(response.data.message);
         // Delay the warning toast by 1 second (1000 ms)
@@ -156,11 +155,13 @@ const Register = () => {
                 </label>
                 <select
                   name="accountType"
+                  required
+                  defaultValue=""
                   className="select select-bordered w-full max-w-xs"
                 >
-                  <option defaultValue>Select account Type</option>
-                  <option>user</option>
-                  <option>agent</option>
+                  <option value="" disabled>Select account Type</option>
+                  <option value="user">user</option>
+                  <option value="agent">agent</option>
                 </select>
               </div>
               <div className="form-control relative">

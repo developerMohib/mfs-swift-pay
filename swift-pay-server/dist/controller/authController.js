@@ -12,13 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logout = exports.login = exports.registerUser = void 0;
+exports.getMe = exports.logout = exports.login = exports.registerUser = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = require("../model/User");
 const Agent_1 = require("../model/Agent");
-const authMiddleware_1 = require("../middleware/authMiddleware");
 const register_validator_1 = require("../validators/register.validator");
 const login_validator_1 = require("../validators/login.validator");
+const password_utils_1 = require("../utils/password.utils");
+const Admin_1 = require("../model/Admin");
+const authCookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax'),
+};
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userName, userEmail, password, userPhone, userNID, userRole } = req.body;
@@ -49,7 +55,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             return;
         }
         // Hash password
-        const hashedPassword = yield (0, authMiddleware_1.hashPassword)(password);
+        const hashedPassword = yield (0, password_utils_1.hashPassword)(password);
         // Prepare user data
         const userData = {
             userName: userName.trim(),
@@ -139,7 +145,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return;
         }
         // 6. Verify password
-        const isPinValid = yield (0, authMiddleware_1.comparePassword)(pin.trim(), account.password);
+        const isPinValid = yield (0, password_utils_1.comparePassword)(pin.trim(), account.password);
         if (!isPinValid) {
             res.status(401).json({ success: false, message: 'Invalid credentials' });
             return;
@@ -162,7 +168,6 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const token = jsonwebtoken_1.default.sign(tokenPayload, jwtSecret, {
             expiresIn,
         });
-        console.log('Generated JWT token:', token);
         const userResponse = {
             id: account._id,
             userName: account.userName,
@@ -174,12 +179,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             photo: account.userPhoto,
         };
         // 9. Set secure cookie + response
-        res.cookie('auth_token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 24 * 60 * 60 * 1000, // 24 hours
-        });
+        res.cookie('auth_token', token, Object.assign(Object.assign({}, authCookieOptions), { maxAge: 24 * 60 * 60 * 1000 }));
         res.status(200).json({
             success: true,
             message: 'Login successful',
@@ -195,12 +195,9 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.login = login;
 const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.clearCookie('auth_token', {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            path: '/sign-in',
-        });
+        // Must match the options used when the cookie was set in login(),
+        // otherwise the browser won't actually clear it.
+        res.clearCookie('auth_token', authCookieOptions);
         res.status(200).json({
             success: true,
             message: 'Logged out successfully',
@@ -214,3 +211,54 @@ const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.logout = logout;
+/**
+ * Returns the currently authenticated account (user, agent, or admin),
+ * based on the role embedded in the JWT. Used by the client on app
+ * load / refresh to restore session state.
+ */
+const getMe = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        if (!req.user) {
+            res.status(401).json({ success: false, message: 'Unauthorized' });
+            return;
+        }
+        const { id, role } = req.user;
+        let account = null;
+        if (role === 'admin') {
+            account = yield Admin_1.Admin.findById(id).select('-password');
+        }
+        else if (role === 'agent') {
+            account = yield Agent_1.Agent.findById(id).select('-password');
+        }
+        else {
+            account = yield User_1.User.findById(id).select('-password');
+        }
+        if (!account) {
+            res.status(404).json({ success: false, message: 'Account not found' });
+            return;
+        }
+        const userResponse = {
+            id: account._id,
+            userName: account.userName,
+            userEmail: account.userEmail,
+            userPhone: account.userPhone,
+            userRole: role,
+            status: (_a = account.status) !== null && _a !== void 0 ? _a : 'active',
+            balance: account.balance,
+            photo: account.userPhoto,
+        };
+        res.status(200).json({
+            success: true,
+            message: 'Session restored',
+            data: { user: userResponse },
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error instanceof Error ? error.message : 'Unknown error',
+        });
+    }
+});
+exports.getMe = getMe;

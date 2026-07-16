@@ -20,7 +20,7 @@ const Agent_1 = require("../model/Agent");
 const Admin_1 = require("../model/Admin");
 const allUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield User_1.User.find();
+        const users = yield User_1.User.find().select('-password');
         res.status(200).json({
             success: true,
             message: 'Users fetched successfully',
@@ -46,14 +46,14 @@ const getLoginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
         let user = null;
         // Check in User collection
-        user = yield User_1.User.findById(id);
+        user = yield User_1.User.findById(id).select('-password');
         // If not found, check in Admin collection
         if (!user) {
-            user = yield Admin_1.Admin.findById(id);
+            user = yield Admin_1.Admin.findById(id).select('-password');
         }
         // If not found, check in Agent collection
         if (!user) {
-            user = yield Agent_1.Agent.findById(id);
+            user = yield Agent_1.Agent.findById(id).select('-password');
         }
         // If user is still not found
         if (!user) {

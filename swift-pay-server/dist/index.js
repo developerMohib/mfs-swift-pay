@@ -12,8 +12,8 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const authRoutes_1 = require("./routes/authRoutes");
 const userRoutes_1 = require("./routes/userRoutes");
 const agentRoutes_1 = require("./routes/agentRoutes");
-const adminRoutes_1 = require("./routes/adminRoutes");
 const transactionRoutes_1 = require("./routes/transactionRoutes");
+const adminRoutes_1 = require("./routes/adminRoutes");
 // parsers
 app.use(express_1.default.json());
 app.use(body_parser_1.default.json());
@@ -30,8 +30,8 @@ app.use((0, cors_1.default)({
 app.use((0, cookie_parser_1.default)());
 // routes
 app.use('/auth', authRoutes_1.authRouter);
-app.use('/admin', adminRoutes_1.adnminRouter);
-app.use('/agent', adminRoutes_1.adnminRouter);
+app.use('/admin', adminRoutes_1.adminRouter);
+app.use('/agent', agentRoutes_1.agentRouter);
 app.use('/all', userRoutes_1.userRouter);
 app.use('/user', userRoutes_1.userRouter); // user/details
 app.use('/all', agentRoutes_1.agentRouter);
@@ -50,7 +50,6 @@ app.get('/health', (req, res) => {
     res.status(200).send('swiftPay server is ready');
 });
 app.get('/api/test-cookie', (req, res) => {
-    console.log('Cookies received:', req.cookies);
     res.json({ cookies: req.cookies });
 });
 // global route error handler

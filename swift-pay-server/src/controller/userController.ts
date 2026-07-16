@@ -11,7 +11,7 @@ export const allUser = async (
   next: NextFunction,
 ) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select('-password');
     res.status(200).json({
       success: true,
       message: 'Users fetched successfully',
@@ -38,16 +38,16 @@ export const getLoginUser = async (req: Request, res: Response) => {
     let user = null;
 
     // Check in User collection
-    user = await User.findById(id);
+    user = await User.findById(id).select('-password');
 
     // If not found, check in Admin collection
     if (!user) {
-      user = await Admin.findById(id);
+      user = await Admin.findById(id).select('-password');
     }
 
     // If not found, check in Agent collection
     if (!user) {
-      user = await Agent.findById(id);
+      user = await Agent.findById(id).select('-password');
     }
 
     // If user is still not found
