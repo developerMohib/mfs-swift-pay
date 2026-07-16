@@ -6,7 +6,7 @@ import UserLayout from "../layouts/UserLayout";
 import AgentLayout from "../layouts/AgentLayout";
 import AdminLayout from "../layouts/AdminLayout";
 
-// Standalone public pages 
+// Standalone public pages
 import Home from "../Pages/common/Home";
 import About from "../Pages/common/About";
 import Services from "../Pages/common/Services";
@@ -22,6 +22,7 @@ import HomeAdmin from "../Pages/admin/HomeAdmin";
 // agent pages
 import CashInRequ from "../Pages/agent/CashInRequ";
 import CashDeposit from "../Pages/agent/CashDeposit";
+import CashOutRequ from "../Pages/agent/CashOutRequ";
 import HomeAgent from "../Pages/agent/HomeAgent";
 import AgentTransections from "../Pages/agent/AgentTransection";
 
@@ -36,9 +37,6 @@ import AllTransitions from "../Pages/admin/AllTransition";
 import PublicLayout from "../layouts/PublicLayout";
 import UpdateForm from "../Pages/common/UpdateForm";
 import ProtectedRoute from "./ProtectedRoute";
-//
-
-// import Profile from "../Pages/common/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -49,44 +47,53 @@ export const router = createBrowserRouter([
       // ===== USER DASHBOARD =====
       {
         path: "dashboard/user",
-        element: <ProtectedRoute><UserLayout /></ProtectedRoute>,
+        element: (
+          <ProtectedRoute allowedRoles={["user"]}>
+            <UserLayout />
+          </ProtectedRoute>
+        ),
         children: [
           { index: true, element: <UserProfile /> },
           { path: "cash-in", element: <CashInto /> },
           { path: "send-money", element: <SendMoney /> },
           { path: "cash-out", element: <CashOut /> },
           { path: "transactions", element: <UserTransections /> },
-          // add more user routes
         ],
       },
       // ===== AGENT DASHBOARD =====
       {
         path: "dashboard/agent",
-        element: <AgentLayout />,
+        element: (
+          <ProtectedRoute allowedRoles={["agent"]}>
+            <AgentLayout />
+          </ProtectedRoute>
+        ),
         children: [
           { index: true, element: <HomeAgent /> },
           { path: "cash-in-requests", element: <CashInRequ /> },
-          { path: "cash-out-requests", element: <CashDeposit /> },
+          { path: "cash-out-requests", element: <CashOutRequ /> },
           { path: "cash-deposit", element: <CashDeposit /> },
           { path: "transactions", element: <AgentTransections /> },
-          // add more
         ],
       },
       // ===== ADMIN DASHBOARD =====
       {
         path: "dashboard/admin",
-        element: <AdminLayout />,
+        element: (
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminLayout />
+          </ProtectedRoute>
+        ),
         children: [
           { index: true, element: <HomeAdmin /> },
-          { path: "manage-users", element: <UserManage />, },
-          { path: "manage-agents", element: <AgentManage />, },
+          { path: "manage-users", element: <UserManage /> },
+          { path: "manage-agents", element: <AgentManage /> },
           { path: "transactions", element: <AllTransitions /> },
           { path: "settings", element: <UpdateForm /> },
         ],
       },
 
       // Other public routes
-
       {
         path: "",
         element: <PublicLayout />,
@@ -97,7 +104,6 @@ export const router = createBrowserRouter([
           { path: "sign-in", element: <Login /> },
           { path: "sign-up", element: <Register /> },
           { path: "admin/login", element: <AdminLogin /> },
-          //   error route
           { path: "*", element: <ErrorPage /> },
         ],
       },

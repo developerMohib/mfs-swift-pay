@@ -7,9 +7,13 @@ const agentSchema = new mongoose_1.Schema({
     userPhone: { type: String, required: true, unique: true },
     userEmail: { type: String, required: true, unique: true },
     userNID: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: false },
     balance: { type: Number, default: 0 },
     income: { type: Number, default: 0 },
+    userPhoto: {
+        type: String,
+        default: 'https://avatars.githubusercontent.com/u/92154638?v=4',
+    },
     userRole: {
         type: String,
         enum: ['user', 'agent', 'admin'],
@@ -21,5 +25,5 @@ const agentSchema = new mongoose_1.Schema({
         default: 'pending',
     },
     transactions: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Transaction' }],
-});
+}, { timestamps: true });
 exports.Agent = (0, mongoose_1.model)('Agent', agentSchema);

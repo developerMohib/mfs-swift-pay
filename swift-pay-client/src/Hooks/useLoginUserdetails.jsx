@@ -6,7 +6,7 @@ const useUserDetails = () => {
   const { data: loginUser = [], isLoading, refetch } = useQuery({
     queryKey: ["loginUser"],
     queryFn: async () => {
-      const res = await axiosPublic.get(`/user/details`);
+      const res = await axiosPublic.get(`/user/details`,{ withCredentials: true });
       return res?.data.data;
     },
   });

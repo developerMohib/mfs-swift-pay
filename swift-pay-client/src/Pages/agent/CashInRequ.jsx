@@ -1,9 +1,9 @@
 
 import { toast } from "react-toastify";
 import { useContext, useState } from "react";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { UserContext } from "../../authProvider/AuthProvider";
-import useAdmin from "../../Hooks/useAdmin";
+import useAdmin from "../../hooks/useAdmin";
 import Loader from "../../components/common/Loader";
 import ShowHidePass from "../../features/ShowHidePass";
 

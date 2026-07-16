@@ -4,9 +4,9 @@ exports.Admin = void 0;
 const mongoose_1 = require("mongoose");
 const AdminSchema = new mongoose_1.Schema({
     userName: { type: String },
-    userPhone: { type: String, required: true, unique: true },
+    userPhone: { type: String, required: true },
     userEmail: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: false },
     balance: { type: Number, default: 0 },
     totalMoneyInSystem: { type: Number, default: 0 },
 });

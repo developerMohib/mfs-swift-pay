@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import useGetAllTransaction from "../../Hooks/useGetAllTransac";
+import useTransaction from "../../hooks/useTransaction";
 import { UserContext } from "../../authProvider/AuthProvider";
 import TransitionHeader from "../../components/TransitionHeader";
 import TransitionRow from "../../components/TransitionRow";
@@ -8,74 +8,58 @@ import Loader from "../../components/common/Loader";
 const UserTransections = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const { user } = useContext(UserContext);
-    const userId = user?._id
-    const { transaction, isLoading } = useGetAllTransaction({ userId })
+    const userId = user?.id;
+    const { transaction, isLoading } = useTransaction({ userId });
 
+    // Filter by counterparty name or phone number
+    const filteredTransactions = transaction?.filter((t) => {
+        const q = searchQuery.toLowerCase();
+        return (
+            t.sender?.userName?.toLowerCase().includes(q) ||
+            t.receiver?.userName?.toLowerCase().includes(q) ||
+            t.sender?.userPhone?.includes(searchQuery) ||
+            t.receiver?.userPhone?.includes(searchQuery) ||
+            !searchQuery
+        );
+    });
 
-    // Filter transactions by user name or mobile number
-    const filteredTransactions = transaction?.filter(transaction =>
-        transaction.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        transaction.mobile.includes(searchQuery)
-    );
-    
     if (isLoading) return <Loader />;
+
     return (
-        <div className="overflow-x-auto w-full px-2 py-5">
-            <h3 className='text-xl mb-3'>User <span className='text-primary'>Transactions</span></h3>
-            <table className="table outline outline-[1px] outline-base-200 shadow">
-                {/* head */}
-                <TransitionHeader />
-                <tbody>
-                    {
-                        [0].map(item => <TransitionRow key={item} />)
-                    }
-                </tbody>
-            </table>
-            <div className="overflow-x-auto w-full px-2 py-5">
-                <h3 className='text-xl mb-3'>
-                    <span className="text-primary">Last 100 Transactions</span>
+        <div className="container-page py-8">
+            <div className="mb-6">
+                <h3 className="page-heading">
+                    Your <span className="text-primary">Transactions</span>
                 </h3>
+                <p className="page-subheading">Last 100 transactions on your account</p>
+            </div>
 
-                {/* Search Input */}
-                <input
-                    type="text"
-                    placeholder="Search by Name or Mobile..."
-                    className="mb-4 p-2 border rounded w-full"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
+            <input
+                type="text"
+                placeholder="Search by name or phone..."
+                className="input-minimal mb-4"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+            />
 
-                {/* Transactions Table */}
-                <table className="table table-zebra outline outline-[1px] outline-base-200 shadow">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Job</th>
-                            <th>Mobile</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
+            <div className="overflow-x-auto card-minimal p-0">
+                <table className="table table-zebra">
+                    <TransitionHeader />
                     <tbody>
                         {filteredTransactions?.length > 0 ? (
-                            filteredTransactions?.map((transaction, index) => (
-                                <tr key={transaction._id}>
-                                    <th>{index + 1}</th>
-                                    <td>{transaction.name}</td>
-                                    <td>{transaction.job}</td>
-                                    <td>{transaction.mobile}</td>
-                                    <td>{new Date(transaction.createdAt).toLocaleDateString()}</td>
-                                </tr>
+                            filteredTransactions.map((t, index) => (
+                                <TransitionRow key={t._id} index={index + 1} transaction={t} />
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="5" className="text-center py-3 text-gray-500">No transactions found</td>
+                                <td colSpan="6" className="text-center py-6 text-base-content/50">
+                                    No transactions found
+                                </td>
                             </tr>
                         )}
                     </tbody>
                 </table>
             </div>
-
         </div>
     );
 };

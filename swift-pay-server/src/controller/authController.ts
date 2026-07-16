@@ -2,12 +2,21 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { User } from '../model/User';
 import { Agent } from '../model/Agent';
-import { comparePassword, hashPassword } from '../middleware/authMiddleware';
 import {
   validateRegistrationFields,
   findExistingRecords,
 } from '../validators/register.validator';
 import { validateLogin } from '../validators/login.validator';
+import { comparePassword, hashPassword } from '../utils/password.utils';
+import { Admin } from '../model/Admin';
+
+const authCookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as
+    | 'none'
+    | 'lax',
+};
 
 export const registerUser = async (
   req: Request,
@@ -52,7 +61,7 @@ export const registerUser = async (
     }
 
     // Hash password
-    const hashedPassword = await hashPassword(password);
+    const hashedPassword = await hashPassword(password) ;
 
     // Prepare user data
     const userData = {
@@ -64,8 +73,6 @@ export const registerUser = async (
       userRole,
       balance: userRole === 'user' ? 40 : 0,
       status: userRole === 'agent' ? 'pending' : 'active',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
 
     // Create and save user
@@ -84,7 +91,6 @@ export const registerUser = async (
       balance: newUser.balance,
       status: newUser.status,
     };
-
     res.status(201).json({
       success: true,
       message: 'Registration successful',
@@ -148,7 +154,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // 5. Check account status
+    // 5. Check account status for agents only
     if (account.status !== 'active') {
       const statusMessage =
         account.status === 'pending'
@@ -186,7 +192,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const token = jwt.sign(tokenPayload, jwtSecret, {
       expiresIn,
     } as jwt.SignOptions);
-    // 8. Prepare safe user response (EXPLICIT fields only)
     const userResponse = {
       id: account._id,
       userName: account.userName,
@@ -200,9 +205,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     // 9. Set secure cookie + response
     res.cookie('auth_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      ...authCookieOptions,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
 
@@ -224,16 +227,65 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
   try {
-    res.clearCookie('auth_token', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      path: '/sign-in',
-    });
+    // Must match the options used when the cookie was set in login(),
+    // otherwise the browser won't actually clear it.
+    res.clearCookie('auth_token', authCookieOptions);
 
     res.status(200).json({
       success: true,
       message: 'Logged out successfully',
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+};
+
+/**
+ * Returns the currently authenticated account (user, agent, or admin),
+ * based on the role embedded in the JWT. Used by the client on app
+ * load / refresh to restore session state.
+ */
+export const getMe = async (req: Request, res: Response): Promise<void> => {
+  try {
+    if (!req.user) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    const { id, role } = req.user as { id: string; role: string };
+
+    let account = null;
+    if (role === 'admin') {
+      account = await Admin.findById(id).select('-password');
+    } else if (role === 'agent') {
+      account = await Agent.findById(id).select('-password');
+    } else {
+      account = await User.findById(id).select('-password');
+    }
+
+    if (!account) {
+      res.status(404).json({ success: false, message: 'Account not found' });
+      return;
+    }
+
+    const userResponse = {
+      id: account._id,
+      userName: account.userName,
+      userEmail: account.userEmail,
+      userPhone: account.userPhone,
+      userRole: role,
+      status: (account as { status?: string }).status ?? 'active',
+      balance: account.balance,
+      photo: (account as { userPhoto?: string }).userPhoto,
+    };
+
+    res.status(200).json({
+      success: true,
+      message: 'Session restored',
+      data: { user: userResponse },
     });
   } catch (error) {
     res.status(500).json({

@@ -11,7 +11,7 @@ export const allUser = async (
   next: NextFunction,
 ) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select('-password');
     res.status(200).json({
       success: true,
       message: 'Users fetched successfully',
@@ -38,16 +38,16 @@ export const getLoginUser = async (req: Request, res: Response) => {
     let user = null;
 
     // Check in User collection
-    user = await User.findById(id);
+    user = await User.findById(id).select('-password');
 
     // If not found, check in Admin collection
     if (!user) {
-      user = await Admin.findById(id);
+      user = await Admin.findById(id).select('-password');
     }
 
     // If not found, check in Agent collection
     if (!user) {
-      user = await Agent.findById(id);
+      user = await Agent.findById(id).select('-password');
     }
 
     // If user is still not found
@@ -134,24 +134,22 @@ export const userTransaction = async (req: Request, res: Response) => {
 
 export const userDetails = async (req: Request, res: Response) => {
   try {
-    // Check if req.user exists (it should be set by authenticate middleware)
     if (!req.user) {
       res.status(401).json({
         success: false,
         message: 'Unauthorized: User not authenticated',
       });
-      return 
+      return;
     }
 
     // Safely access req.user.id — now TypeScript knows it's defined
     const user = await User.findById(req.user.id).select('-password -pin');
-
     if (!user) {
       res.status(404).json({
         success: false,
         message: 'User not found',
       });
-      return 
+      return;
     }
 
     // Return only safe fields
@@ -172,7 +170,7 @@ export const userDetails = async (req: Request, res: Response) => {
       message: 'User details fetched successfully',
       data: userResponse,
     });
-    return ;
+    return;
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -181,6 +179,6 @@ export const userDetails = async (req: Request, res: Response) => {
         error: error instanceof Error ? error.message : 'Unknown error',
       }),
     });
-    return ;
+    return;
   }
 };

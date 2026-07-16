@@ -1,29 +1,59 @@
-@import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* set default font */
 @layer base {
-    html {
-        font-family: 'Bai Jamjuree', sans-serif; /* Removed extra semicolon */
-    }
-    :root {
-        --logo-primary-color: rgb(34, 197, 94); /* logo text color, -- green */ 
-        --logo-secondary-color: rgb(249, 115, 22); /* logo text color, -- orange */
-        --text-black: rgb(15, 23, 42); /* strong text color*/
-        --border-black: rgb(15, 23, 42); /* border color*/
-        --text-color: rgb(51, 51, 51) ; /* General text color -- dark gray */
-        --bg-color: rgb(244, 244, 249); /* Background color -- white */
-    }
+  html {
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  }
 
-    /* Define variables for dark theme */
-    [data-theme="dark"] {
-        --logo-primary-color: rgb(34, 197, 94); /* logo text color, -- green */ 
-        --logo-secondary-color: rgb(249, 115, 22); /* logo text color, -- orange */
-        --border-black: rgb(255, 255, 255); /* border color*/
-        --text-black: rgb(240, 244, 255); /* strong text color*/
-        --text-color: rgb(204, 204, 209); /* General text color for dark theme */
-    }
+  :root {
+    --text-black: 15 23 42;
+    --border-black: 15 23 42;
+    --text-color: 51 51 51;
+    --bg-color: 248 250 252;
+  }
+
+  [data-theme="dark"] {
+    --text-black: 241 245 249;
+    --border-black: 226 232 240;
+    --text-color: 226 232 240;
+    --bg-color: 15 23 42;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply max-w-6xl mx-auto px-4 md:px-6;
+  }
+
+  .card-minimal {
+    @apply bg-base-100 border border-base-300 rounded-xl shadow-sm p-6;
+  }
+
+  .btn-primary-minimal {
+    @apply btn bg-primary text-primary-content border-none hover:opacity-90;
+  }
+
+  .btn-outline-minimal {
+    @apply btn btn-outline border-base-300 hover:bg-base-200 hover:border-base-300;
+  }
+
+  .input-minimal {
+    @apply input input-bordered w-full border-base-300 focus:border-primary focus:outline-none;
+  }
+
+  .label-minimal {
+    @apply label-text text-sm font-medium text-base-content/70;
+  }
+
+  .page-heading {
+    @apply text-2xl md:text-3xl font-bold text-base-content;
+  }
+
+  .page-subheading {
+    @apply mt-1 text-sm text-base-content/60;
+  }
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Loader from "../../components/common/Loader";
-import useUserDetails from "../../Hooks/useLoginUserdetails";
+import useUserDetails from "../../hooks/useLoginUserdetails";
 
 const UserProfile = () => {
   const [showBalance, setShowBalance] = useState(null);
@@ -13,7 +13,6 @@ const UserProfile = () => {
     }, 1000);
   }
   if (isLoading) return <Loader />;
-
   return (
     <div className="flex justify-center items-center mt-20">
       <div className="w-full bg-bg rounded-lg">

@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { useState } from "react";
-import useLoginUser from "../../Hooks/useSingleUser";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import useLoginUser from "../../hooks/useSingleUser";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 import Loader from "../../components/common/Loader";
 import ShowHidePass from "../../features/ShowHidePass";
 

@@ -1,4 +1,4 @@
-import useLoginUser from "../Hooks/useSingleUser";
+import useLoginUser from "../hooks/useSingleUser";
 import Loader from "./common/Loader";
 
 const TransitionHeader = () => {

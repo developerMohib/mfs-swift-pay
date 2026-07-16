@@ -1,4 +1,4 @@
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 import Loader from "../../components/common/Loader";
 import { useState } from "react";
 
@@ -17,9 +17,9 @@ import {
   MdLocalActivity,
   MdHistory,
 } from "react-icons/md";
-import useUsers from "../../Hooks/useUsers";
-import useApprovedBlockAgent from "../../Hooks/useApprovedBlockAgent";
-import usePendingAgents from "../../Hooks/usePendingAgents";
+import useUsers from "../../hooks/useUsers";
+import useApprovedBlockAgent from "../../hooks/useApprovedBlockAgent";
+import usePendingAgents from "../../hooks/usePendingAgents";
 import { handleApprovedStatus } from "../../utils/updateAgentStatus";
 
 const HomeAdmin = () => {
