@@ -9,21 +9,45 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cashInOkayAgent = exports.getPendingCashInRequests = exports.updateStatusAgent = exports.allAgent = void 0;
+exports.cashInOkayAgent = exports.getPendingCashInRequests = exports.updateStatusAgent = exports.pendingApprovedBlockAgent = exports.allAgent = void 0;
 const Agent_1 = require("../model/Agent");
 const Transaction_1 = require("../model/Transaction");
 const User_1 = require("../model/User");
 const allAgent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield Agent_1.Agent.find(); // Fetch all users
-        res.send(users); // Send the users back as a JSON response
+        const agents = yield Agent_1.Agent.find().select('-password'); // Fetch all agents
+        res.status(200).json({
+            success: true,
+            message: 'Agents fetched successfully',
+            data: agents,
+        });
     }
     catch (error) {
-        res.status(500).json({ message: 'Error fetching users', error });
+        res.status(500).json({ message: 'Error fetching agents', error });
         next(error);
     }
 });
 exports.allAgent = allAgent;
+const pendingApprovedBlockAgent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const status = req === null || req === void 0 ? void 0 : req.params.status;
+        const agents = yield Agent_1.Agent.find({ status })
+            .select('-password')
+            .sort({ createdAt: -1 }); // Optional: newest first
+        res.status(200).json({
+            success: true,
+            message: `${status} agents fetched successfully`,
+            data: agents,
+        });
+    }
+    catch (error) {
+        res
+            .status(500)
+            .json({ success: false, message: 'Error fetching agents', error });
+        next(error);
+    }
+});
+exports.pendingApprovedBlockAgent = pendingApprovedBlockAgent;
 const updateStatusAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
@@ -39,32 +63,41 @@ const updateStatusAgent = (req, res) => __awaiter(void 0, void 0, void 0, functi
             res.status(404).json({ message: 'Agent not found' });
             return;
         }
-        // Check if the agent is new and status is being updated to "approved"
-        let bonusAdded = false;
-        if (agent.status === 'pending' && status === 'active') {
-            agent.balance = (agent.balance || 0) + 100000; // Add first-time bonus
-            bonusAdded = true;
+        if (agent.status === status) {
+            res.status(400).json({ message: `Agent is already ${status}` });
+            return;
         }
-        // Update agent status
+        const shouldAddBonus = agent.status === 'pending' && status === 'active';
+        if (shouldAddBonus) {
+            agent.balance = (agent.balance || 0) + 100000;
+        }
         agent.status = status;
         yield agent.save();
         // Send success response
         res.status(200).json({
+            success: true,
             message: `Agent status updated to ${status}`,
-            bonusAdded: bonusAdded ? 100000 : 0, // Indicate if bonus was added
-            user: agent,
+            data: {
+                id: agent._id,
+                userName: agent.userName,
+                userPhone: agent.userPhone,
+                status: agent.status,
+                balance: agent.balance,
+            },
         });
     }
     catch (error) {
         console.error('Error updating user status:', error);
-        res
-            .status(500)
-            .json({ message: 'Server error', error: error.message });
+        res.status(500).json({
+            message: 'Error updating user status',
+            error: error.message,
+        });
     }
 });
 exports.updateStatusAgent = updateStatusAgent;
 const getPendingCashInRequests = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // const agentId = req;user?.id;
         const pendingRequests = yield Transaction_1.Transaction.find({
             status: 'pending',
             type: 'cash-in',
@@ -90,7 +123,6 @@ const cashInOkayAgent = (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         const { id } = req.params;
         const { status } = req.body;
-        console.log(91, id, status);
         if (!id || !status) {
             res
                 .status(400)
@@ -98,7 +130,6 @@ const cashInOkayAgent = (req, res) => __awaiter(void 0, void 0, void 0, function
             return;
         }
         const transaction = yield Transaction_1.Transaction.findById(id);
-        console.log('transaction', transaction);
         if (!transaction) {
             res.status(404).json({ message: 'Transaction not found' });
             return;

@@ -8,121 +8,257 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.registerUser = void 0;
-// import jwt from 'jsonwebtoken';
+exports.getMe = exports.logout = exports.login = exports.registerUser = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = require("../model/User");
 const Agent_1 = require("../model/Agent");
-const authMiddleware_1 = require("../middleware/authMiddleware");
+const register_validator_1 = require("../validators/register.validator");
+const login_validator_1 = require("../validators/login.validator");
+const password_utils_1 = require("../utils/password.utils");
+const Admin_1 = require("../model/Admin");
+const authCookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax'),
+};
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userName, userEmail, password, userPhone, userNID, userRole } = req.body;
-    // Validate required fields
-    if (!userName ||
-        !userEmail ||
-        !password ||
-        !userPhone ||
-        !userNID ||
-        !userRole) {
-        res.status(400).json({ error: 'All fields are required' });
-        return;
-    }
     try {
-        // Hash the password
-        const hashedPin = yield (0, authMiddleware_1.hashPassword)(password);
-        // Prepare user data
-        const userData = {
+        const { userName, userEmail, password, userPhone, userNID, userRole } = req.body;
+        // Validation
+        const validationError = (0, register_validator_1.validateRegistrationFields)({
             userName,
-            userPhone,
             userEmail,
+            password,
+            userPhone,
             userNID,
-            password: hashedPin,
             userRole,
-            balance: userRole === 'user' ? 40 : 0, // 40 Taka for users, 100,000 Taka for agents
-            status: userRole === 'agent' ? 'pending' : 'active', // Agents need approval
-        };
-        // Check if the email, phone, or NID already exists
-        const query = {
-            $or: [
-                { userEmail: userEmail },
-                { userPhone: userPhone },
-                { userNID: userNID },
-            ],
-        };
-        const existingUser = yield User_1.User.findOne(query);
-        const existingAgent = yield Agent_1.Agent.findOne(query);
-        if (existingUser || existingAgent) {
-            const usedEmail = (existingUser === null || existingUser === void 0 ? void 0 : existingUser.userEmail) === userEmail ||
-                (existingAgent === null || existingAgent === void 0 ? void 0 : existingAgent.userEmail) === userEmail
-                ? userEmail
-                : null;
-            const usedPhone = (existingUser === null || existingUser === void 0 ? void 0 : existingUser.userPhone) === userPhone ||
-                (existingAgent === null || existingAgent === void 0 ? void 0 : existingAgent.userPhone) === userPhone
-                ? userPhone
-                : null;
-            const usedNID = (existingUser === null || existingUser === void 0 ? void 0 : existingUser.userNID) === userNID || (existingAgent === null || existingAgent === void 0 ? void 0 : existingAgent.userNID) === userNID
-                ? userNID
-                : null;
-            const usedValue = usedEmail || usedPhone || usedNID;
+        });
+        if (validationError) {
             res.status(400).json({
-                error: `${usedValue} is already in use. Please use a different ${usedValue}.`,
+                success: false,
+                message: validationError,
             });
             return;
         }
-        // Create a new user or agent based on the role
-        const newUser = userRole === 'user' ? new User_1.User(userData) : new Agent_1.Agent(userData);
+        // Check for existing user/agent
+        const existingRecords = yield (0, register_validator_1.findExistingRecords)(userEmail, userPhone, userNID);
+        if (existingRecords.exists) {
+            res.status(409).json({
+                success: false,
+                message: existingRecords.message,
+                field: existingRecords.field,
+            });
+            return;
+        }
+        // Hash password
+        const hashedPassword = yield (0, password_utils_1.hashPassword)(password);
+        // Prepare user data
+        const userData = {
+            userName: userName.trim(),
+            userEmail: userEmail.toLowerCase().trim(),
+            userPhone: userPhone.trim(),
+            userNID: userNID.trim(),
+            password: hashedPassword,
+            userRole,
+            balance: userRole === 'user' ? 40 : 0,
+            status: userRole === 'agent' ? 'pending' : 'active',
+        };
+        // Create and save user
+        const Model = userRole === 'user' ? User_1.User : Agent_1.Agent;
+        const newUser = new Model(userData);
         yield newUser.save();
-        res.status(201).json({ message: 'Registration successful', user: newUser });
-    }
-    catch (err) {
-        res.status(500).json({
-            error: 'Registration failed',
-            details: err instanceof Error ? err.message : 'An unknown error occurred',
+        // Remove sensitive data from response
+        const userResponse = {
+            id: newUser._id,
+            userName: newUser.userName,
+            userEmail: newUser.userEmail,
+            userPhone: newUser.userPhone,
+            userNID: newUser.userNID,
+            userRole: newUser.userRole,
+            balance: newUser.balance,
+            status: newUser.status,
+        };
+        res.status(201).json({
+            success: true,
+            message: 'Registration successful',
+            data: userResponse,
         });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }
+    catch (error) {
+        // Handle specific error types
+        if (error.name === 'ValidationError') {
+            res.status(400).json({
+                success: false,
+                message: 'Validation failed',
+                errors: error.errors,
+            });
+            return;
+        }
+        res.status(500).json(Object.assign({ success: false, message: 'Registration failed due to network' }, (process.env.NODE_ENV === 'development' && {
+            error: error.message,
+        })));
     }
 });
 exports.registerUser = registerUser;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { phoneOrEmail, pin } = req.body;
-    if (!phoneOrEmail || !pin) {
-        res.status(400).json({ error: 'Missing phone Email or pin' });
-        return;
-    }
     try {
-        const [user, agent] = yield Promise.all([
-            User_1.User.findOne({
-                $or: [{ userEmail: phoneOrEmail }, { userPhone: phoneOrEmail }],
-            }),
-            Agent_1.Agent.findOne({
-                $or: [{ userEmail: phoneOrEmail }, { userPhone: phoneOrEmail }],
-            }),
-        ]);
-        const account = user !== null && user !== void 0 ? user : agent;
-        // password something worng yet
-        if (!account) {
-            res.status(400).json({ error: 'User or agent not found or invalid credintials' });
+        // 1. Validate input
+        const validationError = (0, login_validator_1.validateLogin)({
+            identifier: phoneOrEmail,
+            password: pin,
+        });
+        if (validationError) {
+            res.status(400).json({ success: false, message: validationError });
             return;
         }
-        // Generate JWT token
-        // const token = jwt.sign(
-        //   { id: account._id, role: account.userRole }, // Include role in the token
-        //   process.env.JWT_SECRET as string,
-        //   { expiresIn: '1h' },
-        // );
-        // console.log(token);
+        // 2. Normalize input
+        const trimmedInput = phoneOrEmail.trim();
+        const normalizedInput = trimmedInput.toLowerCase();
+        const cleanPhone = trimmedInput.replace(/\D/g, ''); // Clean phone number
+        const isEmail = normalizedInput.includes('@');
+        // 3. Build optimized query
+        const query = isEmail
+            ? { userEmail: normalizedInput }
+            : { $or: [{ userPhone: cleanPhone }, { userEmail: normalizedInput }] };
+        // 4. Find user or agent
+        const [user, agent] = yield Promise.all([
+            User_1.User.findOne(query).select('+password'),
+            Agent_1.Agent.findOne(query).select('+password'),
+        ]);
+        const account = user || agent;
+        if (!account) {
+            res.status(401).json({ success: false, message: 'Invalid credentials' });
+            return;
+        }
+        // 5. Check account status for agents only
+        if (account.status !== 'active') {
+            const statusMessage = account.status === 'pending'
+                ? 'Account pending approval'
+                : 'Account is suspended';
+            res.status(403).json({ success: false, message: statusMessage });
+            return;
+        }
+        // 6. Verify password
+        const isPinValid = yield (0, password_utils_1.comparePassword)(pin.trim(), account.password);
+        if (!isPinValid) {
+            res.status(401).json({ success: false, message: 'Invalid credentials' });
+            return;
+        }
+        // 7. Generate JWT
+        const jwtSecret = process.env.JWT_SECRET;
+        if (!jwtSecret) {
+            console.error('JWT_SECRET is not configured');
+            res
+                .status(500)
+                .json({ success: false, message: 'Server configuration error' });
+            return;
+        }
+        const tokenPayload = {
+            id: account._id.toString(),
+            role: account.userRole,
+            status: account.status,
+        };
+        const expiresIn = process.env.JWT_EXPIRES_IN;
+        const token = jsonwebtoken_1.default.sign(tokenPayload, jwtSecret, {
+            expiresIn,
+        });
+        const userResponse = {
+            id: account._id,
+            userName: account.userName,
+            userEmail: account.userEmail,
+            userPhone: account.userPhone,
+            userRole: account.userRole,
+            status: account.status,
+            balance: account.balance,
+            photo: account.userPhoto,
+        };
+        // 9. Set secure cookie + response
+        res.cookie('auth_token', token, Object.assign(Object.assign({}, authCookieOptions), { maxAge: 24 * 60 * 60 * 1000 }));
         res.status(200).json({
+            success: true,
             message: 'Login successful',
-            user: account, // Send userRole to frontend
+            data: { token, user: userResponse },
         });
     }
-    catch (err) {
-        if (err instanceof Error) {
-            res.status(400).json({ error: 'Login failed', details: err.message });
-        }
-        else {
-            res
-                .status(400)
-                .json({ error: 'Login failed', details: 'something wrong' });
-        }
+    catch (error) {
+        res.status(500).json(Object.assign({ success: false, message: 'Internal server error' }, (process.env.NODE_ENV === 'development' && {
+            error: error instanceof Error ? error.message : 'Unknown error',
+        })));
     }
 });
 exports.login = login;
+const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Must match the options used when the cookie was set in login(),
+        // otherwise the browser won't actually clear it.
+        res.clearCookie('auth_token', authCookieOptions);
+        res.status(200).json({
+            success: true,
+            message: 'Logged out successfully',
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error instanceof Error ? error.message : 'Unknown error',
+        });
+    }
+});
+exports.logout = logout;
+/**
+ * Returns the currently authenticated account (user, agent, or admin),
+ * based on the role embedded in the JWT. Used by the client on app
+ * load / refresh to restore session state.
+ */
+const getMe = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        if (!req.user) {
+            res.status(401).json({ success: false, message: 'Unauthorized' });
+            return;
+        }
+        const { id, role } = req.user;
+        let account = null;
+        if (role === 'admin') {
+            account = yield Admin_1.Admin.findById(id).select('-password');
+        }
+        else if (role === 'agent') {
+            account = yield Agent_1.Agent.findById(id).select('-password');
+        }
+        else {
+            account = yield User_1.User.findById(id).select('-password');
+        }
+        if (!account) {
+            res.status(404).json({ success: false, message: 'Account not found' });
+            return;
+        }
+        const userResponse = {
+            id: account._id,
+            userName: account.userName,
+            userEmail: account.userEmail,
+            userPhone: account.userPhone,
+            userRole: role,
+            status: (_a = account.status) !== null && _a !== void 0 ? _a : 'active',
+            balance: account.balance,
+            photo: account.userPhoto,
+        };
+        res.status(200).json({
+            success: true,
+            message: 'Session restored',
+            data: { user: userResponse },
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error instanceof Error ? error.message : 'Unknown error',
+        });
+    }
+});
+exports.getMe = getMe;

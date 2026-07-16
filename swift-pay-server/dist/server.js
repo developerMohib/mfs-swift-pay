@@ -22,7 +22,6 @@ function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield mongoose_1.default.connect(database_Url);
-            console.log('MongoDB connected succesfully with Atlas');
             index_1.default.listen(port, () => {
                 console.log(`Example app listening on port ${port}`);
             });

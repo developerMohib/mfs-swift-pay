@@ -7,31 +7,39 @@ import bodyParser from 'body-parser';
 import { authRouter } from './routes/authRoutes';
 import { userRouter } from './routes/userRoutes';
 import { agentRouter } from './routes/agentRoutes';
-import { adnminRouter } from './routes/adminRoutes';
 import { transectionRouter } from './routes/transactionRoutes';
+import { adminRouter } from './routes/adminRoutes';
+
 // parsers
 app.use(express.json());
-app.use(cookieParser())
-app.use(bodyParser.json())
+app.use(bodyParser.json());
+
 // https://swift-pay-client-theta.vercel.app
 // http://localhost:5173
 app.use(
   cors({
-    origin:'https://swift-pay-client-theta.vercel.app',
+    origin: [
+      'http://localhost:5173',
+      'https://swift-pay-client-theta.vercel.app',
+      'http://localhost:8000',
+    ],
     credentials: true,
   }),
 );
+app.use(cookieParser());
 
-app.use('/admin', adnminRouter);
-app.use('/agent', adnminRouter);
-// my routes
-app.use('/user', authRouter);
+// routes
+app.use('/auth', authRouter);
+
+app.use('/admin', adminRouter);
+app.use('/agent', agentRouter);
 
 app.use('/all', userRouter);
-app.use('/user', userRouter);
+app.use('/user', userRouter); // user/details
 
 app.use('/all', agentRouter);
 app.use('/agent', agentRouter);
+
 app.use('/approved', agentRouter);
 app.use('/rejected', agentRouter);
 
@@ -48,6 +56,9 @@ app.get('/', (req: Request, res: Response): void => {
 // Home route
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).send('swiftPay server is ready');
+});
+app.get('/api/test-cookie', (req, res) => {
+  res.json({ cookies: req.cookies });
 });
 
 // global route error handler

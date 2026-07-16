@@ -10,6 +10,7 @@ export interface IUser {
   userRole: 'user' | 'agent' | 'admin';
   status: 'active' | 'block' | 'pending';
   transactions: Schema.Types.ObjectId[];
+  userPhoto?: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -17,15 +18,16 @@ const userSchema = new Schema<IUser>({
   userPhone: { type: String, required: true, unique: true },
   userEmail: { type: String, required: true, unique: true },
   userNID: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  password: { type: String, required: true, select: false },
   balance: { type: Number, default: 40 },
   userRole: { type: String, enum: ['user', 'agent', 'admin'], default: 'user' },
+  userPhoto: { type: String , default: 'https://avatars.githubusercontent.com/u/92154638?v=4'},
   status: {
     type: String,
     enum: ['active', 'block', 'pending'],
     default: 'active',
   },
   transactions: [{ type: Schema.Types.ObjectId, ref: 'Transaction' }],
-});
+}, { timestamps: true });
 
 export const User = model<IUser>('User', userSchema);
