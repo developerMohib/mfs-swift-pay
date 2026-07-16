@@ -29,9 +29,6 @@ app.use(
 app.use(cookieParser());
 
 // routes
-console.log("authRouter");
-console.log(adminRouter);
-console.log(agentRouter);
 app.use('/auth', authRouter);
 
 app.use('/admin', adminRouter);
@@ -61,7 +58,6 @@ app.get('/health', (req: Request, res: Response) => {
   res.status(200).send('swiftPay server is ready');
 });
 app.get('/api/test-cookie', (req, res) => {
-  console.log('Cookies received:', req.cookies);
   res.json({ cookies: req.cookies });
 });
 

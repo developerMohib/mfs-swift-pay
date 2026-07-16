@@ -15,7 +15,7 @@ const Transaction_1 = require("../model/Transaction");
 const User_1 = require("../model/User");
 const allAgent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const agents = yield Agent_1.Agent.find(); // Fetch all agents
+        const agents = yield Agent_1.Agent.find().select('-password'); // Fetch all agents
         res.status(200).json({
             success: true,
             message: 'Agents fetched successfully',

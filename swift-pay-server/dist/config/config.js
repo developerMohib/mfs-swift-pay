@@ -10,8 +10,8 @@ dotenv_1.default.config({ path: path_1.default.join(process.cwd(), ".env") });
 // Create a configuration object with proper type assertions
 const config = {
     port: Number(process.env.PORT) || 8000,
-    databaseUrl: process.env.MongoDB_url,
-    saltRounds: Number(process.env.SOLT_ROUNDS) || 10,
+    databaseUrl: process.env.MONGODB_URI,
+    saltRounds: Number(process.env.SALT_ROUNDS) || 10,
     jwtSecret: process.env.JWT_SECRET || "default_secret",
 };
 exports.default = config;
